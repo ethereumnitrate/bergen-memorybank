@@ -134,7 +134,7 @@ The approved companion QTI workflow is limited to quiz content and settings, not
 
 **When**: The Gem detects the protected or identifiable content
 
-**Then**: It immediately stops substantive processing without unnecessarily repeating, transforming, summarizing, or retaining the content; explains that Canvas is the student-record system; and offers a blank de-identified Class Learning Snapshot covering module completed, outcomes assessed, concepts introduced, class-level strengths, common misconceptions, rubric areas needing reinforcement, general performance distribution, concepts not yet introduced, knowledge a new activity must not assume, and desired activity format and difficulty before allowing work to resume
+**Then**: It immediately stops substantive processing without unnecessarily repeating, transforming, summarizing, or retaining the content; explains that Canvas is the student-record system; and offers a blank de-identified Class Learning Snapshot covering module completed, outcomes assessed, concepts already introduced, class-level strengths, common misconceptions, rubric areas needing reinforcement, general performance distribution, concepts not yet introduced, knowledge a new activity must not assume, and desired activity format and difficulty before allowing work to resume
 
 #### AC-ERROR-3: Prevent reinforcement from assuming future concepts
 
@@ -359,7 +359,10 @@ Yes. The release must include a five-minute installation guide with the exact ei
 - [x] Phase 2: Author and scenario-test the layered Gem safety kernel, command router, context selector, stage engine, approval gates, course selection, privacy recovery, and conservative visible-chat estimate.
   - **Test Results**: RED confirmed at 18 intended missing-artifact failures; 18/18 focused Phase 2 scenarios and 26/26 full repository tests passing; build, lint, and aggregate validation PASS
   - **Code Review**: APPROVED — 0 blocking, recommended, optional, security, dependency, or scope findings; 12/12 aliases and all 16 Phase 2-applicable MUST Gem-side contracts represented
-- [ ] Phase 3: Build and validate the four-document hybrid memory model and embedded de-identified Class Learning Snapshot, then produce visually verified Google Docs-ready files.
+- [x] Phase 3: Build and validate the four-document hybrid memory model and embedded de-identified Class Learning Snapshot, then produce visually verified Google Docs-ready files.
+  - **Test Results**: RED confirmed at 8 intended missing-artifact failures; remediation RED confirmed at 1/8 Phase 3 plus 1/18 Phase 2 consistency; final 8/8 focused Phase 3 and 34/34 full repository tests passing; build and lint PASS
+  - **Code Review**: APPROVED — final independent review found 0 blocking, recommended, optional, security, dependency, or scope findings
+  - **Document QA**: Title sanitizer, privacy scrub, accessibility audit, source-to-DOCX parity, and package-wide OOXML/preset checks PASS for 4/4 files; PNG visual QA is DONE_WITH_CONCERNS because the bundled runtime has no LibreOffice/`soffice`
 - [ ] Phase 4: Produce and cross-check every faculty guide, command example, privacy checklist, troubleshooting path, presentation script, and complete aligned demonstration.
 - [ ] Phase 5: Productionize the client-side Bergen QTI Packager for Bergen-controlled Apps Script hosting, preserve the self-contained demo and ZIP fallback, verify supported QTI 1.2 packages, and complete the manual Canvas test-course compatibility gate.
 
@@ -374,20 +377,22 @@ Yes. The release must include a five-minute installation guide with the exact ei
 ## Build Execution State
 
 **Build Status**: IDLE
-**Current Phase**: 3 of 5
-**Auto-Build Mode**: YES
-**Current Step**: Phase 3 queued
-**Step Started**: 2026-08-04T16:58:25Z
-**Last Completed**: Phase 2 — Gem safety kernel and workflow engine
+**Current Phase**: 4 of 5
+**Auto-Build Mode**: NO
+**Current Step**: Phase 4 queued
+**Step Status**: COMPLETE
+**Step Started**: 2026-08-04T17:57:14Z
+**Last Completed**: Phase 3 — Hybrid memory templates and Google Docs-ready files
 **Phase 1 Boundary**: COMPLETE — Step 10 Memory Bank update finished 2026-08-04T16:18:04Z
 **Phase 2 Boundary**: COMPLETE — Step 10 Memory Bank update finished 2026-08-04T16:58:25Z
+**Phase 3 Boundary**: COMPLETE — Step 10 Memory Bank update finished 2026-08-04T17:57:14Z
 **BRAINSTORM CRITIQUE**: skipped — unresolved:no-companion (glob=C:\Users\alexa\.claude\plugins\**\codex-companion.mjs; matches=0)
 
 ### Resumption Notes
 
 **Can Resume**: NO
-**Resume From**: Phase 3 - hybrid memory templates and Google Docs-ready files
-**Notes**: Phase 2 is complete and verified. `poc/` remains authorized prior Phase 5 work and was untouched. No remote is configured; the phase commit remains local until an origin is added.
+**Resume From**: Phase 4 - faculty guides and aligned demonstration
+**Notes**: Phase 3 is complete and independently approved. `poc/` remains authorized prior Phase 5 work and was untouched. No remote is configured; the phase commit remains local until an origin is added. DOCX visual render QA could not run because the bundled runtime contains no LibreOffice/`soffice`; all prescribed structural, title, privacy, accessibility, content-parity, and OOXML checks passed.
 
 ### Halt State
 
@@ -402,6 +407,8 @@ Yes. The release must include a five-minute installation guide with the exact ei
 - Discovery ran in `--offline` mode because no `origin` remote is configured; push was skipped and the phase commit remains local.
 - The configured Codex review companion resolved `unresolved:no-companion`; the required Anthropic fallback review approved the phase with no findings.
 - The packaged ALA `commit-guard.sh` was absent. Step 11 used a deterministic equivalent over the committed file list; the clean-tree check allowed only the user-authorized untracked `poc/` tree, which could not be removed or staged.
+- Phase 3 used the Documents skill's explicit missing-`soffice` fallback: no rendered pages or visual inspection were possible, so document QA is `DONE_WITH_CONCERNS`; sanitizer, privacy, accessibility, content-parity, and package-wide OOXML/preset gates passed for all four DOCX files.
+- Cross-phase consistency correction: AC-ERROR-2, the Phase 2 Gem snapshot label/test, and the scenario matrix now use the exact approved field name `Concepts already introduced`.
 
 ### Active Sub-Agents
 
@@ -431,6 +438,14 @@ Yes. The release must include a five-minute installation guide with the exact ei
 - Phase 2 review: APPROVED with 0 findings; security and privacy contract PASS; no dependencies or upgrades
 - Phase 2 documentation: `techContext.md` and `systemPatterns.md` updated for the implemented layered Gem engine and text-only Quiz Transfer Block boundary
 - Phase 2 Memory Bank boundary: only Phase 2 checked; execution advanced to Phase 3
+- Phase 3 TDD: RED confirmed with 8 intended missing-artifact failures, then GREEN at 8/8 focused template contracts
+- Phase 3 focused batch: template contracts 8/8; lint PASS; no fixes required
+- Phase 3 integration verification: full tests 34/34, build PASS, lint PASS
+- Phase 3 review remediation: RED confirmed at 1/8 for package-wide rsid residue and 1/18 for the snapshot-label consistency correction; GREEN at 8/8, 18/18, and 34/34
+- Phase 3 document QA: four DOCX files sanitized and privacy-scrubbed; accessibility audits 0 high/0 medium/0 low; source-to-DOCX parity and package-wide OOXML/preset audits PASS; visual rendering `DONE_WITH_CONCERNS` because bundled `soffice` is unavailable
+- Phase 3 final review: APPROVED with 0 findings; security/privacy PASS; no dependencies or upgrades; Phase 4/5 scope excluded
+- Phase 3 documentation: `techContext.md` and `systemPatterns.md` updated for the implemented hybrid memory model and deterministic bundled source-to-DOCX pipeline
+- Phase 3 Memory Bank boundary: only Phase 3 checked; execution advanced to Phase 4
 
 ## Plan Critique
 

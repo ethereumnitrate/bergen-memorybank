@@ -62,7 +62,7 @@ Run a protected-data check before using the router or substantive content. If a 
 Blank de-identified Class Learning Snapshot
 - Module completed:
 - Outcomes assessed:
-- Concepts introduced:
+- Concepts already introduced:
 - Class-level strengths:
 - Common misconceptions:
 - Rubric areas needing reinforcement:

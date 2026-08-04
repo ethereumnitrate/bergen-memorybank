@@ -114,6 +114,7 @@ function runFocusedTests() {
     'tests/content/release-structure.test.mjs',
     'tests/content/source-register.test.mjs',
     'tests/content/gem-workflows.test.mjs',
+    'tests/content/template-contracts.test.mjs',
   ], {
     cwd: repositoryRoot,
     encoding: 'utf8',

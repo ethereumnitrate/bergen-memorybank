@@ -30,8 +30,13 @@ Developer release-validation lane
   Release contract + source register + synthetic/de-identified fixtures
     → dependency-free Node.js .mjs validation and tests
     → content, inventory, privacy, and claim-boundary evidence
+  Four knowledge-document Markdown sources + embedded snapshot partial
+    → bundled Python/python-docx authoring
+    → packaged title sanitation + privacy scrub
+    → global rsid cleanup + deterministic ZIP normalization
+    → four Google Docs-ready DOCX files
 
-Optional QTI companion (planned Phase 5; absent through Phase 2)
+Optional QTI companion (planned Phase 5; absent through Phase 3)
   Faculty-approved synthetic or non-student quiz content
     → text-only Bergen Quiz Transfer Block from the Gem
     → client-side browser validation and packaging
@@ -47,13 +52,14 @@ The developer lane verifies repository artifacts but is not part of faculty inst
 - **Course Memory**: Holds course-level outcomes, structure, concepts, constraints, and approved course context.
 - **Active Workbench**: Holds current, temporary work-in-progress context for the active teaching task.
 - **Decisions, Reflections, and Reusable Practices**: Holds approved decisions and reusable faculty practices with enough context to judge future applicability.
-- **Class Learning Snapshot**: Holds only de-identified, class-level observations needed to design reinforcement.
+- **Class Learning Snapshot**: A reusable Markdown partial embedded exactly once in Active Workbench; it holds only de-identified, class-level observations needed to design reinforcement and does not produce a fifth knowledge document.
+- **Document Builder**: Generates four Google Docs-ready DOCX files from the primary Markdown sources with bundled `python-docx`, packaged title sanitation and privacy scrubbing, global OOXML `rsid` cleanup, and deterministic ZIP ordering and timestamps.
 - **Canvas**: Holds protected student records and receives final faculty-approved publishing actions.
 - **Release Contract**: Defines the v1.0 scope, safeguard boundary, exact artifact inventory, phase ownership, and Ready/Pending state in `src/release/release-contract.md`.
 - **Authoritative Source Register**: Holds dated official-source pointers and narrow claim mappings in `src/sources/authoritative-source-register.md`; Memory Bank documents reference this register rather than duplicate its source details.
 - **Scenario Matrix and Fixtures**: Define observable Phase 2 Gem behavior and later-phase contracts while supplying synthetic or de-identified workflow and quiz inputs without claiming unimplemented packaging behavior.
-- **Validation Harness and Tests**: Use dependency-free Node.js `.mjs` files to check release structure, inventory state, source discipline, fixture safety, Gem workflow contracts, and capability boundaries for repository contributors.
-- **QTI Packager**: Planned optional Phase 5 client-side companion that will validate a faculty-approved text-only transfer block and prepare a package for manual Canvas import; no QTI application exists through Phase 2.
+- **Validation Harness and Tests**: Use dependency-free Node.js `.mjs` files to check release structure, inventory state, source discipline, fixture safety, Gem workflow contracts, template ownership, generated OOXML, and capability boundaries for repository contributors.
+- **QTI Packager**: Planned optional Phase 5 client-side companion that will validate a faculty-approved text-only transfer block and prepare a package for manual Canvas import; no QTI application exists through Phase 3.
 
 ## Conversational Routing Pattern
 
@@ -75,7 +81,7 @@ Natural-language requests use the same routing and safeguards. Commands are opti
 - A proposed update identifies the target document and supplies copy-ready text.
 - The faculty member approves and manually applies the update.
 - The Gem must not claim that an attached knowledge document changed automatically.
-- Shared Faculty Profile and Decisions, Reflections, and Reusable Practices documents combine with a course-specific Course Memory and Active Workbench pair. The replaceable Class Learning Snapshot remains a section inside Active Workbench rather than a fifth knowledge document.
+- The implemented model combines shared Faculty Profile and Decisions, Reflections, and Reusable Practices documents with a course-specific Course Memory and Active Workbench pair. The replaceable Class Learning Snapshot source is embedded exactly once inside Active Workbench rather than built as a fifth knowledge document.
 
 ## Ordered Safety Kernel and Workflow Engine Pattern
 
@@ -125,6 +131,7 @@ This ordering keeps aliases from acquiring authority, prevents retrieval or draf
 - Demonstrations and tests use synthetic, de-identified examples only.
 - The release contract is the complete artifact inventory. `Ready` means present and verified in the current phase; `Pending` means assigned to a later phase and intentionally absent. Validation checks both conditions so inventory rows cannot imply unimplemented capability.
 - Detailed policy and platform citations live in the authoritative source register. Other Memory Bank and release documents point to that register and summarize only the boundary they need.
+- Google Docs deliverables retain Markdown as their source of truth. The Class Learning Snapshot partial is expanded into Active Workbench during authoring, and only the four primary knowledge-document sources produce standalone DOCX files.
 
 ## Release Validation Pattern
 
@@ -133,7 +140,10 @@ This ordering keeps aliases from acquiring authority, prevents retrieval or draf
 - `tests/content/release-structure.test.mjs` maps the release contract, version stamp, package scripts, artifact existence, and fixture safety rules to executable checks.
 - `tests/content/source-register.test.mjs` maps the authoritative source register to dated-source completeness and bounded policy, Gemini, Canvas, QTI, and Apps Script claims.
 - `tests/content/gem-workflows.test.mjs` maps the complete Gem instruction source and its 18 synthetic scenarios to routing, context, stage, approval, privacy, prerequisite, handoff, and capability-boundary checks.
-- The human-readable `src/testing/scenario-matrix.md` records which Gem behaviors are verified in Phase 2 and which template, guide, packaging, or compatibility checks remain later-phase work.
+- `tests/content/template-contracts.test.mjs` maps the five template sources and four generated DOCX files to the ownership, snapshot, privacy, explicit-selection, prerequisite, manual-record, and OOXML contracts.
+- `scripts/build-google-docs.mjs` is a separately invocable deterministic authoring step. It resolves bundled tooling through explicit environment variables or compatible cache discovery, then sanitizes, privacy-scrubs, and normalizes each generated DOCX.
+- The human-readable `src/testing/scenario-matrix.md` records verified Gem and template behaviors and distinguishes guide, packaging, and compatibility checks that remain later-phase work.
+- Automated Phase 3 release evidence includes title-sanitizer, accessibility, OOXML, `google_docs_default`, privacy, and deterministic-package checks for all four DOCX files. Render/PNG visual QA remains `DONE_WITH_CONCERNS` when LibreOffice/`soffice` is unavailable and must not be represented as a visual pass.
 
 ### Fixture Rules
 
@@ -145,7 +155,7 @@ This ordering keeps aliases from acquiring authority, prevents retrieval or draf
 
 ### Organization
 
-- Keep source-to-test ownership explicit: the release contract and fixtures map to the release-structure suite, while dated claims map to the source-register suite.
+- Keep source-to-test ownership explicit: the release contract and fixtures map to the release-structure suite, dated claims map to the source-register suite, Gem behavior maps to the Gem-workflow suite, and template sources plus generated DOCX files map to the template-contract suite.
 - Use scenario-based acceptance checks organized by workflow and cross-cutting safeguard.
 - Maintain at least one happy-path scenario for every command and representative natural-language equivalent.
 - Add focused scenarios for privacy rejection and recovery, unknown commands, concepts not yet introduced, review-before-revise, record proposals, and manual Canvas publication.
@@ -170,6 +180,13 @@ C4 architecture documentation has not been generated. Phases 1 and 2 include dev
 <!-- AUTO-MANAGED: c4-architecture-end -->
 
 ## Recent Architecture Changes
+
+### 2026-08-04 - Implemented the four-document source-to-DOCX pipeline
+
+- **What Changed**: Added the four primary knowledge-document sources, the embedded Class Learning Snapshot partial, four generated Google Docs-ready DOCX files, and a deterministic authoring pipeline with executable source, ownership, privacy, and OOXML contracts.
+- **Reason**: Make the hybrid shared/course-specific memory architecture usable by faculty while preserving one primary home per fact and preventing the snapshot from becoming a fifth document.
+- **Trade-offs**: Bundled Python and document helpers are contributor build-time requirements, and deterministic package checks do not replace visual inspection in Google Docs. The faculty workflow remains no-code and manual.
+- **Affected Components**: Faculty Profile, Course Memory, Active Workbench, Decisions, Reflections, and Reusable Practices, Class Learning Snapshot, document builder, release contract, scenario matrix, and content-validation suites.
 
 ### 2026-08-04 - Implemented the ordered Gem safety kernel and workflow engine
 

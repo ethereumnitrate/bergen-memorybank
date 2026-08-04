@@ -204,7 +204,7 @@ test('protected-data detection stops before processing and offers a blank safe s
   assertContainsAll(instructions, [
     'Module completed',
     'Outcomes assessed',
-    'Concepts introduced',
+    'Concepts already introduced',
     'Class-level strengths',
     'Common misconceptions',
     'Rubric areas needing reinforcement',

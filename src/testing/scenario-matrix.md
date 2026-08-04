@@ -1,8 +1,21 @@
 # Scenario Verification Matrix
 
-## Phase 2 purpose
+## Verification purpose through Phase 3
 
-This file is the human-readable content-contract matrix for Bergen Memory Bank v1.0 through Phase 2. It maps synthetic inputs to observable instructions for routing, context selection, stage state, approval, privacy, and safe next steps. It does not claim access to Gemini's hidden behavior or that later-phase documents, guides, or QTI packaging exist.
+This file is the human-readable content-contract matrix for Bergen Memory Bank v1.0 through Phase 3. It maps synthetic inputs to observable instructions and template content for routing, context selection, stage state, document ownership, approval, privacy, and safe next steps. It does not claim access to Gemini's hidden behavior or that later-phase guides or QTI packaging exist.
+
+## Phase 3 template and document scenarios
+
+| Check | Source contract | Observable contract | Automated test |
+|---|---|---|---|
+| Four-document package | Four faculty knowledge Markdown sources and four Google Docs-ready DOCX files | One shared Faculty Profile; one shared Decisions, Reflections, and Reusable Practices document; one Course Memory and Active Workbench pair per course; no separate snapshot DOCX | `template-contracts.test.mjs` check 1 |
+| One primary home | All four knowledge templates | Each template declares one distinct primary home and directs other facts to their owning document | `template-contracts.test.mjs` check 2 |
+| Embedded snapshot | `class-learning-snapshot.md` and `active-workbench.md` | The source partial appears exactly once inside Active Workbench and identifies itself as temporary and replaceable rather than a fifth knowledge document | `template-contracts.test.mjs` check 3 |
+| Required snapshot fields | `class-learning-snapshot.md` | All ten required fields appear once, in the approved order, with no additional form fields | `template-contracts.test.mjs` check 4 |
+| Snapshot privacy | `class-learning-snapshot.md` | De-identified class-level observations only; every prohibited data category is named; protected data stays in Canvas | `template-contracts.test.mjs` check 5 |
+| Course selection | Course Memory and Active Workbench | Select and echo the course before use; make no claim that selection persists into a new Gemini chat | `template-contracts.test.mjs` check 6 |
+| Future-concept guard | `class-learning-snapshot.md` | Concepts not yet introduced and knowledge not to assume are hard constraints; uncertain concepts trigger clarification | `template-contracts.test.mjs` check 7 |
+| Manual record proposal | All four knowledge templates | `bergen:record` waits for faculty approval, names exactly one primary target, supplies copy-ready text, and requires manual paste without an automatic save or sync claim | `template-contracts.test.mjs` check 8 |
 
 ## Workflow scenarios
 
@@ -45,7 +58,7 @@ The stage engine is Remember â†’ Frame â†’ Plan â†’ Draft â†�
 | Minimum necessary context | Selected course, named document sources, supplied facts, missing or conflicting facts, and no more than one necessary question | Phase 2 content checks |
 | Human approval | Review does not revise; revise and record use only approved changes; publication remains manual | Phase 2 content checks and Phase 4 guide alignment |
 | Student-record boundary | Processing stops without echoing or transforming identifying content; Canvas remains the student-record system | Phase 2 content checks |
-| Concepts introduced | Reinforcement treats future concepts and knowledge it must not assume as hard constraints | Phase 2 content checks and Phase 3 snapshot checks |
+| Concepts already introduced | Reinforcement treats future concepts and knowledge it must not assume as hard constraints | Phase 2 content checks and Phase 3 snapshot checks |
 | Four-document ownership | Shared and course-specific homes plus a replaceable de-identified snapshot section | Phase 2 instruction checks and Phase 3 template checks |
 | Context hygiene | Estimate is visibly qualified, conservative, rounded, and never presented as actual remaining capacity | Phase 2 content checks |
 | Faculty-facing language | Installation and daily work do not require repository, API, terminal, or programming knowledge | Phase 4 guide checks |

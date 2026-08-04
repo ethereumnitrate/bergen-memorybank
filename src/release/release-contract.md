@@ -2,7 +2,7 @@
 
 ## Release boundary
 
-Bergen Memory Bank v1.0 is planned as a no-code faculty kit: one custom Gemini Gem, four reusable Google Docs, faculty enablement material, and an optional browser-only QTI packaging handoff. Phases 1 and 2 establish the repository foundation and the complete classic custom Gem instruction system. A listed artifact is evidence only for the phase and behavior its tests verify.
+Bergen Memory Bank v1.0 is planned as a no-code faculty kit: one custom Gemini Gem, four reusable Google Docs, faculty enablement material, and an optional browser-only QTI packaging handoff. Phases 1 through 3 establish the repository foundation, the complete classic custom Gem instruction system, and the four-document hybrid memory model with a replaceable de-identified Class Learning Snapshot. A listed artifact is evidence only for the phase and behavior its tests verify.
 
 Canvas remains the student-record system and the final manual publishing destination. The future Gem, memory documents, examples, fixtures, and QTI Packager may use teaching context and synthetic or de-identified class-level observations only. Consequential revision, recording, transfer, import, and publication steps require visible faculty approval and manual action.
 
@@ -10,7 +10,7 @@ Canvas remains the student-record system and the final manual publishing destina
 
 Version 1.0 will not claim or implement native Gemini commands, Gem plugins or custom actions, automatic Google Docs editing, a Canvas API, automated grading, individual student profiling, autonomous Canvas publication, server-side quiz-content handling, accounts, databases, or telemetry. Optional `bergen:<workflow>` strings will be documented later as case-insensitive prompt aliases with natural-language equivalents, not as platform integrations.
 
-Phase 2 creates and scenario-tests the Gem instructions. It does not create the document templates, guides, DOCX files, QTI Packager, demonstration, or ZIP. Those artifacts remain pending in the inventory until their assigned phase is implemented and verified.
+Phase 3 creates and content-tests the four faculty knowledge templates, the reusable snapshot partial, the four Google Docs-ready DOCX files, and their deterministic build entry point. It does not create the faculty guides, QTI Packager, demonstration, or ZIP. Those later-phase artifacts remain pending until their assigned phase is implemented and verified.
 
 ## Status meanings
 
@@ -33,17 +33,17 @@ Phase 2 creates and scenario-tests the Gem instructions. It does not create the 
 | `tests/fixtures/sample-quiz.json` | Ready | 1 | Synthetic quiz seed for later packaging tests |
 | `src/gem/bergen-memory-bank-instructions.md` | Ready | 2 | Gem safety, routing, context, and stage instructions |
 | `tests/content/gem-workflows.test.mjs` | Ready | 2 | Workflow and safeguard content contracts |
-| `src/templates/faculty-profile.md` | Pending | 3 | Shared stable faculty preferences template |
-| `src/templates/course-memory.md` | Pending | 3 | Course-specific durable memory template |
-| `src/templates/active-workbench.md` | Pending | 3 | Course-specific active work and snapshot template |
-| `src/templates/decisions-reflections-reusable-practices.md` | Pending | 3 | Shared durable practices template |
-| `src/templates/class-learning-snapshot.md` | Pending | 3 | Reusable de-identified snapshot section source |
-| `dist/google-docs/Bergen Memory Bank - Faculty Profile.docx` | Pending | 3 | Google Docs-ready Faculty Profile |
-| `dist/google-docs/Bergen Memory Bank - Course Memory.docx` | Pending | 3 | Google Docs-ready Course Memory |
-| `dist/google-docs/Bergen Memory Bank - Active Workbench.docx` | Pending | 3 | Google Docs-ready Active Workbench |
-| `dist/google-docs/Bergen Memory Bank - Decisions Reflections and Reusable Practices.docx` | Pending | 3 | Google Docs-ready shared practices document |
-| `scripts/build-google-docs.mjs` | Pending | 3 | Deterministic document build entry point |
-| `tests/content/template-contracts.test.mjs` | Pending | 3 | Document ownership and snapshot checks |
+| `src/templates/faculty-profile.md` | Ready | 3 | Shared stable faculty preferences template |
+| `src/templates/course-memory.md` | Ready | 3 | Course-specific durable memory template |
+| `src/templates/active-workbench.md` | Ready | 3 | Course-specific active work and snapshot template |
+| `src/templates/decisions-reflections-reusable-practices.md` | Ready | 3 | Shared durable practices template |
+| `src/templates/class-learning-snapshot.md` | Ready | 3 | Reusable de-identified snapshot section source |
+| `dist/google-docs/Bergen Memory Bank - Faculty Profile.docx` | Ready | 3 | Google Docs-ready Faculty Profile |
+| `dist/google-docs/Bergen Memory Bank - Course Memory.docx` | Ready | 3 | Google Docs-ready Course Memory |
+| `dist/google-docs/Bergen Memory Bank - Active Workbench.docx` | Ready | 3 | Google Docs-ready Active Workbench |
+| `dist/google-docs/Bergen Memory Bank - Decisions Reflections and Reusable Practices.docx` | Ready | 3 | Google Docs-ready shared practices document |
+| `scripts/build-google-docs.mjs` | Ready | 3 | Deterministic document build entry point |
+| `tests/content/template-contracts.test.mjs` | Ready | 3 | Document ownership and snapshot checks |
 | `src/guides/command-reference.md` | Pending | 4 | Prompt-alias and natural-language reference |
 | `src/guides/installation-guide.md` | Pending | 4 | Five-minute, eight-step installation guide |
 | `src/guides/faculty-quick-start.md` | Pending | 4 | Faculty quick start |
