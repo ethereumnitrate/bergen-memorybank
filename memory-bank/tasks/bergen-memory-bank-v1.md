@@ -386,7 +386,7 @@ Yes. The release must include a five-minute installation guide with the exact ei
 **Build Status**: BUILD_COMPLETE
 **Current Phase**: 5 of 5
 **Auto-Build Mode**: YES
-**Current Step**: Phase 5 boundary complete; final whole-branch review remains owned by auto-build
+**Current Step**: Final whole-branch review complete; Important QTI privacy remediation required before merge
 **Step Status**: COMPLETE_WITH_CONCERNS
 **Step Started**: 2026-08-04T18:09:53Z
 **Last Completed**: Phase 5 — Privacy-first client-side QTI Packager
@@ -396,12 +396,14 @@ Yes. The release must include a five-minute installation guide with the exact ei
 **Phase 4 Boundary**: COMPLETE — Step 10 Memory Bank update finished 2026-08-04T18:52:37Z
 **Phase 5 Boundary**: COMPLETE_WITH_CONCERNS — Step 10 Memory Bank update finished 2026-08-04T19:23:20Z; AC-ASYNC-1 pending
 **BRAINSTORM CRITIQUE**: skipped — unresolved:no-companion (glob=C:\Users\alexa\.claude\plugins\**\codex-companion.mjs; matches=0)
+**Final Review Backend**: AUTO FINAL REVIEW BACKEND: codex — native Codex whole-branch reviewer; external companion unavailable (unresolved:no-companion)
+**Final Review Verdict**: NOT READY TO MERGE — one Important QTI privacy-enforcement finding and one Minor deployment-cookie wording finding require human-directed follow-up
 
 ### Resumption Notes
 
 **Can Resume**: YES
-**Resume From**: AC-ASYNC-1 — authorized unpublished Bergen Canvas test-course compatibility check
-**Notes**: The five implementation phases are locally complete. The Apps Script bundle is deployable but not deployed, and Bergen-domain access has not been verified. QTI compatibility remains unapproved until AC-ASYNC-1 passes. No remote is configured, so the Phase 5 commit remains local. Phase 3 renderer and Google Drive deviations remain recorded below.
+**Resume From**: Remediate the final-review QTI protected-data detection gap, then repeat the final review before the manual deployment and Canvas gates
+**Notes**: The five implementation phases are locally complete, but the final whole-branch review found that the packager does not reliably refuse ordinary names, individual grades, accommodation/disability or health information, or identifying combinations unless the explicit real-student-data flag or a narrow heuristic fires. The Apps Script bundle is deployable but not deployed, and Bergen-domain access has not been verified. QTI compatibility remains unapproved until AC-ASYNC-1 passes. No remote is configured, so all commits remain local. Phase 3 renderer and Google Drive deviations remain recorded below.
 
 ### Halt State
 
@@ -426,6 +428,8 @@ Yes. The release must include a five-minute installation guide with the exact ei
 - Phase 5 real in-app visual QA was unavailable because browser policy blocked the local `file://` page. The deterministic desktop/mobile DOM journeys pass, and the earlier authorized proof of concept retains separate real-browser evidence; no production visual pass is claimed.
 - Phase 5 review recovery: the first independent review found an invalid CRC-32 table implementation that made both ZIP entries unreadable to standards-compliant readers. A regression test independently calculates CRC-32; the corrected ZIP passes Python `ZipFile.testzip()`, entry reads, and XML parsing. The same remediation added rejection for XML control characters, normalized choice-ID collisions, and an explicit real-student-data flag.
 - The user-authorized `poc/` tree remains intact and untracked as historical design evidence. Its prebuilt ZIP predates the CRC-32 remediation and is not a release artifact; only the verified files under `apps/qti-packager/` and `demo/` are Phase 5 deliverables.
+- Final whole-branch review Important finding: AC-ERROR-5 is not fully satisfied because the QTI Packager's protected-data detector covers an explicit flag, email addresses, ID-like values, and filenames but may still package ordinary names, individual grades, accommodation/disability or health information, or identifying combinations. Remediation and regression tests are required before merge.
+- Final whole-branch review Minor finding: the Apps Script README's absolute no-cookie statement is broader than the application can prove for Google-hosted authentication and should be scoped to application-owned code and storage.
 
 ### Active Sub-Agents
 
