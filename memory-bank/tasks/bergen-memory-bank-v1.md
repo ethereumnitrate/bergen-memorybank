@@ -378,7 +378,7 @@ Yes. The release must include a five-minute installation guide with the exact ei
 
 **Build Status**: IDLE
 **Current Phase**: 4 of 5
-**Auto-Build Mode**: NO
+**Auto-Build Mode**: YES
 **Current Step**: Phase 4 queued
 **Step Status**: COMPLETE
 **Step Started**: 2026-08-04T17:57:14Z
@@ -408,6 +408,7 @@ Yes. The release must include a five-minute installation guide with the exact ei
 - The configured Codex review companion resolved `unresolved:no-companion`; the required Anthropic fallback review approved the phase with no findings.
 - The packaged ALA `commit-guard.sh` was absent. Step 11 used a deterministic equivalent over the committed file list; the clean-tree check allowed only the user-authorized untracked `poc/` tree, which could not be removed or staged.
 - Phase 3 used the Documents skill's explicit missing-`soffice` fallback: no rendered pages or visual inspection were possible, so document QA is `DONE_WITH_CONCERNS`; sanitizer, privacy, accessibility, content-parity, and package-wide OOXML/preset gates passed for all four DOCX files.
+- Phase 3 | `dist/google-docs/*.docx` | The Google Drive connector was unavailable, so the phase produced four import-ready DOCX files instead of live native Drive documents and made no automatic-creation claim.
 - Cross-phase consistency correction: AC-ERROR-2, the Phase 2 Gem snapshot label/test, and the scenario matrix now use the exact approved field name `Concepts already introduced`.
 
 ### Active Sub-Agents
