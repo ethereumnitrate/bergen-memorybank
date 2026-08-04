@@ -1,0 +1,54 @@
+{
+  "metadata": {
+    "dataClassification": "synthetic/de-identified",
+    "containsRealStudentData": false,
+    "phase": "foundation-only",
+    "contractStatus": "Pending QTI implementation and verification in Phase 5"
+  },
+  "quiz": {
+    "identifier": "synthetic-ecology-check",
+    "title": "Synthetic Ecology Knowledge Check",
+    "settings": {
+      "shuffleAnswers": false,
+      "oneQuestionAtATime": false
+    }
+  },
+  "items": [
+    {
+      "identifier": "synthetic-item-1",
+      "type": "multiple_choice",
+      "prompt": "Which term describes an organism that makes its own food?",
+      "choices": ["Producer", "Consumer", "Decomposer"],
+      "answerKey": ["Producer"],
+      "points": 2
+    },
+    {
+      "identifier": "synthetic-item-2",
+      "type": "true_false",
+      "prompt": "Energy moves through an ecosystem.",
+      "answerKey": ["True"],
+      "points": 2
+    },
+    {
+      "identifier": "synthetic-item-3",
+      "type": "multiple_answer",
+      "prompt": "Select the renewable energy sources.",
+      "choices": ["Solar", "Wind", "Coal"],
+      "answerKey": ["Solar", "Wind"],
+      "points": 3
+    },
+    {
+      "identifier": "synthetic-item-4",
+      "type": "short_answer",
+      "prompt": "Name the process plants use to convert light into stored energy.",
+      "answerKey": ["photosynthesis"],
+      "points": 2
+    },
+    {
+      "identifier": "synthetic-item-5",
+      "type": "essay",
+      "prompt": "Explain one way a habitat change can affect a food web.",
+      "points": 3
+    }
+  ]
+}

@@ -1,13 +1,13 @@
 ---
 slug: bergen-memory-bank-v1
 feature: bergen-memory-bank-v1
-status: PLANNING_COMPLETE
+status: IN_PROGRESS
 ---
 
 # bergen-memory-bank-v1: Bergen Memory Bank v1.0
 
 **Complexity**: Level 4
-**Status**: PLANNING_COMPLETE
+**Status**: IN_PROGRESS
 **Roadmap**: bergen-memory-bank-v1
 **Branch**: feature/bergen-memory-bank-v1
 **Worktree**: C:\Users\alexa\source\repos\bergen-memorybank
@@ -353,7 +353,9 @@ Yes. The release must include a five-minute installation guide with the exact ei
 
 ### Phases
 
-- [ ] Phase 1: Establish the release contract, dated authoritative-source register, synthetic fixtures, repository validation harness, and v1.0 artifact inventory.
+- [x] Phase 1: Establish the release contract, dated authoritative-source register, synthetic fixtures, repository validation harness, and v1.0 artifact inventory.
+  - **Test Results**: 8/8 focused tests passing; build, lint, and aggregate validation PASS
+  - **Code Review**: APPROVED — 0 blocking, recommended, or optional findings; security PASS; 0 third-party dependencies
 - [ ] Phase 2: Author and scenario-test the layered Gem safety kernel, command router, context selector, stage engine, approval gates, course selection, privacy recovery, and conservative visible-chat estimate.
 - [ ] Phase 3: Build and validate the four-document hybrid memory model and embedded de-identified Class Learning Snapshot, then produce visually verified Google Docs-ready files.
 - [ ] Phase 4: Produce and cross-check every faculty guide, command example, privacy checklist, troubleshooting path, presentation script, and complete aligned demonstration.
@@ -369,19 +371,20 @@ Yes. The release must include a five-minute installation guide with the exact ei
 
 ## Build Execution State
 
-**Build Status**: RUNNING
-**Current Phase**: 1 of 5
+**Build Status**: IDLE
+**Current Phase**: 2 of 5
 **Auto-Build Mode**: YES
-**Current Step**: Phase 1 queued
-**Step Started**: 2026-08-04
-**Last Completed**: Specification and quality gates
+**Current Step**: Phase 2 queued
+**Step Started**: 2026-08-04T16:18:04Z
+**Last Completed**: Phase 1 — release contract and validation foundation
+**Phase 1 Boundary**: COMPLETE — Step 10 Memory Bank update finished 2026-08-04T16:18:04Z
 **BRAINSTORM CRITIQUE**: skipped — unresolved:no-companion (glob=C:\Users\alexa\.claude\plugins\**\codex-companion.mjs; matches=0)
 
 ### Resumption Notes
 
-**Can Resume**: YES
-**Resume From**: Phase 1 - Release contract and validation foundation
-**Notes**: Auto-build initialized from the approved five-phase plan. No remote is configured; commits remain local until an origin is added.
+**Can Resume**: NO
+**Resume From**: Phase 2 - Gem safety kernel and workflow engine
+**Notes**: Phase 1 is complete and verified. `poc/` remains authorized prior Phase 5 work and was untouched. No remote is configured; the phase commit remains local until an origin is added.
 
 ### Halt State
 
@@ -393,7 +396,9 @@ Yes. The release must include a five-minute installation guide with the exact ei
 
 ### Deviations
 
-(none)
+- Discovery ran in `--offline` mode because no `origin` remote is configured; push was skipped and the phase commit remains local.
+- The configured Codex review companion resolved `unresolved:no-companion`; the required Anthropic fallback review approved the phase with no findings.
+- The packaged ALA `commit-guard.sh` was absent. Step 11 used a deterministic equivalent over the committed file list; the clean-tree check allowed only the user-authorized untracked `poc/` tree, which could not be removed or staged.
 
 ### Active Sub-Agents
 
@@ -410,6 +415,12 @@ Yes. The release must include a five-minute installation guide with the exact ei
 - Taxonomy lint: CLEAN
 - Concrete End-User Feature specification gate: PASS
 - Glossary loader: skipped because `memory-bank/c4/c4-glossary.md` is not built
+- Phase 1 TDD: RED confirmed with 8 intended missing-artifact failures, then GREEN at 8/8
+- Phase 1 focused batches: release contract 4/4 and source register 4/4; lint PASS
+- Phase 1 integration verification: tests 8/8, build PASS, lint PASS
+- Phase 1 review: APPROVED; security PASS; no dependencies or upgrades
+- Phase 1 documentation: `techContext.md` and `systemPatterns.md` updated for the developer-only validation lane and planned QTI companion separation
+- Phase 1 Memory Bank boundary: only Phase 1 checked; execution advanced to Phase 2
 
 ## Plan Critique
 

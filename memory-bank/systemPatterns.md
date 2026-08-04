@@ -10,20 +10,34 @@
 | Human Approval at Consequential Steps | Review and drafting may be assisted, but revision, proposed memory updates, and Canvas publication require explicit faculty approval. |
 | Transparent Capability Boundaries | Prompt aliases are conversational routing conventions, not native commands or integrations. The Gem never claims to save, edit, publish, or synchronize automatically. |
 | Minimum Necessary Context | State which attached documents and supplied facts are being used, ask only for missing information required to continue, and do not infer protected or unsupported details. |
+| Source-Dated Claims | Tie policy and platform assertions to the dated authoritative source register, and re-review them when the source or release date changes. |
 | Alignment Without Prerequisite Creep | Lessons, assignments, rubrics, and reinforcement activities align to outcomes and already introduced concepts. Never assume concepts marked as not yet introduced. |
 | Accessible and Bias-Aware Outputs | Review materials for clarity, accessibility, cognitive load, quality, prerequisite creep, and bias before approved revision or publication. |
 
 ## High-Level Architecture
 
 ```text
-Faculty request or bergen:<workflow>
-  → command and privacy-boundary check
-  → relevant attached memory context
-  → Remember → Frame → Plan → Draft → Review
-  → faculty approval
-  → Revise → proposed Record update
-  → faculty copies approved material to Google Docs or Canvas
+Faculty lane (no-code)
+  Faculty request or bergen:<workflow>
+    → command and privacy-boundary check
+    → relevant attached memory context
+    → Remember → Frame → Plan → Draft → Review
+    → faculty approval
+    → Revise → proposed Record update
+    → faculty copies approved material to Google Docs or Canvas
+
+Developer release-validation lane
+  Release contract + source register + synthetic/de-identified fixtures
+    → dependency-free Node.js .mjs validation and tests
+    → content, inventory, privacy, and claim-boundary evidence
+
+Optional QTI companion (planned Phase 5; absent in Phase 1)
+  Faculty-approved synthetic or non-student quiz content
+    → client-side browser packaging
+    → manual Canvas import and compatibility approval
 ```
+
+The developer lane verifies repository artifacts but is not part of faculty installation or daily use. The optional Phase 5 QTI companion is architecturally separate from the Gem and Google Docs memory workflow; it must not become a server, student-record store, Canvas API integration, or prerequisite for the core no-code experience.
 
 ## Component Responsibilities
 
@@ -34,6 +48,11 @@ Faculty request or bergen:<workflow>
 - **Decisions, Reflections, and Reusable Practices**: Holds approved decisions and reusable faculty practices with enough context to judge future applicability.
 - **Class Learning Snapshot**: Holds only de-identified, class-level observations needed to design reinforcement.
 - **Canvas**: Holds protected student records and receives final faculty-approved publishing actions.
+- **Release Contract**: Defines the v1.0 scope, safeguard boundary, exact artifact inventory, phase ownership, and Ready/Pending state in `src/release/release-contract.md`.
+- **Authoritative Source Register**: Holds dated official-source pointers and narrow claim mappings in `src/sources/authoritative-source-register.md`; Memory Bank documents reference this register rather than duplicate its source details.
+- **Scenario Matrix and Fixtures**: Define later-phase observable behavior and supply synthetic or de-identified workflow and quiz inputs without claiming those behaviors are implemented.
+- **Validation Harness and Tests**: Use dependency-free Node.js `.mjs` files to check release structure, inventory state, source discipline, fixture safety, and capability boundaries for repository contributors.
+- **QTI Packager**: Planned optional Phase 5 client-side companion for preparing a package for manual Canvas import; no QTI application exists in Phase 1.
 
 ## Conversational Routing Pattern
 
@@ -90,11 +109,28 @@ Natural-language requests use the same routing and safeguards. Commands are opti
 - Faculty-facing documents must be copy-ready and avoid repository paths, Markdown mechanics, or developer workflow language.
 - Version identifiers and source-review dates must be visible in release-facing material where policy or platform drift matters.
 - Demonstrations and tests use synthetic, de-identified examples only.
+- The release contract is the complete artifact inventory. `Ready` means present and verified in the current phase; `Pending` means assigned to a later phase and intentionally absent. Validation checks both conditions so inventory rows cannot imply unimplemented capability.
+- Detailed policy and platform citations live in the authoritative source register. Other Memory Bank and release documents point to that register and summarize only the boundary they need.
+
+## Release Validation Pattern
+
+- Repository validation uses Node.js ECMAScript modules (`.mjs`) and built-in modules only. `package.json` intentionally has no `dependencies` or `devDependencies`.
+- `scripts/validate-release.mjs` provides build and lint modes and composes them with the focused tests in aggregate mode.
+- `tests/content/release-structure.test.mjs` maps the release contract, version stamp, package scripts, artifact existence, and fixture safety rules to executable checks.
+- `tests/content/source-register.test.mjs` maps the authoritative source register to dated-source completeness and bounded policy, Gemini, Canvas, QTI, and Apps Script claims.
+- The human-readable `src/testing/scenario-matrix.md` maps each safeguard to its future implementation and verification phase so fixture presence is never mistaken for completed behavior.
+
+### Fixture Rules
+
+- Fixtures must declare the `synthetic/de-identified` data classification and state that they contain no real student data.
+- Fixtures must not contain names, email addresses, student IDs, individual grades, accommodations, disability or health information, disciplinary records, credentials, identifying filenames, or raw student work.
+- Phase 1 fixtures are seeds for later workflow and packaging tests. Their metadata and matrix status must state that the corresponding Gem or QTI capability remains pending.
 
 ## Testing Patterns
 
 ### Organization
 
+- Keep source-to-test ownership explicit: the release contract and fixtures map to the release-structure suite, while dated claims map to the source-register suite.
 - Use scenario-based acceptance checks organized by workflow and cross-cutting safeguard.
 - Maintain at least one happy-path scenario for every command and representative natural-language equivalent.
 - Add focused scenarios for privacy rejection and recovery, unknown commands, concepts not yet introduced, review-before-revise, record proposals, and manual Canvas publication.
@@ -114,11 +150,18 @@ Natural-language requests use the same routing and safeguards. Commands are opti
 <!-- AUTO-MANAGED: c4-architecture-start -->
 ## C4 Architecture
 
-C4 architecture documentation has not been generated. The project is a greenfield content and workflow kit with no software components to scan at initialization.
+C4 architecture documentation has not been generated. Phase 1 now includes a small developer-only validation component, and Phase 5 plans an optional client-side QTI companion, but no C4 manifest exists and the QTI application is not implemented in Phase 1.
 
 <!-- AUTO-MANAGED: c4-architecture-end -->
 
 ## Recent Architecture Changes
+
+### 2026-08-04 - Added the release-contract validation lane
+
+- **What Changed**: Added a developer-only release contract, dated source register, artifact-state inventory, synthetic fixtures, and dependency-free Node.js content-validation harness alongside the no-code faculty workflow.
+- **Reason**: Make privacy, capability, provenance, and release-state boundaries executable before later deliverables are built.
+- **Trade-offs**: The repository now contains a small software-validation component, but keeping it isolated prevents Node.js and developer commands from becoming faculty prerequisites.
+- **Affected Components**: Release foundation, source register, scenario matrix, fixtures, validation harness, and content tests. The planned QTI Packager remains pending Phase 5.
 
 ### 2026-08-04 - Greenfield workflow baseline
 

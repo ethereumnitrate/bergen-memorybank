@@ -1,0 +1,12 @@
+{
+  "name": "bergen-memory-bank",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/content/release-structure.test.mjs tests/content/source-register.test.mjs",
+    "build": "node scripts/validate-release.mjs --mode build",
+    "lint": "node scripts/validate-release.mjs --mode lint",
+    "validate": "node scripts/validate-release.mjs --mode all"
+  }
+}
