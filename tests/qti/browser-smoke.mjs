@@ -114,3 +114,23 @@ test('invalid or unsupported content cannot create a ZIP and shows the manual-en
   assert.equal(anchors.length, 0);
   assert.match(elements.get('#status').textContent, /manual entry/i);
 });
+
+test('malformed protected input is sanitized and cleared before JSON parsing or ZIP creation', async () => {
+  const session = await launch(1280);
+  const { elements, anchors } = session.document;
+  const rejectedText = '{"quiz":{"instructions":"The student has diabetes."';
+  elements.get('#transfer-block').value = rejectedText;
+  elements.get('#transfer-block').dispatch('input');
+  elements.get('#privacy-confirmation').checked = true;
+
+  elements.get('#check-quiz').dispatch('click');
+
+  assert.equal(elements.get('#transfer-block').value, '');
+  assert.equal(elements.get('#privacy-confirmation').checked, false);
+  assert.equal(elements.get('#download-qti').disabled, true);
+  assert.equal(session.objectUrlCount(), 0);
+  assert.equal(anchors.length, 0);
+  assert.match(elements.get('#status').textContent, /possible health information/i);
+  assert.match(elements.get('#status').textContent, /Canvas is the student-record system/i);
+  assert.doesNotMatch(elements.get('#status').textContent, /diabetes/i);
+});

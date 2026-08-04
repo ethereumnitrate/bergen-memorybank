@@ -383,12 +383,14 @@ Yes. The release must include a five-minute installation guide with the exact ei
 
 ## Build Execution State
 
-**Build Status**: BUILD_COMPLETE
+**Build Status**: RUNNING
 **Current Phase**: 5 of 5
-**Auto-Build Mode**: YES
-**Current Step**: Final whole-branch review complete; Important QTI privacy remediation required before merge
-**Step Status**: COMPLETE_WITH_CONCERNS
-**Step Started**: 2026-08-04T18:09:53Z
+**Auto-Build Mode**: NO
+**Remediation Mode**: YES
+**Current Step**: Step 8 — independent code review iteration 3 of 3
+**Step Status**: ESCALATE
+**Step Started**: 2026-08-04T20:04:47Z
+**Step Completed**: 2026-08-04T20:47:38Z
 **Last Completed**: Phase 5 — Privacy-first client-side QTI Packager
 **Phase 1 Boundary**: COMPLETE — Step 10 Memory Bank update finished 2026-08-04T16:18:04Z
 **Phase 2 Boundary**: COMPLETE — Step 10 Memory Bank update finished 2026-08-04T16:58:25Z
@@ -397,21 +399,21 @@ Yes. The release must include a five-minute installation guide with the exact ei
 **Phase 5 Boundary**: COMPLETE_WITH_CONCERNS — Step 10 Memory Bank update finished 2026-08-04T19:23:20Z; AC-ASYNC-1 pending
 **BRAINSTORM CRITIQUE**: skipped — unresolved:no-companion (glob=C:\Users\alexa\.claude\plugins\**\codex-companion.mjs; matches=0)
 **Final Review Backend**: AUTO FINAL REVIEW BACKEND: codex — native Codex whole-branch reviewer; external companion unavailable (unresolved:no-companion)
-**Final Review Verdict**: NOT READY TO MERGE — one Important QTI privacy-enforcement finding and one Minor deployment-cookie wording finding require human-directed follow-up
+**Final Review Verdict**: NOT READY TO MERGE — Apps Script README proof-boundary wording is corrected, but AC-ERROR-5 still has one blocking detector gap after the maximum three review iterations
 
 ### Resumption Notes
 
 **Can Resume**: YES
-**Resume From**: Remediate the final-review QTI protected-data detection gap, then repeat the final review before the manual deployment and Canvas gates
-**Notes**: The five implementation phases are locally complete, but the final whole-branch review found that the packager does not reliably refuse ordinary names, individual grades, accommodation/disability or health information, or identifying combinations unless the explicit real-student-data flag or a narrow heuristic fires. The Apps Script bundle is deployable but not deployed, and Bergen-domain access has not been verified. QTI compatibility remains unapproved until AC-ASYNC-1 passes. No remote is configured, so all commits remain local. Phase 3 renderer and Google Drive deviations remain recorded below.
+**Resume From**: Step 3 — add regression coverage and refusal for person-linked diagnoses plus possessive accommodation and medical-condition forms, then repeat affected/full verification and independent review
+**Notes**: Remediation Mode remains open without changing the Phase 5 checkbox. RED→GREEN evidence was captured across three TDD rounds; the final affected suite passes 21/21 and full verification passes 63/63 with build and lint green. Review iteration 3 still found that `Jordan Lee was diagnosed with diabetes`, `Jordan Lee's accommodation was extended time`, and equivalent possessive/person-linked protected forms can remain package-eligible. The ALA review retry budget is exhausted. On 2026-08-04, the user explicitly authorized committing and merging this checkpoint despite the unresolved finding; that administrative merge does not close AC-ERROR-5 or make the review verdict merge-ready. External deployment, Bergen-domain verification, and AC-ASYNC-1 remain out of scope. Preserve the authorized historical untracked `poc/` directory unchanged.
 
 ### Halt State
 
-**Halt Trigger**: N/A
-**Halted At Phase**: N/A
-**Halted At Step**: N/A
-**Resumption Point**: N/A
-**Halt Timestamp**: N/A
+**Halt Trigger**: Code review blocking privacy finding persisted through the maximum 3 iterations
+**Halted At Phase**: Phase 5 — Privacy-first client-side QTI Packager remediation
+**Halted At Step**: Step 8 — Code Reviewer Agent
+**Resumption Point**: Step 3 — bounded TDD remediation for the remaining person-linked diagnosis/possessive protected-data variants
+**Halt Timestamp**: 2026-08-04T20:47:38Z
 
 ### Deviations
 
@@ -430,6 +432,13 @@ Yes. The release must include a five-minute installation guide with the exact ei
 - The user-authorized `poc/` tree remains intact and untracked as historical design evidence. Its prebuilt ZIP predates the CRC-32 remediation and is not a release artifact; only the verified files under `apps/qti-packager/` and `demo/` are Phase 5 deliverables.
 - Final whole-branch review Important finding: AC-ERROR-5 is not fully satisfied because the QTI Packager's protected-data detector covers an explicit flag, email addresses, ID-like values, and filenames but may still package ordinary names, individual grades, accommodation/disability or health information, or identifying combinations. Remediation and regression tests are required before merge.
 - Final whole-branch review Minor finding: the Apps Script README's absolute no-cookie statement is broader than the application can prove for Google-hosted authentication and should be scoped to application-owned code and storage.
+- User-directed checkpoint merge: on 2026-08-04, the user authorized commit, push, and merge despite the exhausted-review AC-ERROR-5 blocker. The repository had no configured remote, so push remains an external prerequisite; local integration does not waive or resolve the privacy finding.
+
+### Guard & Recovery Log
+
+- Phase 5 remediation: independent review iteration 1 found common natural student-specific phrasing and malformed protected-input retention; TDD recovery confirmed RED at 4 intended failures and GREEN at 21/21 affected plus 63/63 full.
+- Phase 5 remediation: review iteration 2 found nearby labeled, possessive, and name-linked variants; TDD recovery confirmed RED at 1 intended table failure and GREEN at 21/21 affected plus 63/63 full.
+- Phase 5 remediation: review iteration 3 resolved all supplied exact probes but found generalized person-linked diagnosis and possessive accommodation/medical-condition variants still package-eligible. Review retry budget exhausted; Step 11 commit guard was not reached.
 
 ### Active Sub-Agents
 
@@ -482,6 +491,12 @@ Yes. The release must include a five-minute installation guide with the exact ei
 - Phase 5 final independent review: APPROVED with 0 findings; security, privacy, dependency, and scope PASS; AC-ASYNC-1 remains pending
 - Phase 5 documentation: release contract, version, scenario matrix, faculty QTI guidance, source register, product brief, technology context, and system patterns updated without a live deployment or compatibility claim
 - Phase 5 Memory Bank boundary: implementation complete with manual AC-ASYNC-1 and local visual-browser limitations retained for final auto-build review
+- Phase 5 remediation TDD round 1: RED 6 intended failures, GREEN 17/17 affected; ordinary names, individual grades, accommodation/disability/health information, identifying combinations, and README proof-boundary wording addressed
+- Phase 5 remediation review recovery round 2: RED 4 intended failures, GREEN 21/21 affected; raw pre-parse privacy inspection, typed sanitized refusal, browser clearing/reset, and natural-language variants addressed
+- Phase 5 remediation review recovery round 3: RED 1 intended table failure, GREEN 21/21 affected; labeled names, possessive grades, and person-linked course/accommodation/health variants expanded
+- Phase 5 remediation final integration verification: 63/63 full tests PASS; build PASS; lint PASS; no dependencies or external calls
+- Phase 5 remediation independent review: CHANGES REQUIRED on iteration 3 of 3 because person-linked diagnoses and possessive accommodation/medical-condition forms remain package-eligible; escalated before Step 11
+- User-directed checkpoint verification: affected QTI tests 21/21 PASS; aggregate validation 63/63 PASS with release build and lint validation green; AC-ERROR-5 remains open
 
 ## Plan Critique
 

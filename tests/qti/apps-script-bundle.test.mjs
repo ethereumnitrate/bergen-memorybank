@@ -10,9 +10,10 @@ test('Apps Script bundle is complete and documents controlled deployment without
     'Code.gs', 'Index.html', 'Styles.html', 'Script.html', 'appsscript.json', 'README.md',
   ];
   for (const file of files) await access(repositoryFile(`apps/qti-packager/${file}`));
-  const [manifest, readme] = await Promise.all([
+  const [manifest, readme, script] = await Promise.all([
     readText('apps/qti-packager/appsscript.json'),
     readText('apps/qti-packager/README.md'),
+    readText('apps/qti-packager/Script.html'),
   ]);
   const parsed = JSON.parse(manifest);
   assert.equal(parsed.runtimeVersion, 'V8');
@@ -23,6 +24,11 @@ test('Apps Script bundle is complete and documents controlled deployment without
   assert.match(readme, /authorized administrator|authorized support/i);
   assert.match(readme, /rollback/i);
   assert.match(readme, /not (?:yet )?(?:approved|verified).+Bergen Canvas|compatibility.+pending/is);
+  assert.match(readme, /application-owned code and storage.+(?:does not|do not).+cookies/is);
+  assert.match(readme, /Google-hosted authentication.+outside.+proof boundary/is);
+  assert.match(readme, /raw text before JSON parsing/i);
+  assert.doesNotMatch(readme, /The page uses no remote data request, browser storage, cookie,/i);
+  assert.match(script, /privacyRefused[\s\S]*?transfer\.value\s*=\s*['"]/i);
 });
 
 test('Apps Script serves static HTML while all quiz handling remains browser-only', async () => {

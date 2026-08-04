@@ -142,6 +142,152 @@ test('stops packaging when likely protected identifiers are detected', async () 
   assert.match(controlResult.errors.join(' '), /unsupported control character/i);
 });
 
+test('refuses an ordinary name identified as belonging to a student', async () => {
+  const [core, fixture] = await Promise.all([loadCore(), loadFixture()]);
+  const unsafe = structuredClone(fixture);
+  unsafe.quiz.instructions = 'Student name: Jordan Lee';
+
+  const validation = core.validateTransfer(unsafe);
+  assert.equal(validation.valid, false);
+  assert.match(validation.errors.join(' '), /possible student name/i);
+  assert.match(validation.errors.join(' '), /Canvas is the student-record system/i);
+  assert.match(validation.errors.join(' '), /de-identified Class Learning Snapshot/i);
+});
+
+test('refuses an individual grade even when the explicit student-data flag is false', async () => {
+  const [core, fixture] = await Promise.all([loadCore(), loadFixture()]);
+  const unsafe = structuredClone(fixture);
+  unsafe.quiz.instructions = 'Individual grade: 87%';
+
+  const validation = core.validateTransfer(unsafe);
+  assert.equal(validation.valid, false);
+  assert.match(validation.errors.join(' '), /possible individual grade/i);
+});
+
+test('refuses student accommodation, disability, and health information', async () => {
+  const [core, fixture] = await Promise.all([loadCore(), loadFixture()]);
+  const syntheticCases = [
+    ['Student accommodation: extended time.', /possible accommodation information/i],
+    ['Student disability: dyslexia.', /possible disability information/i],
+    ['Student health information: migraine treatment.', /possible health information/i],
+  ];
+
+  for (const [protectedText, expectedMessage] of syntheticCases) {
+    const unsafe = structuredClone(fixture);
+    unsafe.quiz.instructions = protectedText;
+    const validation = core.validateTransfer(unsafe);
+    assert.equal(validation.valid, false, protectedText);
+    assert.match(validation.errors.join(' '), expectedMessage);
+  }
+});
+
+test('refuses identifying combinations of otherwise ordinary student details', async () => {
+  const [core, fixture] = await Promise.all([loadCore(), loadFixture()]);
+  const unsafe = structuredClone(fixture);
+  unsafe.quiz.instructions = 'Student in Tuesday evening lab, age 19, from Hackensack.';
+
+  const validation = core.validateTransfer(unsafe);
+  assert.equal(validation.valid, false);
+  assert.match(validation.errors.join(' '), /possible identifying combination/i);
+});
+
+test('refuses protected content before structural validation or package generation', async () => {
+  const [core, fixture] = await Promise.all([loadCore(), loadFixture()]);
+  const unsafe = structuredClone(fixture);
+  unsafe.quiz.title = 'Student name: Jordan Lee';
+  unsafe.quiz.settings = null;
+  unsafe.quiz.questions[0].type = 'matching';
+
+  const validation = core.validateTransfer(unsafe);
+  assert.equal(validation.valid, false);
+  assert.equal(validation.privacyRefused, true);
+  assert.equal(validation.errors.length, 1, 'privacy refusal must short-circuit ordinary quiz validation');
+  assert.match(validation.errors[0], /possible student name/i);
+  assert.doesNotMatch(validation.errors[0], /Jordan Lee/i, 'the refusal must not echo rejected content');
+  assert.doesNotMatch(validation.errors[0], /settings|unsupported question type/i);
+  assert.throws(
+    () => core.buildQtiPackage(unsafe),
+    /cannot be packaged.+possible student name/i,
+  );
+});
+
+test('refuses common natural student-specific phrasing with typed categories', async () => {
+  const [core, fixture] = await Promise.all([loadCore(), loadFixture()]);
+  const syntheticCases = [
+    ['Student Jordan Lee is in section BIO-101.', /possible student name|possible identifying combination/i],
+    ["The student's grade was 87%.", /possible individual grade/i],
+    ['The student needs extended time for exams.', /possible accommodation information/i],
+    ['The student was diagnosed with dyslexia.', /possible disability information/i],
+    ['The student has diabetes.', /possible health information/i],
+    ['Student: Jordan Lee', /possible student name/i],
+    ['Student: Jordan Lee, section BIO-101.', /possible student name|possible identifying combination/i],
+    ['Student Jordan Lee in section BIO-101.', /possible student name|possible identifying combination/i],
+    ["Jordan Lee's grade was 87%.", /possible individual grade/i],
+    ["The student's accommodation was extended time.", /possible accommodation information/i],
+    ['Jordan Lee receives extended time for exams.', /possible accommodation information/i],
+    ['Jordan Lee has diabetes.', /possible health information/i],
+    ['Grade for Jordan Lee was 87%.', /possible individual grade/i],
+    ['Accommodation for Jordan Lee was extended time.', /possible accommodation information/i],
+    ['Jordan Lee was diagnosed with dyslexia.', /possible disability information|possible health information/i],
+  ];
+
+  const results = syntheticCases.map(([protectedText, expectedCategory]) => {
+    const unsafe = structuredClone(fixture);
+    unsafe.quiz.instructions = protectedText;
+    const validation = core.validateTransfer(unsafe);
+    return {
+      protectedText,
+      valid: validation.valid,
+      typedCategory: expectedCategory.test(validation.errors.join(' ')),
+      safeBoundary: /Canvas is the student-record system/i.test(validation.errors.join(' ')),
+      echoed: validation.errors.join(' ').includes(protectedText),
+    };
+  });
+
+  assert.deepEqual(results, syntheticCases.map(([protectedText]) => ({
+    protectedText,
+    valid: false,
+    typedCategory: true,
+    safeBoundary: true,
+    echoed: false,
+  })));
+});
+
+test('allows bounded class-level and course-content counterexamples', async () => {
+  const [core, fixture] = await Promise.all([loadCore(), loadFixture()]);
+  const safeClassLevelCases = [
+    'The class-level performance distribution was 70–89% for most learners.',
+    'All students have the standard 60-minute testing window.',
+    'This public-health question asks how diabetes affects the body.',
+    'Students compare disability policy and reasonable accommodations.',
+    'The class reads a fictional source by author Jordan Lee.',
+  ];
+
+  for (const safeText of safeClassLevelCases) {
+    const transfer = structuredClone(fixture);
+    transfer.quiz.instructions = safeText;
+    const validation = core.validateTransfer(transfer);
+    assert.equal(validation.valid, true, `${safeText}: ${validation.errors.join(' ')}`);
+  }
+});
+
+test('inspects malformed raw text before JSON parsing and throws a typed sanitized refusal', async () => {
+  const core = await loadCore();
+  const malformedProtectedText = '{"quiz":{"instructions":"The student has diabetes."';
+
+  assert.throws(
+    () => core.parseTransferBlock(malformedProtectedText),
+    (error) => {
+      assert.equal(error.name, 'PrivacyRefusalError');
+      assert.equal(error.privacyRefused, true);
+      assert.match(error.message, /possible health information/i);
+      assert.match(error.message, /Canvas is the student-record system/i);
+      assert.doesNotMatch(error.message, /diabetes/i);
+      return true;
+    },
+  );
+});
+
 test('creates well-formed QTI 1.2 manifest and assessment XML for the five types', async () => {
   const [core, fixture] = await Promise.all([loadCore(), loadFixture()]);
   const result = core.buildQtiPackage(fixture);

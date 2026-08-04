@@ -168,11 +168,15 @@ const BergenQti = (() => {
   };
   const encoder = new TextEncoder();
   const manualFallback = 'Keep the reviewed quiz content and use manual entry in Canvas for any item that cannot be packaged safely.';
+  const privacyRecovery = 'Remove it from this page before continuing. Canvas is the student-record system. Use a blank de-identified Class Learning Snapshot or reviewed class-level course content instead.';
+  const personNamePattern = String.raw`[A-Z][A-Za-z'’\-]+(?:\s+[A-Z][A-Za-z'’\-]+){1,3}`;
 
   function parseTransferBlock(input) {
     if (typeof input !== 'string' || input.trim() === '') {
       throw new Error('Paste a Bergen Quiz Transfer Block before checking the quiz.');
     }
+    const rawPrivacySignals = findPrivacySignals(input);
+    if (rawPrivacySignals.length) throw createPrivacyRefusal(rawPrivacySignals);
     let candidate = input.trim();
     const fenced = candidate.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);
     if (fenced) candidate = fenced[1];
@@ -189,8 +193,18 @@ const BergenQti = (() => {
     if (!isPlainObject(transfer)) {
       return { valid: false, errors: ['The transfer block must contain one quiz.'], warnings, fallback: manualFallback };
     }
+    const privacySignals = findPrivacySignals(collectText(transfer));
     if (transfer.metadata?.containsRealStudentData === true) {
-      errors.push('This transfer block is marked as containing real student data. Remove it and create a student-data-free block before continuing.');
+      privacySignals.unshift(privacyError('This transfer block is marked as containing real student data.'));
+    }
+    if (privacySignals.length) {
+      return {
+        valid: false,
+        errors: privacySignals,
+        warnings,
+        fallback: manualFallback,
+        privacyRefused: true,
+      };
     }
     if (transfer.format !== FORMAT_NAME) errors.push(`The transfer block format must be “${FORMAT_NAME}”.`);
     if (transfer.version !== FORMAT_VERSION) errors.push(`This packager supports transfer-block version ${FORMAT_VERSION}.`);
@@ -221,8 +235,7 @@ const BergenQti = (() => {
       errors.push(`Quiz settings list ${quiz.settings.pointsPossible} points, but the questions total ${formatNumber(totalPoints)} points.`);
     }
 
-    errors.push(...findPrivacySignals(collectText(quiz)));
-    return { valid: errors.length === 0, errors, warnings, fallback: manualFallback };
+    return { valid: errors.length === 0, errors, warnings, fallback: manualFallback, privacyRefused: false };
   }
 
   function validateSettings(settings, errors) {
@@ -325,16 +338,80 @@ const BergenQti = (() => {
 
   function findPrivacySignals(text) {
     const signals = [];
+    const studentLabelName = new RegExp(`\\b(?:student|learner|pupil)(?:\\s+(?:full\\s+)?name)?\\s*(?::|-|is)\\s*${personNamePattern}\\b`, 'i');
+    const studentNameWithCourseContext = new RegExp(`\\b(?:Student|student|Learner|learner|Pupil|pupil)\\s+${personNamePattern}(?:\\s*,)?\\s+(?:in\\s+)?(?:section|course|class|lab)\\b`);
+    const namedPossessiveGrade = new RegExp(`\\b${personNamePattern}(?:'s|’s)\\s+(?:grade|score|mark)\\s*(?::|-|is|was|equals?|remains?)?\\s*(?:[A-F][+-]?|\\d{1,3}(?:\\.\\d+)?\\s*%|\\d+(?:\\.\\d+)?\\s*\\/\\s*\\d+)(?=\\s|[.,;!?]|$)`);
+    const gradeForName = new RegExp(`\\b(?:Grade|grade|Score|score|Mark|mark)\\s+for\\s+${personNamePattern}\\s*(?::|-|is|was|equals?|remains?)?\\s*(?:[A-F][+-]?|\\d{1,3}(?:\\.\\d+)?\\s*%|\\d+(?:\\.\\d+)?\\s*\\/\\s*\\d+)(?=\\s|[.,;!?]|$)`);
+    const namedAccommodation = new RegExp(`\\b${personNamePattern}\\s+(?:needs?|requires?|receives?|uses?|has|was\\s+(?:granted|approved\\s+for))\\s+(?:(?:an?|the)\\s+)?(?:(?:extended|extra)\\s+time|reduced[- ]distraction\\s+(?:setting|room)|testing\\s+accommodations?|reader|scribe)\\b`);
+    const accommodationForName = new RegExp(`\\b(?:Accommodation|accommodation)s?\\s+for\\s+${personNamePattern}\\s*(?::|-|is|was|includes?)\\s+(?:(?:an?|the)\\s+)?(?:(?:extended|extra)\\s+time|reduced[- ]distraction\\s+(?:setting|room)|testing\\s+accommodations?|reader|scribe)\\b`);
+    const namedDisability = new RegExp(`\\b${personNamePattern}\\s+(?:(?:has|with)\\s+(?:a\\s+)?|(?:was\\s+)?diagnosed\\s+with\\s+)(?:disability|dyslexia|adhd|autism)\\b`);
+    const namedHealth = new RegExp(`\\b${personNamePattern}\\s+(?:has|had|reports?|is\\s+being\\s+treated\\s+for)\\s+(?:diabetes|asthma|epilepsy|migraines?|cancer|allerg(?:y|ies)|a\\s+medical\\s+condition)\\b`);
     if (/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i.test(text)) {
-      signals.push('Possible email address detected. Remove protected information before continuing.');
+      signals.push(privacyError('Possible email address detected.'));
     }
     if (/\b(?:student|bergen)[- _]?(?:id|number)?[- _:]*\d{6,10}\b/i.test(text)) {
-      signals.push('Possible student identifier detected. Remove protected information before continuing.');
+      signals.push(privacyError('Possible student identifier detected.'));
     }
     if (/\b[A-Za-z0-9_-]+\.(?:docx?|pdf|txt|rtf)\b/i.test(text)) {
-      signals.push('Possible identifying filename detected. Remove or de-identify it before continuing.');
+      signals.push(privacyError('Possible identifying filename detected.'));
+    }
+    if (studentLabelName.test(text)
+      || /\b(?:student|learner|pupil)\s+(?:named|called)\s+[A-Z][A-Za-z'’\-]+(?:\s+[A-Z][A-Za-z'’\-]+){1,3}\b/i.test(text)
+      || /\b(?:[Ss]tudent|[Ll]earner|[Pp]upil)\s+[A-Z][A-Za-z'’\-]+(?:\s+[A-Z][A-Za-z'’\-]+){1,3}\s+(?:is|was|has|had|enrolled|attends?|belongs?)\b/.test(text)
+      || studentNameWithCourseContext.test(text)) {
+      signals.push(privacyError('Possible student name detected.'));
+    }
+    if (/\b(?:individual|student(?:'s)?|learner(?:'s)?)\s+(?:grade|score|mark)\s*(?::|-|is|was|equals?|remains?)?\s*(?:[A-F][+-]?|\d{1,3}(?:\.\d+)?\s*%|\d+(?:\.\d+)?\s*\/\s*\d+)(?=\s|[.,;!?]|$)/i.test(text)
+      || /\b[A-Z][A-Za-z'’\-]+\s+[A-Z][A-Za-z'’\-]+\s+(?:earned|received|scored)\s+(?:[A-F][+-]?|\d{1,3}(?:\.\d+)?\s*%|\d+(?:\.\d+)?\s*\/\s*\d+)(?=\s|[.,;!?]|$)/i.test(text)
+      || namedPossessiveGrade.test(text) || gradeForName.test(text)) {
+      signals.push(privacyError('Possible individual grade detected.'));
+    }
+    if (/\b(?:student|learner)(?:'s)?\s+(?:approved\s+)?accommodations?\s*(?::|-|is|was|are|include|includes)(?=\s|$)/i.test(text)
+      || /\baccommodations?\s+for\s+(?:student|learner)\b/i.test(text)
+      || /\b(?:student|learner)\s+(?:needs?|requires?|receives?|uses?|has|was\s+(?:granted|approved\s+for))\s+(?:(?:an?|the)\s+)?(?:(?:extended|extra)\s+time|reduced[- ]distraction\s+(?:setting|room)|testing\s+accommodations?|a\s+reader|a\s+scribe)\b/i.test(text)
+      || namedAccommodation.test(text) || accommodationForName.test(text)) {
+      signals.push(privacyError('Possible accommodation information detected.'));
+    }
+    if (/\b(?:student|learner)(?:'s)?\s+(?:disability|diagnosis)\s*(?::|-|is)(?=\s|$)/i.test(text)
+      || /\b(?:student|learner)\s+(?:(?:has|with)\s+(?:a\s+)?|(?:was\s+)?diagnosed\s+with\s+)(?:disability|dyslexia|adhd|autism)\b/i.test(text)
+      || namedDisability.test(text)) {
+      signals.push(privacyError('Possible disability information detected.'));
+    }
+    if (/\b(?:student|learner)(?:'s)?\s+(?:health|medical)(?:\s+(?:information|condition|history|record))?\s*(?::|-|is)(?=\s|$)/i.test(text)
+      || /\b(?:student|learner)\s+(?:has|had|reports?|is\s+being\s+treated\s+for)\s+(?:diabetes|asthma|epilepsy|migraines?|cancer|allerg(?:y|ies)|a\s+medical\s+condition)\b/i.test(text)
+      || /\b(?:student|learner)\s+(?:was\s+)?diagnosed\s+with\b/i.test(text)
+      || namedHealth.test(text)) {
+      signals.push(privacyError('Possible health information detected.'));
+    }
+    if (hasIdentifyingCombination(text)) {
+      signals.push(privacyError('Possible identifying combination of student details detected.'));
     }
     return signals;
+  }
+
+  function hasIdentifyingCombination(text) {
+    if (!/\b(?:student|learner|pupil)\b/i.test(text)) return false;
+    const detailPatterns = [
+      /\bage\s+\d{1,3}\b/i,
+      /\b(?:[Ss]tudent|[Ll]earner|[Pp]upil)\s+[A-Z][A-Za-z'’\-]+(?:\s+[A-Z][A-Za-z'’\-]+){1,3}\s+(?:is|was|has|had|enrolled|attends?|belongs?)\b/,
+      /\b(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)(?:\s+(?:morning|afternoon|evening))?\s+(?:class|lab|section)\b/i,
+      /\b(?:from|lives?\s+in|resides?\s+in)\s+[A-Z][A-Za-z'’\-]+\b/i,
+      /\b(?:street address|home address|zip code|postal code|date of birth|birth date)\b/i,
+      /\b(?:class|course|lab|section)\s+(?:number|code|identifier)?\s*(?::|-)?\s*[A-Z]{2,5}[- ]?\d{2,4}(?:[- ][A-Z0-9]+)?\b/i,
+    ];
+    return detailPatterns.filter((pattern) => pattern.test(text)).length >= 2;
+  }
+
+  function privacyError(signal) {
+    return `${signal} ${privacyRecovery}`;
+  }
+
+  function createPrivacyRefusal(signals) {
+    const error = new Error(signals.join(' '));
+    error.name = 'PrivacyRefusalError';
+    error.privacyRefused = true;
+    error.errors = [...signals];
+    return error;
   }
 
   function collectText(value) {
@@ -703,6 +780,11 @@ const BergenQtiApp = (() => {
         const validation = BergenQti.validateTransfer(transfer);
         renderValidation(validation);
         if (!validation.valid) {
+          if (validation.privacyRefused) {
+            clearRejectedTransfer();
+            setStatus(validation.errors.join(' '), true);
+            return;
+          }
           setStatus(`The quiz needs corrections before a ZIP can be created. ${validation.fallback}`, true);
           return;
         }
@@ -713,9 +795,23 @@ const BergenQtiApp = (() => {
           ? 'Quiz structure passed. Review the messages and confirm the privacy statement.'
           : 'Quiz structure passed. Confirm the privacy statement to enable download.');
       } catch (error) {
+        if (error.privacyRefused) {
+          clearRejectedTransfer();
+          const messages = Array.isArray(error.errors) ? error.errors : [error.message];
+          renderMessages('Protected information removed', messages, 'error');
+          setStatus(error.message, true);
+          return;
+        }
         renderMessages('Problems to fix', [error.message], 'error');
         setStatus(`The transfer block could not be checked. Use reviewed copy-ready content for manual entry in Canvas.`, true);
       }
+    }
+
+    function clearRejectedTransfer() {
+      checkedTransfer = null;
+      elements.transfer.value = '';
+      elements.privacy.checked = false;
+      elements.download.disabled = true;
     }
 
     function updateDownloadState() {
