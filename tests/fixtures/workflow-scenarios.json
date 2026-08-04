@@ -2,49 +2,247 @@
   "metadata": {
     "dataClassification": "synthetic/de-identified",
     "containsRealStudentData": false,
-    "phase": "foundation-only",
-    "contractStatus": "Pending Gem implementation and verification in Phase 2"
+    "phase": "phase-2",
+    "contractStatus": "Ready for Phase 2 content-contract verification"
   },
   "scenarios": [
     {
-      "id": "help-alias-mixed-case",
+      "id": "alias-help",
       "input": "BeRgEn:HeLp",
+      "expectedWorkflow": "Help",
+      "expectedHeader": "Bergen Memory Bank Â· Help",
+      "expectedContext": "Shared setup status and safe-data boundary",
+      "expectedStage": "Remember",
+      "expectedNextCommand": "bergen:setup",
       "expectedSafeguards": [
-        "help header",
+        "all twelve workflows",
         "safe-data guidance",
-        "current Remember stage",
-        "recommended next command"
+        "natural-language examples"
       ]
     },
     {
-      "id": "natural-language-lesson-request",
-      "input": "Help me plan an introductory ecology lesson using only concepts already taught.",
-      "syntheticCourse": "Introduction to Ecology",
+      "id": "alias-setup",
+      "input": "bergen:setup check my attached memory documents",
+      "expectedWorkflow": "Setup",
+      "expectedHeader": "Bergen Memory Bank Â· Setup",
+      "expectedContext": "Shared and course-specific document availability",
+      "expectedStage": "Remember",
+      "expectedNextCommand": "bergen:course",
       "expectedSafeguards": [
-        "lesson routing",
-        "explicit course context",
+        "four-document ownership",
+        "faculty-controlled references"
+      ]
+    },
+    {
+      "id": "alias-course",
+      "input": "bergen:course outline the next synthetic ecology module",
+      "expectedWorkflow": "Course",
+      "expectedHeader": "Bergen Memory Bank Â· Course",
+      "expectedContext": "Selected synthetic course, Course Memory, and Active Workbench",
+      "expectedStage": "Frame",
+      "expectedNextCommand": "bergen:lesson",
+      "expectedSafeguards": [
+        "explicit course selection",
+        "outcome alignment"
+      ]
+    },
+    {
+      "id": "alias-lesson",
+      "input": "bergen:lesson plan an introductory ecology lesson",
+      "expectedWorkflow": "Lesson",
+      "expectedHeader": "Bergen Memory Bank Â· Lesson",
+      "expectedContext": "Selected synthetic course and concepts already introduced",
+      "expectedStage": "Plan",
+      "expectedNextCommand": "bergen:assignment",
+      "expectedSafeguards": [
         "minimum necessary question",
-        "faculty approval"
+        "no prerequisite creep"
       ]
     },
     {
-      "id": "protected-data-stop-placeholder",
-      "input": "[Identifying content removed before this synthetic fixture was created]",
+      "id": "alias-assignment",
+      "input": "bergen:assignment draft a synthetic knowledge check",
+      "expectedWorkflow": "Assignment",
+      "expectedHeader": "Bergen Memory Bank Â· Assignment",
+      "expectedContext": "Selected synthetic course, outcomes, and approved constraints",
+      "expectedStage": "Draft",
+      "expectedNextCommand": "bergen:rubric",
       "expectedSafeguards": [
-        "stop substantive processing",
-        "do not echo removed content",
-        "Canvas student-record boundary",
-        "blank de-identified Class Learning Snapshot"
+        "manual Canvas boundary",
+        "optional quiz handoff"
+      ]
+    },
+    {
+      "id": "alias-rubric",
+      "input": "BERGEN:RUBRIC create criteria for the synthetic assignment",
+      "expectedWorkflow": "Rubric",
+      "expectedHeader": "Bergen Memory Bank Â· Rubric",
+      "expectedContext": "Selected synthetic course and assignment facts",
+      "expectedStage": "Draft",
+      "expectedNextCommand": "bergen:review",
+      "expectedSafeguards": [
+        "aligned criteria",
+        "accessible performance descriptions"
+      ]
+    },
+    {
+      "id": "alias-reinforce",
+      "input": "bergen:reinforce use the de-identified class snapshot",
+      "expectedWorkflow": "Reinforce",
+      "expectedHeader": "Bergen Memory Bank Â· Reinforce",
+      "expectedContext": "Selected synthetic course and de-identified class-level snapshot",
+      "expectedStage": "Plan",
+      "expectedNextCommand": "bergen:review",
+      "expectedSafeguards": [
+        "concepts already introduced",
+        "hard prerequisite constraints"
+      ]
+    },
+    {
+      "id": "alias-review",
+      "input": "bergen:review inspect the synthetic lesson without changing it",
+      "expectedWorkflow": "Review",
+      "expectedHeader": "Bergen Memory Bank Â· Review",
+      "expectedContext": "Selected synthetic course and faculty-supplied artifact",
+      "expectedStage": "Review",
+      "expectedNextCommand": "bergen:revise",
+      "expectedSafeguards": [
+        "review without revision",
+        "accessibility and bias checks"
+      ]
+    },
+    {
+      "id": "alias-revise",
+      "input": "bergen:revise apply only the approved clarity changes",
+      "expectedWorkflow": "Revise",
+      "expectedHeader": "Bergen Memory Bank Â· Revise",
+      "expectedContext": "Selected synthetic course, reviewed artifact, and explicit approvals",
+      "expectedStage": "Revise",
+      "expectedNextCommand": "bergen:review",
+      "expectedSafeguards": [
+        "explicit change approval",
+        "no unapproved rewriting"
+      ]
+    },
+    {
+      "id": "alias-message",
+      "input": "bergen:message draft a general class announcement",
+      "expectedWorkflow": "Message",
+      "expectedHeader": "Bergen Memory Bank Â· Message",
+      "expectedContext": "Selected synthetic course and faculty-supplied communication facts",
+      "expectedStage": "Draft",
+      "expectedNextCommand": "bergen:review",
+      "expectedSafeguards": [
+        "class-wide content only",
+        "manual Canvas transfer"
+      ]
+    },
+    {
+      "id": "alias-reflect",
+      "input": "bergen:reflect note de-identified class-level teaching observations",
+      "expectedWorkflow": "Reflect",
+      "expectedHeader": "Bergen Memory Bank Â· Reflect",
+      "expectedContext": "Selected synthetic course and de-identified class-level observations",
+      "expectedStage": "Review",
+      "expectedNextCommand": "bergen:record",
+      "expectedSafeguards": [
+        "teaching reflection only",
+        "no student-specific observations"
+      ]
+    },
+    {
+      "id": "alias-record",
+      "input": "bergen:record propose a durable update from the approved reflection",
+      "expectedWorkflow": "Record",
+      "expectedHeader": "Bergen Memory Bank Â· Record",
+      "expectedContext": "Approved synthetic teaching context and one target document",
+      "expectedStage": "Record",
+      "expectedNextCommand": "bergen:help",
+      "expectedSafeguards": [
+        "explicit record approval",
+        "manual Google Docs paste"
+      ]
+    },
+    {
+      "id": "natural-language-lesson",
+      "input": "Help me plan an introductory ecology lesson using only concepts already taught.",
+      "expectedWorkflow": "Lesson",
+      "expectedHeader": "Bergen Memory Bank Â· Lesson",
+      "expectedContext": "Selected synthetic course and concepts already introduced",
+      "expectedStage": "Plan",
+      "expectedNextCommand": "bergen:assignment",
+      "expectedSafeguards": [
+        "natural-language routing",
+        "same alias safeguards"
       ]
     },
     {
       "id": "unknown-alias",
       "input": "bergen:archive-course",
+      "expectedWorkflow": "Help",
+      "expectedHeader": "Bergen Memory Bank Â· Help",
+      "expectedContext": "No unsupported workflow context used",
+      "expectedStage": "Remember",
+      "expectedNextCommand": "bergen:help",
       "expectedSafeguards": [
         "unsupported alias notice",
         "no invented workflow",
-        "help response",
-        "natural-language recovery"
+        "closest aliases"
+      ]
+    },
+    {
+      "id": "protected-data-stop-placeholder",
+      "input": "[Protected or identifying content removed before this synthetic fixture was created]",
+      "expectedWorkflow": "Privacy Stop",
+      "expectedHeader": "Bergen Memory Bank Â· Privacy Stop",
+      "expectedContext": "Protected content is not repeated or used",
+      "expectedStage": "Remember",
+      "expectedNextCommand": "bergen:help",
+      "expectedSafeguards": [
+        "immediate stop",
+        "Canvas student-record boundary",
+        "blank de-identified Class Learning Snapshot"
+      ]
+    },
+    {
+      "id": "ambiguous-course-selection",
+      "input": "Plan the next lesson for one of my courses.",
+      "expectedWorkflow": "Lesson",
+      "expectedHeader": "Bergen Memory Bank Â· Lesson",
+      "expectedContext": "No course document is used until one course is selected",
+      "expectedStage": "Frame",
+      "expectedNextCommand": "bergen:course",
+      "expectedSafeguards": [
+        "one minimum necessary question",
+        "no cross-chat persistence claim"
+      ]
+    },
+    {
+      "id": "visible-chat-estimate",
+      "input": "Should I start a new chat soon?",
+      "expectedWorkflow": "Help",
+      "expectedHeader": "Bergen Memory Bank Â· Help",
+      "expectedContext": "Visible chat only; hidden and retrieved context excluded",
+      "expectedStage": "Remember",
+      "expectedNextCommand": "bergen:record",
+      "expectedSafeguards": [
+        "low-confidence conservative estimate",
+        "no actual-capacity claim",
+        "conservative rounding"
+      ]
+    },
+    {
+      "id": "approved-quiz-handoff",
+      "input": "Prepare the optional transfer block for the approved synthetic quiz.",
+      "expectedWorkflow": "Assignment",
+      "expectedHeader": "Bergen Memory Bank Â· Assignment",
+      "expectedContext": "Approved synthetic quiz content and settings only",
+      "expectedStage": "Review",
+      "expectedNextCommand": "bergen:review",
+      "expectedSafeguards": [
+        "Bergen Quiz Transfer Block boundary",
+        "no ZIP packaging claim",
+        "copy-ready fallback"
       ]
     }
   ]

@@ -8,7 +8,7 @@ async function readText(relativePath) {
   try {
     return await readFile(repositoryFile(relativePath), 'utf8');
   } catch (error) {
-    assert.fail(`Expected Phase 1 artifact ${relativePath} to exist: ${error.message}`);
+    assert.fail(`Expected ready release artifact ${relativePath} to exist: ${error.message}`);
   }
 }
 
@@ -42,8 +42,8 @@ const expectedInventory = new Map([
   ['tests/content/source-register.test.mjs', { status: 'Ready', phase: 1 }],
   ['tests/fixtures/workflow-scenarios.json', { status: 'Ready', phase: 1 }],
   ['tests/fixtures/sample-quiz.json', { status: 'Ready', phase: 1 }],
-  ['src/gem/bergen-memory-bank-instructions.md', { status: 'Pending', phase: 2 }],
-  ['tests/content/gem-workflows.test.mjs', { status: 'Pending', phase: 2 }],
+  ['src/gem/bergen-memory-bank-instructions.md', { status: 'Ready', phase: 2 }],
+  ['tests/content/gem-workflows.test.mjs', { status: 'Ready', phase: 2 }],
   ['src/templates/faculty-profile.md', { status: 'Pending', phase: 3 }],
   ['src/templates/course-memory.md', { status: 'Pending', phase: 3 }],
   ['src/templates/active-workbench.md', { status: 'Pending', phase: 3 }],
@@ -83,7 +83,7 @@ test('repository scripts provide dependency-free test, build, lint, and aggregat
   const packageJson = await readJson('package.json');
 
   assert.deepEqual(packageJson.scripts, {
-    test: 'node --test tests/content/release-structure.test.mjs tests/content/source-register.test.mjs',
+    test: 'node --test tests/content/release-structure.test.mjs tests/content/source-register.test.mjs tests/content/gem-workflows.test.mjs',
     build: 'node scripts/validate-release.mjs --mode build',
     lint: 'node scripts/validate-release.mjs --mode lint',
     validate: 'node scripts/validate-release.mjs --mode all',
@@ -103,7 +103,7 @@ test('release version identifies Bergen Memory Bank v1.0 and the 2026-08-04 sour
   assert.match(version, /QTI compatibility remains pending/i);
 });
 
-test('release contract inventories every v1.0 artifact and keeps later phases pending', async () => {
+test('release contract inventories every v1.0 artifact and keeps unimplemented phases pending', async () => {
   const releaseContract = await readText('src/release/release-contract.md');
   const rows = [...releaseContract.matchAll(/^\|\s*`([^`]+)`\s*\|\s*(Ready|Pending)\s*\|\s*(\d)\s*\|/gm)];
   const actualInventory = new Map(rows.map(([, artifact, status, phase]) => [artifact, {

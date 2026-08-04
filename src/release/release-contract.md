@@ -2,7 +2,7 @@
 
 ## Release boundary
 
-Bergen Memory Bank v1.0 is planned as a no-code faculty kit: one custom Gemini Gem, four reusable Google Docs, faculty enablement material, and an optional browser-only QTI packaging handoff. Phase 1 establishes only the repository contract and verification foundation. A listed artifact is not evidence that its user-facing behavior exists.
+Bergen Memory Bank v1.0 is planned as a no-code faculty kit: one custom Gemini Gem, four reusable Google Docs, faculty enablement material, and an optional browser-only QTI packaging handoff. Phases 1 and 2 establish the repository foundation and the complete classic custom Gem instruction system. A listed artifact is evidence only for the phase and behavior its tests verify.
 
 Canvas remains the student-record system and the final manual publishing destination. The future Gem, memory documents, examples, fixtures, and QTI Packager may use teaching context and synthetic or de-identified class-level observations only. Consequential revision, recording, transfer, import, and publication steps require visible faculty approval and manual action.
 
@@ -10,12 +10,12 @@ Canvas remains the student-record system and the final manual publishing destina
 
 Version 1.0 will not claim or implement native Gemini commands, Gem plugins or custom actions, automatic Google Docs editing, a Canvas API, automated grading, individual student profiling, autonomous Canvas publication, server-side quiz-content handling, accounts, databases, or telemetry. Optional `bergen:<workflow>` strings will be documented later as case-insensitive prompt aliases with natural-language equivalents, not as platform integrations.
 
-Phase 1 does not create the Gem instructions, document templates, guides, DOCX files, QTI Packager, demonstration, or ZIP. Those artifacts remain pending in the inventory until their assigned phase is implemented and verified.
+Phase 2 creates and scenario-tests the Gem instructions. It does not create the document templates, guides, DOCX files, QTI Packager, demonstration, or ZIP. Those artifacts remain pending in the inventory until their assigned phase is implemented and verified.
 
 ## Status meanings
 
-- **Ready**: present and verified as part of the Phase 1 foundation.
-- **Pending**: required for v1.0, assigned to a later phase, and intentionally absent now.
+- **Ready**: present and verified in a completed implementation phase.
+- **Pending**: required for v1.0, assigned to an unimplemented phase, and intentionally absent now.
 
 ## Complete v1.0 artifact inventory
 
@@ -31,8 +31,8 @@ Phase 1 does not create the Gem instructions, document templates, guides, DOCX f
 | `tests/content/source-register.test.mjs` | Ready | 1 | Dated-source and claim-boundary checks |
 | `tests/fixtures/workflow-scenarios.json` | Ready | 1 | Synthetic scenario seeds for later workflow tests |
 | `tests/fixtures/sample-quiz.json` | Ready | 1 | Synthetic quiz seed for later packaging tests |
-| `src/gem/bergen-memory-bank-instructions.md` | Pending | 2 | Gem safety, routing, context, and stage instructions |
-| `tests/content/gem-workflows.test.mjs` | Pending | 2 | Workflow and safeguard content contracts |
+| `src/gem/bergen-memory-bank-instructions.md` | Ready | 2 | Gem safety, routing, context, and stage instructions |
+| `tests/content/gem-workflows.test.mjs` | Ready | 2 | Workflow and safeguard content contracts |
 | `src/templates/faculty-profile.md` | Pending | 3 | Shared stable faculty preferences template |
 | `src/templates/course-memory.md` | Pending | 3 | Course-specific durable memory template |
 | `src/templates/active-workbench.md` | Pending | 3 | Course-specific active work and snapshot template |
@@ -69,10 +69,10 @@ Phase 1 does not create the Gem instructions, document templates, guides, DOCX f
 
 ## Release gates
 
-The local `npm run validate` command is the aggregate repository gate. Later phases will extend the focused suites without weakening this contract.
+The local `npm run validate` command is the aggregate repository gate. It runs the completed Phase 1 and Phase 2 suites; later phases will extend the focused suites without weakening this contract.
 
 Automated structure checks and local browser checks may establish artifact integrity. They cannot establish compatibility with Bergen's Canvas configuration. Version 1.0 QTI compatibility remains unapproved until an authorized Bergen faculty or support user imports the synthetic package into an unpublished Bergen Canvas test course, verifies the five supported item types and settings without student data, and records the result.
 
-## Deliberately not verified in Phase 1
+## Deliberately not verified in Phases 1â€“2
 
-Phase 1 does not test Gemini responses, hidden context, live tenant access, Google Docs editing, Canvas publication, real student records, browser packaging, QTI XML, or Canvas import compatibility. Each is either assigned to a later phase, prohibited, unavailable to deterministic local tests, or reserved for the manual release gate.
+Phase 2 verifies the static Gem instruction contract and synthetic scenario coverage; it cannot execute or inspect live Gemini responses. Phases 1â€“2 do not test hidden context, live tenant access, Google Docs editing, Canvas publication, real student records, browser packaging, QTI XML, or Canvas import compatibility. Each is either assigned to a later phase, prohibited, unavailable to deterministic local tests, or reserved for the manual release gate.

@@ -356,7 +356,9 @@ Yes. The release must include a five-minute installation guide with the exact ei
 - [x] Phase 1: Establish the release contract, dated authoritative-source register, synthetic fixtures, repository validation harness, and v1.0 artifact inventory.
   - **Test Results**: 8/8 focused tests passing; build, lint, and aggregate validation PASS
   - **Code Review**: APPROVED — 0 blocking, recommended, or optional findings; security PASS; 0 third-party dependencies
-- [ ] Phase 2: Author and scenario-test the layered Gem safety kernel, command router, context selector, stage engine, approval gates, course selection, privacy recovery, and conservative visible-chat estimate.
+- [x] Phase 2: Author and scenario-test the layered Gem safety kernel, command router, context selector, stage engine, approval gates, course selection, privacy recovery, and conservative visible-chat estimate.
+  - **Test Results**: RED confirmed at 18 intended missing-artifact failures; 18/18 focused Phase 2 scenarios and 26/26 full repository tests passing; build, lint, and aggregate validation PASS
+  - **Code Review**: APPROVED — 0 blocking, recommended, optional, security, dependency, or scope findings; 12/12 aliases and all 16 Phase 2-applicable MUST Gem-side contracts represented
 - [ ] Phase 3: Build and validate the four-document hybrid memory model and embedded de-identified Class Learning Snapshot, then produce visually verified Google Docs-ready files.
 - [ ] Phase 4: Produce and cross-check every faculty guide, command example, privacy checklist, troubleshooting path, presentation script, and complete aligned demonstration.
 - [ ] Phase 5: Productionize the client-side Bergen QTI Packager for Bergen-controlled Apps Script hosting, preserve the self-contained demo and ZIP fallback, verify supported QTI 1.2 packages, and complete the manual Canvas test-course compatibility gate.
@@ -372,19 +374,20 @@ Yes. The release must include a five-minute installation guide with the exact ei
 ## Build Execution State
 
 **Build Status**: IDLE
-**Current Phase**: 2 of 5
+**Current Phase**: 3 of 5
 **Auto-Build Mode**: YES
-**Current Step**: Phase 2 queued
-**Step Started**: 2026-08-04T16:18:04Z
-**Last Completed**: Phase 1 — release contract and validation foundation
+**Current Step**: Phase 3 queued
+**Step Started**: 2026-08-04T16:58:25Z
+**Last Completed**: Phase 2 — Gem safety kernel and workflow engine
 **Phase 1 Boundary**: COMPLETE — Step 10 Memory Bank update finished 2026-08-04T16:18:04Z
+**Phase 2 Boundary**: COMPLETE — Step 10 Memory Bank update finished 2026-08-04T16:58:25Z
 **BRAINSTORM CRITIQUE**: skipped — unresolved:no-companion (glob=C:\Users\alexa\.claude\plugins\**\codex-companion.mjs; matches=0)
 
 ### Resumption Notes
 
 **Can Resume**: NO
-**Resume From**: Phase 2 - Gem safety kernel and workflow engine
-**Notes**: Phase 1 is complete and verified. `poc/` remains authorized prior Phase 5 work and was untouched. No remote is configured; the phase commit remains local until an origin is added.
+**Resume From**: Phase 3 - hybrid memory templates and Google Docs-ready files
+**Notes**: Phase 2 is complete and verified. `poc/` remains authorized prior Phase 5 work and was untouched. No remote is configured; the phase commit remains local until an origin is added.
 
 ### Halt State
 
@@ -421,6 +424,13 @@ Yes. The release must include a five-minute installation guide with the exact ei
 - Phase 1 review: APPROVED; security PASS; no dependencies or upgrades
 - Phase 1 documentation: `techContext.md` and `systemPatterns.md` updated for the developer-only validation lane and planned QTI companion separation
 - Phase 1 Memory Bank boundary: only Phase 1 checked; execution advanced to Phase 2
+- Phase 2 TDD: RED confirmed with 18 intended missing-instruction failures, then GREEN at 18/18 focused scenarios
+- Phase 2 focused batch: Gem workflow contracts 18/18; lint PASS; no fixes required
+- Phase 2 integration verification: full tests 26/26, build PASS, lint PASS, aggregate validation PASS
+- Phase 2 acceptance verification: 12/12 aliases and all 16 Phase 2-applicable MUST Gem-side contracts represented by static content checks
+- Phase 2 review: APPROVED with 0 findings; security and privacy contract PASS; no dependencies or upgrades
+- Phase 2 documentation: `techContext.md` and `systemPatterns.md` updated for the implemented layered Gem engine and text-only Quiz Transfer Block boundary
+- Phase 2 Memory Bank boundary: only Phase 2 checked; execution advanced to Phase 3
 
 ## Plan Critique
 

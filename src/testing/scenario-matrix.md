@@ -1,31 +1,57 @@
 # Scenario Verification Matrix
 
-## Phase 1 purpose
+## Phase 2 purpose
 
-This file is the human-readable verification contract for Bergen Memory Bank v1.0. Phase 1 supplies synthetic inputs and names the observable safeguards that later phases must implement. It does not claim that the Gem, documents, faculty guides, or QTI Packager exist.
+This file is the human-readable content-contract matrix for Bergen Memory Bank v1.0 through Phase 2. It maps synthetic inputs to observable instructions for routing, context selection, stage state, approval, privacy, and safe next steps. It does not claim access to Gemini's hidden behavior or that later-phase documents, guides, or QTI packaging exist.
 
-## Foundation scenarios
+## Workflow scenarios
 
-| Scenario | Synthetic input | Observable contract | Implementation status | Planned automated phase |
-|---|---|---|---|---:|
-| Help alias with mixed case | `BeRgEn:HeLp` | Help header, safe-data boundary, examples, Remember stage, next command | Fixture only | 2 |
-| Natural-language lesson request | De-identified ecology lesson request | Same routing, context, and approval safeguards as the lesson alias | Fixture only | 2 |
-| Protected-data stop | Placeholder stating that identifying content was removed | Stop processing and offer a blank de-identified Class Learning Snapshot | Fixture only | 2 |
-| Unsupported alias | `bergen:archive-course` | Do not guess; identify the alias as unsupported and show help | Fixture only | 2 |
-| Synthetic supported quiz | Five synthetic ecology questions | Representative input for later validation and packaging checks | Fixture only | 5 |
+| Scenario | Synthetic input intent | Observable header | Context and minimum-question contract | Stage and next-command contract | Status |
+|---|---|---|---|---|---|
+| Help | Mixed-case `bergen:help` | `Bergen Memory Bank Â· Help` | Shared setup status; no course required | Remember; setup or course | Verified |
+| Setup | Check attached memory roles | `Bergen Memory Bank Â· Setup` | Name available and missing document roles; ask one setup fact only if needed | Remember; course | Verified |
+| Course | Plan a synthetic course module | `Bergen Memory Bank Â· Course` | Echo selected course; use relevant Course Memory and Workbench facts | Frame or later; lesson, review, or record | Verified |
+| Lesson | Plan an introductory lesson | `Bergen Memory Bank Â· Lesson` | Selected course, outcomes, concepts introduced; one missing fact at most | Plan or Draft; assignment or review | Verified |
+| Assignment | Draft a synthetic knowledge check | `Bergen Memory Bank Â· Assignment` | Selected course, outcomes, constraints, approval state | Draft; rubric or review | Verified |
+| Rubric | Draft aligned synthetic criteria | `Bergen Memory Bank Â· Rubric` | Selected course and assignment facts; no individual scoring | Draft; review | Verified |
+| Reinforce | Use a de-identified class snapshot | `Bergen Memory Bank Â· Reinforce` | Selected course and safe snapshot; hard prerequisite constraints | Plan; review | Verified |
+| Review | Inspect a synthetic artifact without changing it | `Bergen Memory Bank Â· Review` | State artifact, outcomes, context, and approval state | Review; revise | Verified |
+| Revise | Apply an approved clarity change | `Bergen Memory Bank Â· Revise` | Use the reviewed artifact and explicit change list only | Revise; review | Verified |
+| Message | Draft a general class announcement | `Bergen Memory Bank Â· Message` | Class-wide facts only; audience and purpose | Draft; review | Verified |
+| Reflect | Reflect on de-identified class-level patterns | `Bergen Memory Bank Â· Reflect` | Separate observation, inference, and uncertainty | Review; record after approval | Verified |
+| Record | Propose a durable approved update | `Bergen Memory Bank Â· Record` | Name one primary document and require separate approval | Record; help or course | Verified |
+
+## Boundary and recovery scenarios
+
+| Scenario | Synthetic input intent | Observable contract | Status |
+|---|---|---|---|
+| Natural-language routing | Ask for an introductory lesson without an alias | Same Lesson header, context, stages, privacy check, and approval gates as `bergen:lesson` | Verified |
+| Unsupported alias | Enter `bergen:archive-course` | Identify unsupported input, do not invent a workflow, show Help, suggest close aliases, invite restatement | Verified |
+| Protected-data stop | Placeholder states that protected content was removed | Stop without echo or transformation; identify Canvas boundary; offer a blank de-identified Class Learning Snapshot | Verified |
+| Ambiguous course | Request a lesson for an unspecified course | Use no course-specific document; ask only which course; make no cross-chat persistence claim | Verified |
+| Visible-chat estimate | Ask whether to start a new chat | Low-confidence conservative visible-chat estimate or an explicit statement that no defensible estimate is available | Verified |
+| Approved quiz handoff | Request transfer for a reviewed synthetic quiz | Text-only Bergen Quiz Transfer Block boundary; privacy confirmation; no ZIP claim; copy-ready fallback | Verified |
+
+## Shared observable response contract
+
+Every recognized workflow begins exactly `Bergen Memory Bank Â· <Workflow Name>`, states the selected course or that none is required, names only context actually used, distinguishes faculty-supplied facts, identifies missing or conflicting context, and asks no more than one blocking question. Each response ends with `Current stage: <stage>` and `Recommended next command: bergen:<workflow>`.
+
+The stage engine is Remember â†’ Frame â†’ Plan â†’ Draft â†’ Review â†’ Revise â†’ Record as applicable. Review never silently revises; revision, recording, and Canvas handoffs require explicit faculty approval and remain manual.
 
 ## Safeguard coverage contract
 
 | Safeguard | Observable output | Verification owner |
 |---|---|---|
-| Minimum necessary context | Selected course, named document sources, supplied facts, and one necessary question | Phase 2 content checks |
+| Minimum necessary context | Selected course, named document sources, supplied facts, missing or conflicting facts, and no more than one necessary question | Phase 2 content checks |
 | Human approval | Review does not revise; revise and record use only approved changes; publication remains manual | Phase 2 content checks and Phase 4 guide alignment |
-| Student-record boundary | Processing stops without echoing identifying content; Canvas remains the student-record system | Phase 2 content checks |
-| Four-document ownership | Shared and course-specific homes plus a replaceable de-identified snapshot section | Phase 3 template checks |
+| Student-record boundary | Processing stops without echoing or transforming identifying content; Canvas remains the student-record system | Phase 2 content checks |
+| Concepts introduced | Reinforcement treats future concepts and knowledge it must not assume as hard constraints | Phase 2 content checks and Phase 3 snapshot checks |
+| Four-document ownership | Shared and course-specific homes plus a replaceable de-identified snapshot section | Phase 2 instruction checks and Phase 3 template checks |
+| Context hygiene | Estimate is visibly qualified, conservative, rounded, and never presented as actual remaining capacity | Phase 2 content checks |
 | Faculty-facing language | Installation and daily work do not require repository, API, terminal, or programming knowledge | Phase 4 guide checks |
 | Browser-only packaging | No server, database, account, telemetry, or Canvas API receives quiz content | Phase 5 source and browser checks |
 | Canvas compatibility | Authorized manual import result in an unpublished Bergen test course | Manual v1.0 release gate |
 
 ## What is not tested here
 
-No fixture contains a real record, credential, email address, identifying filename, grade, accommodation, health detail, or raw student work. This scaffold does not test hidden Gemini context, live tenant access, automatic Google Docs editing, Canvas automation, live APIs, or compatibility inferred from QTI structure.
+No fixture contains a real record, credential, email address, identifying filename, grade, accommodation, health detail, or raw student work. The content suite verifies the committed instruction contract, not hidden Gemini context, live tenant access, automatic Google Docs editing, Canvas automation, live APIs, browser packaging, QTI XML, or Canvas compatibility inferred from structure.

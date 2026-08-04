@@ -31,9 +31,10 @@ Developer release-validation lane
     → dependency-free Node.js .mjs validation and tests
     → content, inventory, privacy, and claim-boundary evidence
 
-Optional QTI companion (planned Phase 5; absent in Phase 1)
+Optional QTI companion (planned Phase 5; absent through Phase 2)
   Faculty-approved synthetic or non-student quiz content
-    → client-side browser packaging
+    → text-only Bergen Quiz Transfer Block from the Gem
+    → client-side browser validation and packaging
     → manual Canvas import and compatibility approval
 ```
 
@@ -50,9 +51,9 @@ The developer lane verifies repository artifacts but is not part of faculty inst
 - **Canvas**: Holds protected student records and receives final faculty-approved publishing actions.
 - **Release Contract**: Defines the v1.0 scope, safeguard boundary, exact artifact inventory, phase ownership, and Ready/Pending state in `src/release/release-contract.md`.
 - **Authoritative Source Register**: Holds dated official-source pointers and narrow claim mappings in `src/sources/authoritative-source-register.md`; Memory Bank documents reference this register rather than duplicate its source details.
-- **Scenario Matrix and Fixtures**: Define later-phase observable behavior and supply synthetic or de-identified workflow and quiz inputs without claiming those behaviors are implemented.
-- **Validation Harness and Tests**: Use dependency-free Node.js `.mjs` files to check release structure, inventory state, source discipline, fixture safety, and capability boundaries for repository contributors.
-- **QTI Packager**: Planned optional Phase 5 client-side companion for preparing a package for manual Canvas import; no QTI application exists in Phase 1.
+- **Scenario Matrix and Fixtures**: Define observable Phase 2 Gem behavior and later-phase contracts while supplying synthetic or de-identified workflow and quiz inputs without claiming unimplemented packaging behavior.
+- **Validation Harness and Tests**: Use dependency-free Node.js `.mjs` files to check release structure, inventory state, source discipline, fixture safety, Gem workflow contracts, and capability boundaries for repository contributors.
+- **QTI Packager**: Planned optional Phase 5 client-side companion that will validate a faculty-approved text-only transfer block and prepare a package for manual Canvas import; no QTI application exists through Phase 2.
 
 ## Conversational Routing Pattern
 
@@ -74,7 +75,20 @@ Natural-language requests use the same routing and safeguards. Commands are opti
 - A proposed update identifies the target document and supplies copy-ready text.
 - The faculty member approves and manually applies the update.
 - The Gem must not claim that an attached knowledge document changed automatically.
-- The final document structure and cross-reference strategy remain a design decision for the v1.0 brainstorm.
+- Shared Faculty Profile and Decisions, Reflections, and Reusable Practices documents combine with a course-specific Course Memory and Active Workbench pair. The replaceable Class Learning Snapshot remains a section inside Active Workbench rather than a fifth knowledge document.
+
+## Ordered Safety Kernel and Workflow Engine Pattern
+
+The classic Gem applies its behavioral layers in a fixed order: privacy and capability checks precede routing; routing precedes course and context selection; context selection precedes the seven-stage workflow engine; and workflow-specific output remains bounded by the response contract. Protected-data detection short-circuits the sequence before substantive processing.
+
+This ordering keeps aliases from acquiring authority, prevents retrieval or drafting from bypassing the Canvas student-record boundary, and makes course selection, stage state, approval state, and safe next steps observable. The source contract lives in `src/gem/bergen-memory-bank-instructions.md`, with scenario-based checks in `tests/content/gem-workflows.test.mjs` and `tests/fixtures/workflow-scenarios.json`.
+
+## Text-Only Quiz Handoff Pattern
+
+- The Gem may emit a Bergen Quiz Transfer Block only for an approved, reviewed, synthetic or non-student quiz with complete supported item and scoring information.
+- The block is structured text, not a QTI file or ZIP, and creating it does not claim validation, packaging, import, or compatibility.
+- The separate Phase 5 browser tool owns transfer-block validation and local packaging; the faculty member owns the manual unpublished-course import, review, and publication decision.
+- Unsupported or incomplete items fall back to copy-ready Canvas quiz content so the core Assignment workflow does not depend on the optional packager.
 
 ## Safety and Error Patterns
 
@@ -118,13 +132,14 @@ Natural-language requests use the same routing and safeguards. Commands are opti
 - `scripts/validate-release.mjs` provides build and lint modes and composes them with the focused tests in aggregate mode.
 - `tests/content/release-structure.test.mjs` maps the release contract, version stamp, package scripts, artifact existence, and fixture safety rules to executable checks.
 - `tests/content/source-register.test.mjs` maps the authoritative source register to dated-source completeness and bounded policy, Gemini, Canvas, QTI, and Apps Script claims.
-- The human-readable `src/testing/scenario-matrix.md` maps each safeguard to its future implementation and verification phase so fixture presence is never mistaken for completed behavior.
+- `tests/content/gem-workflows.test.mjs` maps the complete Gem instruction source and its 18 synthetic scenarios to routing, context, stage, approval, privacy, prerequisite, handoff, and capability-boundary checks.
+- The human-readable `src/testing/scenario-matrix.md` records which Gem behaviors are verified in Phase 2 and which template, guide, packaging, or compatibility checks remain later-phase work.
 
 ### Fixture Rules
 
 - Fixtures must declare the `synthetic/de-identified` data classification and state that they contain no real student data.
 - Fixtures must not contain names, email addresses, student IDs, individual grades, accommodations, disability or health information, disciplinary records, credentials, identifying filenames, or raw student work.
-- Phase 1 fixtures are seeds for later workflow and packaging tests. Their metadata and matrix status must state that the corresponding Gem or QTI capability remains pending.
+- Workflow scenarios are Phase 2 content-contract evidence. The sample quiz remains a seed for later packaging tests, and its metadata must not imply that the QTI application or Canvas compatibility is complete.
 
 ## Testing Patterns
 
@@ -150,11 +165,18 @@ Natural-language requests use the same routing and safeguards. Commands are opti
 <!-- AUTO-MANAGED: c4-architecture-start -->
 ## C4 Architecture
 
-C4 architecture documentation has not been generated. Phase 1 now includes a small developer-only validation component, and Phase 5 plans an optional client-side QTI companion, but no C4 manifest exists and the QTI application is not implemented in Phase 1.
+C4 architecture documentation has not been generated. Phases 1 and 2 include developer-only validation plus the Markdown Gem instruction source, and Phase 5 plans an optional client-side QTI companion, but no C4 manifest exists and the QTI application is not implemented through Phase 2.
 
 <!-- AUTO-MANAGED: c4-architecture-end -->
 
 ## Recent Architecture Changes
+
+### 2026-08-04 - Implemented the ordered Gem safety kernel and workflow engine
+
+- **What Changed**: Added the complete classic Gem instruction component with an always-on privacy and capability kernel, case-insensitive and natural-language routing, explicit course and context selection, the seven-stage workflow engine, independent approval gates, protected-data recovery, prerequisite safeguards, and manual Google Docs, Canvas, and text-only quiz handoffs.
+- **Reason**: Turn the planned no-code safety and workflow boundaries into one inspectable instruction contract with scenario-based verification.
+- **Trade-offs**: Static content-contract tests cannot execute live Gemini behavior, but they make the intended observable contract deterministic without adding a faculty runtime, API, or third-party dependency.
+- **Affected Components**: Classic Gemini Gem, scenario matrix and fixtures, validation harness and tests, and the future QTI Packager boundary.
 
 ### 2026-08-04 - Added the release-contract validation lane
 

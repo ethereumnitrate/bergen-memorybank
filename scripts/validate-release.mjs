@@ -69,7 +69,7 @@ async function validateBuild() {
 
   for (const { artifact, status } of inventory) {
     const artifactExists = await exists(artifact);
-    assert.equal(artifactExists, status === 'Ready', `${artifact} must be ${status === 'Ready' ? 'present' : 'absent'} during Phase 1`);
+    assert.equal(artifactExists, status === 'Ready', `${artifact} must be ${status === 'Ready' ? 'present' : 'absent'} for its declared release status`);
   }
 
   const version = await readRepositoryFile('src/release/version.md');
@@ -113,6 +113,7 @@ function runFocusedTests() {
     '--test',
     'tests/content/release-structure.test.mjs',
     'tests/content/source-register.test.mjs',
+    'tests/content/gem-workflows.test.mjs',
   ], {
     cwd: repositoryRoot,
     encoding: 'utf8',
@@ -120,7 +121,7 @@ function runFocusedTests() {
 
   process.stdout.write(result.stdout);
   process.stderr.write(result.stderr);
-  assert.equal(result.status, 0, 'Focused Phase 1 tests must pass');
+  assert.equal(result.status, 0, 'Focused tests for completed phases must pass');
 }
 
 async function main() {
@@ -128,11 +129,11 @@ async function main() {
 
   if (mode === 'lint' || mode === 'all') {
     await validateLint();
-    process.stdout.write('Phase 1 lint validation passed.\n');
+    process.stdout.write('Release lint validation passed.\n');
   }
   if (mode === 'build' || mode === 'all') {
     await validateBuild();
-    process.stdout.write('Phase 1 release contract validation passed.\n');
+    process.stdout.write('Release contract validation passed.\n');
   }
   if (mode === 'all') {
     runFocusedTests();
