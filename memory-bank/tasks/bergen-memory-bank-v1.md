@@ -363,7 +363,10 @@ Yes. The release must include a five-minute installation guide with the exact ei
   - **Test Results**: RED confirmed at 8 intended missing-artifact failures; remediation RED confirmed at 1/8 Phase 3 plus 1/18 Phase 2 consistency; final 8/8 focused Phase 3 and 34/34 full repository tests passing; build and lint PASS
   - **Code Review**: APPROVED — final independent review found 0 blocking, recommended, optional, security, dependency, or scope findings
   - **Document QA**: Title sanitizer, privacy scrub, accessibility audit, source-to-DOCX parity, and package-wide OOXML/preset checks PASS for 4/4 files; PNG visual QA is DONE_WITH_CONCERNS because the bundled runtime has no LibreOffice/`soffice`
-- [ ] Phase 4: Produce and cross-check every faculty guide, command example, privacy checklist, troubleshooting path, presentation script, and complete aligned demonstration.
+- [x] Phase 4: Produce and cross-check every faculty guide, command example, privacy checklist, troubleshooting path, presentation script, and complete aligned demonstration.
+  - **Test Results**: RED confirmed at 8/8 intended missing-guide failures; review remediation RED confirmed at 5/8 and 4/8; final 8/8 focused Phase 4 and 42/42 full repository tests passing; build, lint, and aggregate validation PASS
+  - **Code Review**: APPROVED on iteration 3 — 0 blocking, recommended, optional, security, dependency, upgrade, or scope findings
+  - **Faculty Guide QA**: Nine guides cross-checked for exact eight-step installation, all twelve command examples and natural-language parity, privacy/context boundaries, a timed ten-minute presentation, approval-ordered demonstration, and optional manual QTI-to-Canvas fallback without a Phase 5 availability or compatibility claim
 - [ ] Phase 5: Productionize the client-side Bergen QTI Packager for Bergen-controlled Apps Script hosting, preserve the self-contained demo and ZIP fallback, verify supported QTI 1.2 packages, and complete the manual Canvas test-course compatibility gate.
 
 ## Creative Phases
@@ -377,22 +380,23 @@ Yes. The release must include a five-minute installation guide with the exact ei
 ## Build Execution State
 
 **Build Status**: IDLE
-**Current Phase**: 4 of 5
+**Current Phase**: 5 of 5
 **Auto-Build Mode**: YES
-**Current Step**: Phase 4 queued
+**Current Step**: Phase 5 queued
 **Step Status**: COMPLETE
-**Step Started**: 2026-08-04T17:57:14Z
-**Last Completed**: Phase 3 — Hybrid memory templates and Google Docs-ready files
+**Step Started**: 2026-08-04T18:09:53Z
+**Last Completed**: Phase 4 — Faculty guides and aligned demonstration
 **Phase 1 Boundary**: COMPLETE — Step 10 Memory Bank update finished 2026-08-04T16:18:04Z
 **Phase 2 Boundary**: COMPLETE — Step 10 Memory Bank update finished 2026-08-04T16:58:25Z
 **Phase 3 Boundary**: COMPLETE — Step 10 Memory Bank update finished 2026-08-04T17:57:14Z
+**Phase 4 Boundary**: COMPLETE — Step 10 Memory Bank update finished 2026-08-04T18:52:37Z
 **BRAINSTORM CRITIQUE**: skipped — unresolved:no-companion (glob=C:\Users\alexa\.claude\plugins\**\codex-companion.mjs; matches=0)
 
 ### Resumption Notes
 
 **Can Resume**: NO
-**Resume From**: Phase 4 - faculty guides and aligned demonstration
-**Notes**: Phase 3 is complete and independently approved. `poc/` remains authorized prior Phase 5 work and was untouched. No remote is configured; the phase commit remains local until an origin is added. DOCX visual render QA could not run because the bundled runtime contains no LibreOffice/`soffice`; all prescribed structural, title, privacy, accessibility, content-parity, and OOXML checks passed.
+**Resume From**: Phase 5 - production QTI Packager and manual compatibility gate
+**Notes**: Phase 4 is complete and independently approved. `poc/` remains authorized prior Phase 5 work and was untouched. No remote is configured; the Phase 4 commit remains local until an origin is added. Phase 3 renderer and Google Drive deviations remain recorded below.
 
 ### Halt State
 
@@ -407,9 +411,11 @@ Yes. The release must include a five-minute installation guide with the exact ei
 - Discovery ran in `--offline` mode because no `origin` remote is configured; push was skipped and the phase commit remains local.
 - The configured Codex review companion resolved `unresolved:no-companion`; the required Anthropic fallback review approved the phase with no findings.
 - The packaged ALA `commit-guard.sh` was absent. Step 11 used a deterministic equivalent over the committed file list; the clean-tree check allowed only the user-authorized untracked `poc/` tree, which could not be removed or staged.
+- Phase 4 Step 11 repeated that deterministic commit-guard equivalent: all 18 expected files were staged, production validation-script changes included content tests, and `poc/` remained the only authorized unstaged path.
 - Phase 3 used the Documents skill's explicit missing-`soffice` fallback: no rendered pages or visual inspection were possible, so document QA is `DONE_WITH_CONCERNS`; sanitizer, privacy, accessibility, content-parity, and package-wide OOXML/preset gates passed for all four DOCX files.
 - Phase 3 | `dist/google-docs/*.docx` | The Google Drive connector was unavailable, so the phase produced four import-ready DOCX files instead of live native Drive documents and made no automatic-creation claim.
 - Cross-phase consistency correction: AC-ERROR-2, the Phase 2 Gem snapshot label/test, and the scenario matrix now use the exact approved field name `Concepts already introduced`.
+- Phase 4 review recovery: the independent review required two bounded TDD remediation rounds to correct approval ordering, complete the manual Canvas import path, remove internal release language from faculty prose, and strengthen the guide-alignment suite before final approval.
 
 ### Active Sub-Agents
 
@@ -447,6 +453,13 @@ Yes. The release must include a five-minute installation guide with the exact ei
 - Phase 3 final review: APPROVED with 0 findings; security/privacy PASS; no dependencies or upgrades; Phase 4/5 scope excluded
 - Phase 3 documentation: `techContext.md` and `systemPatterns.md` updated for the implemented hybrid memory model and deterministic bundled source-to-DOCX pipeline
 - Phase 3 Memory Bank boundary: only Phase 3 checked; execution advanced to Phase 4
+- Phase 4 TDD: RED confirmed with 8 intended missing-guide failures, then GREEN at 8/8 focused guide contracts
+- Phase 4 focused batch: guide alignment 8/8 and lint PASS; no fixes required at the batch gate
+- Phase 4 integration verification: full tests 42/42, build PASS, lint PASS, aggregate validation PASS; 17/17 Phase 4-applicable MUST contracts mapped
+- Phase 4 review remediation: two TDD rounds confirmed RED at 5/8 and 4/8 before GREEN; corrected demonstration approval ordering, QTI import steps, faculty-facing language, release framing, and exact installation verification
+- Phase 4 final review: APPROVED on iteration 3 with 0 findings; security, privacy, dependencies, upgrades, and scope PASS
+- Phase 4 documentation: `techContext.md` and `systemPatterns.md` updated for the nine-guide faculty layer and eight-check guide-alignment suite while preserving Phase 3 limitations
+- Phase 4 Memory Bank boundary: only Phase 4 checked; execution advanced to Phase 5
 
 ## Plan Critique
 

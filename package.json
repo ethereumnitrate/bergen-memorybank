@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test tests/content/release-structure.test.mjs tests/content/source-register.test.mjs tests/content/gem-workflows.test.mjs tests/content/template-contracts.test.mjs",
+    "test": "node --test tests/content/release-structure.test.mjs tests/content/source-register.test.mjs tests/content/gem-workflows.test.mjs tests/content/template-contracts.test.mjs tests/content/guide-alignment.test.mjs",
     "build:google-docs": "node scripts/build-google-docs.mjs",
     "build": "node scripts/validate-release.mjs --mode build",
     "lint": "node scripts/validate-release.mjs --mode lint",

@@ -2,7 +2,7 @@
 
 ## Current State
 
-This remains a content-first project with no faculty-facing application runtime, API integration, or automated deployment. Phases 1 through 3 provide the release foundation, complete classic custom Gem instruction source, synthetic workflow scenarios, the implemented four-document memory model, and a deterministic Google Docs-ready DOCX build lane. Node.js and the bundled document-authoring runtime are repository tooling only and must never become installation or usage prerequisites for faculty.
+This remains a content-first project with no faculty-facing application runtime, API integration, or automated deployment. Phases 1 through 3 provide the release foundation, complete classic custom Gem instruction source, synthetic workflow scenarios, the implemented four-document memory model, and a deterministic Google Docs-ready DOCX build lane. Node.js and the bundled document-authoring runtime are repository tooling only and must never become installation or usage prerequisites for faculty. Phase 4 adds nine aligned faculty guides without changing those technical or faculty-facing runtime boundaries.
 
 ## Component Structure
 
@@ -11,13 +11,13 @@ This remains a content-first project with no faculty-facing application runtime,
 | Memory Bank | Durable planning, task, decision, and verification context for producing the kit | `memory-bank/` | Markdown |
 | Release foundation | Version boundary, 45-artifact inventory, status, phase ownership, and review date | `src/release/release-contract.md`, `src/release/version.md` | Markdown |
 | Authoritative source register | Source-dated pointers and narrow claim mappings for policy and platform assertions | `src/sources/authoritative-source-register.md` | Markdown |
-| Verification contract and fixtures | Phase 2 observable workflow contracts plus synthetic, de-identified test inputs | `src/testing/scenario-matrix.md`, `tests/fixtures/` | Markdown and JSON |
-| Validation tooling | Dependency-free build, lint, aggregate validation, and 34 Phase 1–3 tests | `package.json`, `scripts/validate-release.mjs`, `tests/content/*.test.mjs` | Node.js ECMAScript modules (`.mjs`) |
+| Verification contract and fixtures | Observable Gem, template, and faculty-guide contracts through Phase 4 plus synthetic, de-identified test inputs | `src/testing/scenario-matrix.md`, `tests/fixtures/` | Markdown and JSON |
+| Validation tooling | Dependency-free build, lint, aggregate validation, and 42 Phase 1–4 tests | `package.json`, `scripts/validate-release.mjs`, `tests/content/*.test.mjs` | Node.js ECMAScript modules (`.mjs`) |
 | Gemini Gem instructions | Complete privacy kernel, routing, context selection, staged workflow, approval-gate, and manual-handoff instructions for the classic “Bergen Memory Bank” Gem | `src/gem/bergen-memory-bank-instructions.md` | Copy-ready Markdown |
 | Google Docs templates | Four faculty knowledge documents generated from four primary Markdown sources; the fifth Markdown source is the reusable Class Learning Snapshot partial embedded in Active Workbench, not a fifth knowledge document | `src/templates/`, `dist/google-docs/` | Markdown sources and four Google Docs-ready DOCX files |
 | Document build pipeline | Converts the Markdown sources with `python-docx`, runs the packaged title sanitizer and privacy scrubber, removes `rsid` markup across all XML members, and normalizes ZIP ordering and timestamps | `scripts/build-google-docs.mjs` | Node.js orchestrator with bundled Python document tooling |
-| Faculty enablement materials | Command reference, installation, quick start, presentation script, prompts, demonstration, privacy, and troubleshooting content | `src/guides/` (pending Phase 4) | Copy-ready Markdown |
-| QTI packaging companion | Optional browser-only packaging handoff, separate from the no-code Gem, Docs, and Canvas workflow | `apps/qti-packager/` (planned for Phase 5; not implemented through Phase 3) | Client-side Apps Script HTML Service files |
+| Faculty enablement materials | Nine aligned guides covering commands, installation, quick start, presentation, prompts, demonstration, privacy, troubleshooting, and the manual QTI-to-Canvas handoff | `src/guides/` | Copy-ready Markdown |
+| QTI packaging companion | Optional browser-only packaging handoff, separate from the no-code Gem, Docs, and Canvas workflow | `apps/qti-packager/` (planned for Phase 5; not implemented through Phase 4) | Client-side Apps Script HTML Service files |
 
 ## Platforms and External Services
 
@@ -34,7 +34,7 @@ Run repository validation from the project root. On Windows, use the `.cmd` exec
 
 | Purpose | Windows-safe command | Portable equivalent |
 |---------|----------------------|---------------------|
-| Run the 34 focused Phase 1–3 tests | `npm.cmd test` | `npm test` |
+| Run the 42 focused Phase 1–4 tests | `npm.cmd test` | `npm test` |
 | Regenerate the four Google Docs-ready DOCX files | `npm.cmd run build:google-docs` | `npm run build:google-docs` |
 | Validate release structure, inventory state, version, and source-register count | `npm.cmd run build` | `npm run build` |
 | Validate text hygiene, fixture privacy metadata and fields, JSON parsing, and zero third-party dependencies | `npm.cmd run lint` | `npm run lint` |
@@ -46,13 +46,14 @@ The document build also requires the Codex-bundled Python runtime with `python-d
 
 ## Test Execution Strategy
 
-- Phases 1 through 3 contain 34 dependency-free tests across `tests/content/release-structure.test.mjs`, `tests/content/source-register.test.mjs`, `tests/content/gem-workflows.test.mjs`, and `tests/content/template-contracts.test.mjs`, executed with the Node.js built-in test runner.
-- The four release-structure tests cover repository scripts and dependency boundaries, release version and review date, the exact 45-artifact inventory with Phase 3 artifacts ready and later phases absent, and synthetic fixture safeguards.
+- Phases 1 through 4 contain 42 dependency-free tests across `tests/content/release-structure.test.mjs`, `tests/content/source-register.test.mjs`, `tests/content/gem-workflows.test.mjs`, `tests/content/template-contracts.test.mjs`, and `tests/content/guide-alignment.test.mjs`, executed with the Node.js built-in test runner.
+- The four release-structure tests cover repository scripts and dependency boundaries, release version and review date, the exact 45-artifact inventory with Phase 3 and Phase 4 artifacts ready and Phase 5 artifacts absent, and synthetic fixture safeguards.
 - The four source-register tests cover dated source completeness, Bergen policy boundaries, Gem and Canvas capability claims, and Apps Script hosting constraints.
 - The 18 Gem-workflow tests cover the always-on privacy and capability kernel, all twelve aliases and natural-language routing, explicit course and context selection, the seven-stage engine, approval gates, protected-data recovery, prerequisite safeguards, manual record and Canvas boundaries, the text-only quiz handoff, and qualified visible-chat estimates.
 - The eight template-contract tests cover the four-document ownership model, source-to-DOCX parity, the embedded Class Learning Snapshot and its exact ordered fields, privacy and Canvas boundaries, explicit course selection, prerequisite constraints, manual faculty-approved recording, and the Google Docs OOXML contract.
+- The eight guide-alignment tests cover the complete nine-guide set and nontechnical language, exact eight-step installation, all twelve aliases plus natural-language parity, observable response fields, privacy recovery, conservative context estimates, the ten-minute presentation, synthetic prompts and demonstration alignment, approval ordering, manual Google Docs and Canvas actions, and the future optional QTI boundary.
 - `scripts/validate-release.mjs` supplies deterministic build and lint checks and invokes the same focused test files for aggregate validation.
-- The scenario matrix covers every `bergen:<workflow>` alias and representative natural-language, privacy-boundary, unknown-command, missing-context, approval-gate, prerequisite, quiz-handoff, capability-claim, and Phase 3 template scenario. Later phases extend it for guides, packaging, and manual compatibility evidence.
+- The scenario matrix covers every `bergen:<workflow>` alias and representative natural-language, privacy-boundary, unknown-command, missing-context, approval-gate, prerequisite, quiz-handoff, capability-claim, Phase 3 template, and Phase 4 faculty-guide scenario. Phase 5 extends it for packaging and manual compatibility evidence.
 - Phase 3 verification additionally checked all four generated packages with the packaged title sanitizer, accessibility checks, and package-wide OOXML, `google_docs_default`, privacy, and deterministic-output checks. Document render/PNG visual QA is `DONE_WITH_CONCERNS` because the bundled environment has no LibreOffice/`soffice`; Google Docs import and visual inspection remain a manual release check rather than a claimed automated pass.
 - Tests, demonstrations, and compatibility checks use only synthetic or de-identified example data. Credentials, protected records, and real student data must never enter repository artifacts.
 - Manually verify the installation path in an authorized non-production Gem and faculty-owned test documents before release; credentials and protected records must never enter repository artifacts.
@@ -67,16 +68,23 @@ The document build also requires the Codex-bundled Python runtime with `python-d
 - **Conversational host**: Classic custom Gemini Gem created with a `bergen.edu` account.
 - **Student-record and publishing system**: Canvas.
 - **APIs and product automation**: No Canvas API, autonomous document editing, automated grading, or autonomous publishing in version 1.0. Repository validation automation is developer-only.
-- **Planned optional companion**: A client-side QTI Packager is assigned to Phase 5 and is not implemented through Phase 3. The Gem can prepare only the approved text-only Bergen Quiz Transfer Block that the future packager will validate and package.
+- **Planned optional companion**: A client-side QTI Packager is assigned to Phase 5 and is not implemented through Phase 4. The Gem can prepare only the approved text-only Bergen Quiz Transfer Block that the future packager will validate and package.
 
 <!-- AUTO-MANAGED: c4-references-start -->
 ## C4 References
 
-C4 architecture documentation has not been generated, and no C4 manifest exists. Phases 1 through 3 add developer-only validation, the Markdown Gem instruction source, and the deterministic four-document source-to-DOCX pipeline; the planned QTI companion is not implemented yet.
+C4 architecture documentation has not been generated, and no C4 manifest exists. Phases 1 through 3 add developer-only validation, the Markdown Gem instruction source, and the deterministic four-document source-to-DOCX pipeline; the planned QTI companion is not implemented yet. Phase 4 adds the faculty-guide layer without introducing the companion.
 
 <!-- AUTO-MANAGED: c4-references-end -->
 
 ## Recent Technology Changes
+
+### 2026-08-04 - Added the aligned faculty-guide content layer
+
+- **What Changed**: Added nine copy-ready Markdown faculty guides and an eight-test guide-alignment suite, then wired the suite into the existing package and aggregate validation commands.
+- **Reason**: Make installation, daily workflows, privacy recovery, observable response expectations, approval ordering, context estimates, the synthetic demonstration, and manual Google Docs, Canvas, and future QTI handoffs consistent with the implemented Gem and template contracts.
+- **Impact**: Faculty now have a complete nontechnical enablement layer. Repository validation rises to 42 dependency-free tests, while the faculty workflow still adds no runtime, dependency, API, server, storage, or Phase 5 packager.
+- **Migration Notes**: None; the guides are content artifacts and the QTI Packager remains unimplemented.
 
 ### 2026-08-04 - Added deterministic Google Docs-ready document production
 

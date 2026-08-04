@@ -1,8 +1,21 @@
 # Scenario Verification Matrix
 
-## Verification purpose through Phase 3
+## Verification purpose through Phase 4
 
-This file is the human-readable content-contract matrix for Bergen Memory Bank v1.0 through Phase 3. It maps synthetic inputs to observable instructions and template content for routing, context selection, stage state, document ownership, approval, privacy, and safe next steps. It does not claim access to Gemini's hidden behavior or that later-phase guides or QTI packaging exist.
+This file is the human-readable content-contract matrix for Bergen Memory Bank v1.0 through Phase 4. It maps synthetic inputs to observable instructions, template content, and faculty guides for routing, context selection, stage state, document ownership, approval, privacy, and safe next steps. It does not claim access to Gemini's hidden behavior or that Phase 5 QTI packaging exists.
+
+## Phase 4 guide scenarios
+
+| Check | Source contract | Observable contract | Automated test |
+|---|---|---|---|
+| Guide set and language | Nine faculty guides | All requested guides exist; faculty prose avoids repository paths, source-format mechanics, and developer workflow language | `guide-alignment.test.mjs` check 1 |
+| Five-minute installation | Installation guide | Exactly eight numbered requirements; access checks remain optional preflight or troubleshooting | `guide-alignment.test.mjs` check 2 |
+| Commands and quick start | Command reference and quick start | All twelve aliases and exact purposes; natural-language parity; explicit course selection; observable context, minimum question, stage, next command, and approval gates | `guide-alignment.test.mjs` check 3 |
+| Privacy and context | Privacy checklist and quick start | Complete protected-data stop and blank snapshot recovery; conservative, low-confidence, rounded visible-chat estimate with all exclusions and action bands | `guide-alignment.test.mjs` check 4 |
+| Ten-minute presentation | Presentation script | Contiguous timed sections total 10:00 and demonstrate safe value, privacy, context, course memory, commands, optional QTI, and manual Canvas | `guide-alignment.test.mjs` check 5 |
+| Prompt examples | Sample prompts | One safe alias example and one safe natural-language example for every workflow | `guide-alignment.test.mjs` check 6 |
+| Aligned demonstration | End-to-end demonstration | One synthetic course, outcome, concept set, and criteria remain aligned through lesson, assignment, rubric, review, approved revision, record proposal, and manual publishing packet | `guide-alignment.test.mjs` check 7 |
+| Recovery and QTI handoff | Troubleshooting and QTI-to-Canvas guide | Complete recovery paths, manual fallback, five item types, browser/local-only boundaries, unpublished test course, no Phase 5 availability or compatibility claim | `guide-alignment.test.mjs` check 8 |
 
 ## Phase 3 template and document scenarios
 
@@ -65,6 +78,10 @@ The stage engine is Remember â†’ Frame â†’ Plan â†’ Draft â†�
 | Browser-only packaging | No server, database, account, telemetry, or Canvas API receives quiz content | Phase 5 source and browser checks |
 | Canvas compatibility | Authorized manual import result in an unpublished Bergen test course | Manual v1.0 release gate |
 
+## Phase 3 document-delivery limitations retained
+
+Phase 3 produced four Google Docs-ready DOCX files. It did not create live Drive documents because a Drive connection was unavailable. Automated OOXML, privacy, accessibility, and source-parity checks passed; rendered-page visual review remained unavailable because the bundled document runtime did not include the required office renderer. Phase 4 guide readiness does not remove or reinterpret those limitations.
+
 ## What is not tested here
 
-No fixture contains a real record, credential, email address, identifying filename, grade, accommodation, health detail, or raw student work. The content suite verifies the committed instruction contract, not hidden Gemini context, live tenant access, automatic Google Docs editing, Canvas automation, live APIs, browser packaging, QTI XML, or Canvas compatibility inferred from structure.
+No fixture or guide contains a real record, credential, email address, identifying filename, grade, accommodation, health detail, or raw student work. The content suite verifies committed static contracts, not hidden Gemini context, live tenant access, automatic Google Docs editing, Canvas automation, live APIs, browser packaging, QTI XML, a live QTI URL, or Canvas compatibility inferred from structure.

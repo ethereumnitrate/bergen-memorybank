@@ -2,15 +2,15 @@
 
 ## Release boundary
 
-Bergen Memory Bank v1.0 is planned as a no-code faculty kit: one custom Gemini Gem, four reusable Google Docs, faculty enablement material, and an optional browser-only QTI packaging handoff. Phases 1 through 3 establish the repository foundation, the complete classic custom Gem instruction system, and the four-document hybrid memory model with a replaceable de-identified Class Learning Snapshot. A listed artifact is evidence only for the phase and behavior its tests verify.
+Bergen Memory Bank v1.0 is planned as a no-code faculty kit: one custom Gemini Gem, four reusable Google Docs, faculty enablement material, and an optional browser-only QTI packaging handoff. Phases 1 through 4 establish the repository foundation, the complete classic custom Gem instruction system, the four-document hybrid memory model with a replaceable de-identified Class Learning Snapshot, and the aligned faculty guides. A listed artifact is evidence only for the phase and behavior its tests verify.
 
-Canvas remains the student-record system and the final manual publishing destination. The future Gem, memory documents, examples, fixtures, and QTI Packager may use teaching context and synthetic or de-identified class-level observations only. Consequential revision, recording, transfer, import, and publication steps require visible faculty approval and manual action.
+Canvas remains the student-record system and the final manual publishing destination. The implemented Gem, memory documents, and faculty guides use teaching context and synthetic or de-identified class-level observations only; the future optional QTI Packager must preserve the same boundary. Revision requires explicit faculty approval, and recording and publication require separate approvals. Google Docs persistence and Canvas transfer require faculty manual action. Quiz import and publication also remain faculty-controlled manual steps.
 
 ## Capability boundaries
 
-Version 1.0 will not claim or implement native Gemini commands, Gem plugins or custom actions, automatic Google Docs editing, a Canvas API, automated grading, individual student profiling, autonomous Canvas publication, server-side quiz-content handling, accounts, databases, or telemetry. Optional `bergen:<workflow>` strings will be documented later as case-insensitive prompt aliases with natural-language equivalents, not as platform integrations.
+Version 1.0 does not claim or implement native Gemini commands, Gem plugins or custom actions, automatic Google Docs editing, a Canvas API, automated grading, individual student profiling, autonomous Canvas publication, server-side quiz-content handling, accounts, databases, or telemetry. Optional `bergen:<workflow>` strings are documented as case-insensitive prompt aliases with natural-language equivalents, not as platform integrations.
 
-Phase 3 creates and content-tests the four faculty knowledge templates, the reusable snapshot partial, the four Google Docs-ready DOCX files, and their deterministic build entry point. It does not create the faculty guides, QTI Packager, demonstration, or ZIP. Those later-phase artifacts remain pending until their assigned phase is implemented and verified.
+Phase 4 creates and content-tests the command reference, installation guide, quick start, presentation script, sample prompts, aligned demonstration, privacy checklist, troubleshooting guidance, and QTI-to-Canvas handoff. It does not create or deploy the Phase 5 QTI Packager, live application, demonstration page, or ZIP. Those Phase 5 artifacts remain pending until implemented and verified.
 
 ## Status meanings
 
@@ -44,16 +44,16 @@ Phase 3 creates and content-tests the four faculty knowledge templates, the reus
 | `dist/google-docs/Bergen Memory Bank - Decisions Reflections and Reusable Practices.docx` | Ready | 3 | Google Docs-ready shared practices document |
 | `scripts/build-google-docs.mjs` | Ready | 3 | Deterministic document build entry point |
 | `tests/content/template-contracts.test.mjs` | Ready | 3 | Document ownership and snapshot checks |
-| `src/guides/command-reference.md` | Pending | 4 | Prompt-alias and natural-language reference |
-| `src/guides/installation-guide.md` | Pending | 4 | Five-minute, eight-step installation guide |
-| `src/guides/faculty-quick-start.md` | Pending | 4 | Faculty quick start |
-| `src/guides/presentation-script.md` | Pending | 4 | Ten-minute presentation script |
-| `src/guides/sample-prompts.md` | Pending | 4 | Examples for all supported workflows |
-| `src/guides/end-to-end-demonstration.md` | Pending | 4 | Lesson-to-record demonstration |
-| `src/guides/privacy-checklist.md` | Pending | 4 | Safe-data and recovery checklist |
-| `src/guides/troubleshooting.md` | Pending | 4 | Capability, context, and fallback guidance |
-| `src/guides/qti-canvas-handoff.md` | Pending | 4 | Manual packaging and Canvas import guide |
-| `tests/content/guide-alignment.test.mjs` | Pending | 4 | Guide and demonstration consistency checks |
+| `src/guides/command-reference.md` | Ready | 4 | Prompt-alias and natural-language reference |
+| `src/guides/installation-guide.md` | Ready | 4 | Five-minute, eight-step installation guide |
+| `src/guides/faculty-quick-start.md` | Ready | 4 | Faculty quick start |
+| `src/guides/presentation-script.md` | Ready | 4 | Ten-minute presentation script |
+| `src/guides/sample-prompts.md` | Ready | 4 | Examples for all supported workflows |
+| `src/guides/end-to-end-demonstration.md` | Ready | 4 | Lesson-to-record demonstration |
+| `src/guides/privacy-checklist.md` | Ready | 4 | Safe-data and recovery checklist |
+| `src/guides/troubleshooting.md` | Ready | 4 | Capability, context, and fallback guidance |
+| `src/guides/qti-canvas-handoff.md` | Ready | 4 | Manual packaging and Canvas import guide |
+| `tests/content/guide-alignment.test.mjs` | Ready | 4 | Guide and demonstration consistency checks |
 | `apps/qti-packager/Code.gs` | Pending | 5 | Apps Script entry point and deployment surface |
 | `apps/qti-packager/Index.html` | Pending | 5 | Accessible packager page shell |
 | `apps/qti-packager/Styles.html` | Pending | 5 | HTML Service style include |
@@ -69,10 +69,12 @@ Phase 3 creates and content-tests the four faculty knowledge templates, the reus
 
 ## Release gates
 
-The local `npm run validate` command is the aggregate repository gate. It runs the completed Phase 1 and Phase 2 suites; later phases will extend the focused suites without weakening this contract.
+The local `npm run validate` command is the aggregate repository gate. It runs the completed Phase 1 through Phase 4 content suites; Phase 5 will extend the focused suites without weakening this contract.
 
 Automated structure checks and local browser checks may establish artifact integrity. They cannot establish compatibility with Bergen's Canvas configuration. Version 1.0 QTI compatibility remains unapproved until an authorized Bergen faculty or support user imports the synthetic package into an unpublished Bergen Canvas test course, verifies the five supported item types and settings without student data, and records the result.
 
-## Deliberately not verified in Phases 1â€“2
+## Deliberately not verified through Phase 4
 
-Phase 2 verifies the static Gem instruction contract and synthetic scenario coverage; it cannot execute or inspect live Gemini responses. Phases 1â€“2 do not test hidden context, live tenant access, Google Docs editing, Canvas publication, real student records, browser packaging, QTI XML, or Canvas import compatibility. Each is either assigned to a later phase, prohibited, unavailable to deterministic local tests, or reserved for the manual release gate.
+The content suites verify static instructions, templates, and faculty-guide contracts; they cannot execute or inspect live Gemini responses. Phase 3 produced four Google Docs-ready DOCX files but did not create live Drive documents because a Drive connection was unavailable. Automated OOXML, privacy, accessibility, and source-parity checks passed, but visual rendering was unavailable because the bundled document runtime did not include the required office renderer; that visual QA limitation remains recorded.
+
+Phases 1–4 do not test hidden context, live tenant access, automatic Google Docs editing, Canvas publication, real student records, browser packaging, QTI XML, a live QTI URL, or Canvas import compatibility. Each is assigned to Phase 5, prohibited, unavailable to deterministic local tests, or reserved for the authorized manual release gate.

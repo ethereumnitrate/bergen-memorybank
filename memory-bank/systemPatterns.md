@@ -35,8 +35,12 @@ Developer release-validation lane
     → packaged title sanitation + privacy scrub
     → global rsid cleanup + deterministic ZIP normalization
     → four Google Docs-ready DOCX files
+  Nine faculty guides
+    → plain-language installation and daily-use guidance
+    → observable response, privacy, alignment, and approval contracts
+    → manual Google Docs, Canvas, and optional future QTI handoffs
 
-Optional QTI companion (planned Phase 5; absent through Phase 3)
+Optional QTI companion (planned Phase 5; absent through Phase 4)
   Faculty-approved synthetic or non-student quiz content
     → text-only Bergen Quiz Transfer Block from the Gem
     → client-side browser validation and packaging
@@ -54,12 +58,13 @@ The developer lane verifies repository artifacts but is not part of faculty inst
 - **Decisions, Reflections, and Reusable Practices**: Holds approved decisions and reusable faculty practices with enough context to judge future applicability.
 - **Class Learning Snapshot**: A reusable Markdown partial embedded exactly once in Active Workbench; it holds only de-identified, class-level observations needed to design reinforcement and does not produce a fifth knowledge document.
 - **Document Builder**: Generates four Google Docs-ready DOCX files from the primary Markdown sources with bundled `python-docx`, packaged title sanitation and privacy scrubbing, global OOXML `rsid` cleanup, and deterministic ZIP ordering and timestamps.
+- **Faculty Guides**: Provide nine aligned, plain-language entry points for exact installation, commands and natural-language requests, daily use, privacy recovery, demonstration and presentation, troubleshooting, and manual Google Docs, Canvas, and future optional QTI handoffs.
 - **Canvas**: Holds protected student records and receives final faculty-approved publishing actions.
 - **Release Contract**: Defines the v1.0 scope, safeguard boundary, exact artifact inventory, phase ownership, and Ready/Pending state in `src/release/release-contract.md`.
 - **Authoritative Source Register**: Holds dated official-source pointers and narrow claim mappings in `src/sources/authoritative-source-register.md`; Memory Bank documents reference this register rather than duplicate its source details.
-- **Scenario Matrix and Fixtures**: Define observable Phase 2 Gem behavior and later-phase contracts while supplying synthetic or de-identified workflow and quiz inputs without claiming unimplemented packaging behavior.
-- **Validation Harness and Tests**: Use dependency-free Node.js `.mjs` files to check release structure, inventory state, source discipline, fixture safety, Gem workflow contracts, template ownership, generated OOXML, and capability boundaries for repository contributors.
-- **QTI Packager**: Planned optional Phase 5 client-side companion that will validate a faculty-approved text-only transfer block and prepare a package for manual Canvas import; no QTI application exists through Phase 3.
+- **Scenario Matrix and Fixtures**: Define observable Gem, template, and faculty-guide contracts through Phase 4 while supplying synthetic or de-identified workflow and quiz inputs without claiming unimplemented packaging behavior.
+- **Validation Harness and Tests**: Use dependency-free Node.js `.mjs` files to check release structure, inventory state, source discipline, fixture safety, Gem workflow contracts, template ownership, generated OOXML, faculty-guide alignment, and capability boundaries for repository contributors.
+- **QTI Packager**: Planned optional Phase 5 client-side companion that will validate a faculty-approved text-only transfer block and prepare a package for manual Canvas import; no QTI application exists through Phase 4.
 
 ## Conversational Routing Pattern
 
@@ -132,6 +137,8 @@ This ordering keeps aliases from acquiring authority, prevents retrieval or draf
 - The release contract is the complete artifact inventory. `Ready` means present and verified in the current phase; `Pending` means assigned to a later phase and intentionally absent. Validation checks both conditions so inventory rows cannot imply unimplemented capability.
 - Detailed policy and platform citations live in the authoritative source register. Other Memory Bank and release documents point to that register and summarize only the boundary they need.
 - Google Docs deliverables retain Markdown as their source of truth. The Class Learning Snapshot partial is expanded into Active Workbench during authoring, and only the four primary knowledge-document sources produce standalone DOCX files.
+- The nine faculty guides are a coordinated content layer rather than independent advice: installation uses the exact eight-step setup, daily-use material shares the same twelve optional aliases and natural-language parity, and every consequential handoff preserves observable context, separate approvals, and manual faculty control.
+- Faculty examples and demonstrations stay synthetic and preserve one outcome, introduced-concept set, and criteria chain across lesson, assignment, rubric, review, approved revision, record proposal, and publication handoff. Future QTI guidance describes only a conditional handoff and manual fallback until the Phase 5 packager and Bergen compatibility evidence exist.
 
 ## Release Validation Pattern
 
@@ -141,8 +148,9 @@ This ordering keeps aliases from acquiring authority, prevents retrieval or draf
 - `tests/content/source-register.test.mjs` maps the authoritative source register to dated-source completeness and bounded policy, Gemini, Canvas, QTI, and Apps Script claims.
 - `tests/content/gem-workflows.test.mjs` maps the complete Gem instruction source and its 18 synthetic scenarios to routing, context, stage, approval, privacy, prerequisite, handoff, and capability-boundary checks.
 - `tests/content/template-contracts.test.mjs` maps the five template sources and four generated DOCX files to the ownership, snapshot, privacy, explicit-selection, prerequisite, manual-record, and OOXML contracts.
+- `tests/content/guide-alignment.test.mjs` maps all nine faculty guides to nontechnical language, exact installation, routing parity, observable response fields, privacy recovery, context estimates, presentation timing, synthetic alignment, approval ordering, manual handoffs, and the future-QTI boundary.
 - `scripts/build-google-docs.mjs` is a separately invocable deterministic authoring step. It resolves bundled tooling through explicit environment variables or compatible cache discovery, then sanitizes, privacy-scrubs, and normalizes each generated DOCX.
-- The human-readable `src/testing/scenario-matrix.md` records verified Gem and template behaviors and distinguishes guide, packaging, and compatibility checks that remain later-phase work.
+- The human-readable `src/testing/scenario-matrix.md` records verified Gem, template, and faculty-guide behaviors and distinguishes packaging and compatibility checks that remain Phase 5 or manual work.
 - Automated Phase 3 release evidence includes title-sanitizer, accessibility, OOXML, `google_docs_default`, privacy, and deterministic-package checks for all four DOCX files. Render/PNG visual QA remains `DONE_WITH_CONCERNS` when LibreOffice/`soffice` is unavailable and must not be represented as a visual pass.
 
 ### Fixture Rules
@@ -155,7 +163,7 @@ This ordering keeps aliases from acquiring authority, prevents retrieval or draf
 
 ### Organization
 
-- Keep source-to-test ownership explicit: the release contract and fixtures map to the release-structure suite, dated claims map to the source-register suite, Gem behavior maps to the Gem-workflow suite, and template sources plus generated DOCX files map to the template-contract suite.
+- Keep source-to-test ownership explicit: the release contract and fixtures map to the release-structure suite, dated claims map to the source-register suite, Gem behavior maps to the Gem-workflow suite, template sources plus generated DOCX files map to the template-contract suite, and faculty guides map to the guide-alignment suite.
 - Use scenario-based acceptance checks organized by workflow and cross-cutting safeguard.
 - Maintain at least one happy-path scenario for every command and representative natural-language equivalent.
 - Add focused scenarios for privacy rejection and recovery, unknown commands, concepts not yet introduced, review-before-revise, record proposals, and manual Canvas publication.
@@ -180,6 +188,13 @@ C4 architecture documentation has not been generated. Phases 1 and 2 include dev
 <!-- AUTO-MANAGED: c4-architecture-end -->
 
 ## Recent Architecture Changes
+
+### 2026-08-04 - Added the aligned faculty-guide layer
+
+- **What Changed**: Added nine coordinated faculty guides and a focused alignment suite covering exact installation, workflow language, privacy recovery, observable response contracts, approval ordering, synthetic end-to-end alignment, and manual Google Docs, Canvas, and optional future QTI handoffs.
+- **Reason**: Give faculty multiple task-specific entry points without allowing setup, demonstrations, prompts, or troubleshooting to drift from the Gem, template, privacy, and capability contracts.
+- **Trade-offs**: Static alignment checks make the content contract deterministic but cannot validate a live Gem, Google Docs session, Canvas tenant, or future packager. Manual action and authorized compatibility review remain explicit boundaries.
+- **Affected Components**: Faculty guides, release contract, scenario matrix, package and aggregate validation, and the future QTI handoff boundary.
 
 ### 2026-08-04 - Implemented the four-document source-to-DOCX pipeline
 
