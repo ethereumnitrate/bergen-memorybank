@@ -1,0 +1,807 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Self-contained offline presentation fallback -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bergen QTI Packager</title>
+    <style>
+  :root {
+    color-scheme: light;
+    --bergen-green: #1e5c45;
+    --bergen-green-dark: #143f30;
+    --bergen-gold: #f3c969;
+    --ink: #17231d;
+    --muted: #53645b;
+    --line: #ccd7d1;
+    --surface: #ffffff;
+    --soft: #eef5f1;
+    --error: #8a1c1c;
+    --warning: #6f4c00;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #f5f7f6; color: var(--ink); line-height: 1.55; }
+  button, textarea { font: inherit; }
+  button:focus-visible, textarea:focus-visible, input:focus-visible { outline: 3px solid #1769aa; outline-offset: 2px; }
+  .page-width { width: min(960px, calc(100% - 32px)); margin-inline: auto; }
+  .site-header { background: var(--bergen-green-dark); color: #fff; padding: 28px 0; border-bottom: 5px solid var(--bergen-gold); }
+  .site-header h1 { margin: 0; font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; }
+  .eyebrow, .step-label { margin: 0 0 4px; font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  .subtitle { margin: 10px 0 0; max-width: 720px; }
+  main { padding-block: 28px 48px; }
+  .privacy-banner, .card, .support-note { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+  .privacy-banner { display: flex; gap: 14px; padding: 18px; border-left: 6px solid var(--bergen-green); }
+  .privacy-banner h2 { margin: 0 0 4px; font-size: 1.2rem; }
+  .privacy-banner p { margin: 0; }
+  .privacy-mark { display: grid; place-items: center; flex: 0 0 34px; height: 34px; border-radius: 50%; background: var(--bergen-green); color: #fff; font-weight: 700; }
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; list-style: none; padding: 0; margin: 22px 0; }
+  .steps li { display: flex; align-items: center; gap: 8px; color: var(--muted); font-weight: 700; }
+  .steps span { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--soft); color: var(--bergen-green-dark); }
+  .card { padding: 24px; margin-block: 18px; box-shadow: 0 4px 14px rgba(20, 63, 48, .08); }
+  .card-heading, .download-panel { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+  h2 { margin: 0 0 8px; line-height: 1.25; }
+  .helper { color: var(--muted); }
+  label:not(.confirmation) { display: block; margin-bottom: 6px; font-weight: 700; }
+  textarea { display: block; width: 100%; min-height: 260px; resize: vertical; padding: 12px; border: 1px solid #809188; border-radius: 7px; background: #fff; color: var(--ink); }
+  .button { min-height: 44px; padding: 10px 18px; border: 2px solid var(--bergen-green); border-radius: 7px; font-weight: 700; cursor: pointer; }
+  .button.primary { margin-top: 14px; background: var(--bergen-green); color: #fff; }
+  .button.secondary { background: #fff; color: var(--bergen-green-dark); }
+  .button:disabled { cursor: not-allowed; opacity: .5; }
+  dl { display: grid; grid-template-columns: 160px 1fr; gap: 5px 14px; }
+  dt { font-weight: 700; }
+  dd { margin: 0; }
+  .message-group { margin-top: 14px; padding: 12px 16px; border-left: 5px solid var(--bergen-green); background: var(--soft); }
+  .message-group.error { border-color: var(--error); background: #fff0f0; }
+  .message-group.warning { border-color: var(--warning); background: #fff8e8; }
+  .message-group h3 { margin: 0 0 6px; font-size: 1rem; }
+  .message-group ul { margin: 0; padding-left: 22px; }
+  .confirmation { display: flex; gap: 10px; align-items: flex-start; margin: 20px 0; padding: 15px; border: 2px solid var(--bergen-green); border-radius: 8px; background: var(--soft); font-weight: 700; }
+  .confirmation input { width: 22px; height: 22px; flex: 0 0 auto; }
+  .download-panel { padding-top: 18px; border-top: 1px solid var(--line); }
+  .support-note { padding: 16px; background: #fffaf0; }
+  .status { min-height: 28px; margin-top: 16px; font-weight: 700; }
+  .status[data-tone="error"] { color: var(--error); }
+
+  @media (max-width: 640px) {
+    .page-width { width: min(100% - 20px, 960px); }
+    .site-header { padding: 22px 0; }
+    main { padding-top: 18px; }
+    .steps { grid-template-columns: 1fr; }
+    .card { padding: 18px; }
+    .card-heading, .download-panel { display: block; }
+    .card-heading .button { width: 100%; margin: 12px 0 0; }
+    .download-panel .button { width: 100%; }
+    dl { grid-template-columns: 1fr; }
+    dd { margin-bottom: 8px; }
+  }
+</style>
+
+  </head>
+  <body data-bergen-qti-app>
+    <header class="site-header">
+      <div class="page-width">
+        <p class="eyebrow">Bergen Memory Bank</p>
+        <h1>Bergen QTI Packager</h1>
+        <p class="subtitle">Turn an approved, student-data-free quiz into a local QTI package for manual Canvas testing.</p>
+      </div>
+    </header>
+
+    <main class="page-width">
+      <section class="privacy-banner" aria-labelledby="privacy-title">
+        <span class="privacy-mark" aria-hidden="true">✓</span>
+        <div>
+          <h2 id="privacy-title">Your quiz stays in this browser</h2>
+          <p>This page does not upload, save, or send quiz content. Do not paste student submissions, names, IDs, grades, feedback, accommodations, health information, or identifying details.</p>
+        </div>
+      </section>
+
+      <ol class="steps" aria-label="Packaging steps">
+        <li><span>1</span> Paste quiz</li>
+        <li><span>2</span> Check quiz</li>
+        <li><span>3</span> Download ZIP</li>
+      </ol>
+
+      <section class="card" aria-labelledby="paste-heading">
+        <div class="card-heading">
+          <div>
+            <p class="step-label">Step 1</p>
+            <h2 id="paste-heading">Paste the Bergen Quiz Transfer Block</h2>
+          </div>
+          <button class="button secondary" id="load-sample" type="button">Load safe sample</button>
+        </div>
+        <p class="helper">Use only a reviewed quiz whose content and packaging handoff the faculty member approved. Paste into this box, never into a web address.</p>
+        <label for="transfer-block">Bergen Quiz Transfer Block</label>
+        <textarea id="transfer-block" rows="16" spellcheck="false" placeholder="Paste the complete transfer block here"></textarea>
+        <button class="button primary" id="check-quiz" type="button">Check quiz</button>
+      </section>
+
+      <section class="card" id="results" aria-labelledby="results-heading" hidden>
+        <p class="step-label">Step 2</p>
+        <h2 id="results-heading">Quiz check</h2>
+        <div id="quiz-summary"></div>
+        <div id="validation-messages"></div>
+
+        <label class="confirmation" for="privacy-confirmation">
+          <input id="privacy-confirmation" type="checkbox">
+          <span>I confirm that this quiz contains no student-identifying or protected information.</span>
+        </label>
+
+        <div class="download-panel">
+          <div>
+            <p class="step-label">Step 3</p>
+            <h2>Download the QTI package</h2>
+            <p>Import the ZIP manually into an unpublished Canvas test course. Review every item and setting before any publication decision.</p>
+          </div>
+          <button class="button primary" id="download-qti" type="button" disabled>Download QTI package</button>
+        </div>
+      </section>
+
+      <aside class="support-note">
+        <strong>Compatibility boundary:</strong> The package includes multiple choice, true/false, multiple answer, short answer, and essay items. A local ZIP is not proof of Bergen Canvas compatibility. Use manual entry if validation or import is uncertain.
+      </aside>
+
+      <p id="status" class="status" role="status" aria-live="polite">Load the safe sample or paste an approved transfer block.</p>
+    </main>
+    <script>
+/* BERGEN_QTI_CORE_START */
+const BergenQti = (() => {
+  'use strict';
+
+  const FORMAT_NAME = 'bergen-qti-transfer';
+  const FORMAT_VERSION = '0.1';
+  const supportedTypes = Object.freeze([
+    'multiple_choice',
+    'true_false',
+    'multiple_answer',
+    'short_answer',
+    'essay',
+  ]);
+  const supportedTypeSet = new Set(supportedTypes);
+  const canvasQuestionTypes = {
+    multiple_choice: 'multiple_choice_question',
+    true_false: 'true_false_question',
+    multiple_answer: 'multiple_answers_question',
+    short_answer: 'short_answer_question',
+    essay: 'essay_question',
+  };
+  const encoder = new TextEncoder();
+  const manualFallback = 'Keep the reviewed quiz content and use manual entry in Canvas for any item that cannot be packaged safely.';
+
+  function parseTransferBlock(input) {
+    if (typeof input !== 'string' || input.trim() === '') {
+      throw new Error('Paste a Bergen Quiz Transfer Block before checking the quiz.');
+    }
+    let candidate = input.trim();
+    const fenced = candidate.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);
+    if (fenced) candidate = fenced[1];
+    try {
+      return JSON.parse(candidate);
+    } catch {
+      throw new Error('The transfer block could not be read. Copy the complete block from Bergen Memory Bank and try again.');
+    }
+  }
+
+  function validateTransfer(transfer) {
+    const errors = [];
+    const warnings = [];
+    if (!isPlainObject(transfer)) {
+      return { valid: false, errors: ['The transfer block must contain one quiz.'], warnings, fallback: manualFallback };
+    }
+    if (transfer.metadata?.containsRealStudentData === true) {
+      errors.push('This transfer block is marked as containing real student data. Remove it and create a student-data-free block before continuing.');
+    }
+    if (transfer.format !== FORMAT_NAME) errors.push(`The transfer block format must be “${FORMAT_NAME}”.`);
+    if (transfer.version !== FORMAT_VERSION) errors.push(`This packager supports transfer-block version ${FORMAT_VERSION}.`);
+
+    const quiz = transfer.quiz;
+    if (!isPlainObject(quiz)) {
+      errors.push('Quiz information is missing.');
+      return { valid: false, errors, warnings, fallback: manualFallback };
+    }
+    validateText(quiz.title, 'Quiz title', errors, 200);
+    if (quiz.instructions === undefined) warnings.push('No learner-facing quiz instructions were supplied.');
+    else validateText(quiz.instructions, 'Quiz instructions', errors, 5000, true);
+    validateSettings(quiz.settings, errors);
+
+    if (!Array.isArray(quiz.questions) || quiz.questions.length === 0) {
+      errors.push('Add at least one question.');
+      return { valid: false, errors, warnings, fallback: manualFallback };
+    }
+    if (quiz.questions.length > 100) errors.push('This packager supports at most 100 questions in one package.');
+
+    const seenQuestionIds = new Set();
+    quiz.questions.forEach((question, index) => validateQuestion(question, index, seenQuestionIds, errors, warnings));
+    const totalPoints = quiz.questions.reduce((sum, question) => (
+      typeof question?.points === 'number' && Number.isFinite(question.points) ? sum + question.points : sum
+    ), 0);
+    if (isPlainObject(quiz.settings) && typeof quiz.settings.pointsPossible === 'number'
+      && Number.isFinite(quiz.settings.pointsPossible) && Math.abs(quiz.settings.pointsPossible - totalPoints) > 0.0001) {
+      errors.push(`Quiz settings list ${quiz.settings.pointsPossible} points, but the questions total ${formatNumber(totalPoints)} points.`);
+    }
+
+    errors.push(...findPrivacySignals(collectText(quiz)));
+    return { valid: errors.length === 0, errors, warnings, fallback: manualFallback };
+  }
+
+  function validateSettings(settings, errors) {
+    if (!isPlainObject(settings)) {
+      errors.push('Quiz settings are missing.');
+      return;
+    }
+    if (typeof settings.shuffleAnswers !== 'boolean') errors.push('Shuffle answers must be true or false.');
+    if (settings.timeLimitMinutes !== null && settings.timeLimitMinutes !== undefined
+      && (!Number.isInteger(settings.timeLimitMinutes) || settings.timeLimitMinutes <= 0 || settings.timeLimitMinutes > 1440)) {
+      errors.push('Time limit must be blank or a whole number from 1 to 1440 minutes.');
+    }
+    if (!Number.isInteger(settings.allowedAttempts) || settings.allowedAttempts <= 0) {
+      errors.push('Allowed attempts must be a whole number greater than zero.');
+    }
+    if (typeof settings.pointsPossible !== 'number' || !Number.isFinite(settings.pointsPossible)
+      || settings.pointsPossible <= 0) errors.push('Points possible must be greater than zero.');
+  }
+
+  function validateQuestion(question, index, seenQuestionIds, errors, warnings) {
+    const label = `Question ${index + 1}`;
+    if (!isPlainObject(question)) {
+      errors.push(`${label} is not structured correctly.`);
+      return;
+    }
+    validateText(question.id, `${label} identifier`, errors, 80);
+    if (typeof question.id === 'string') {
+      if (seenQuestionIds.has(question.id)) errors.push(`${label} uses a duplicate identifier.`);
+      seenQuestionIds.add(question.id);
+    }
+    if (!supportedTypeSet.has(question.type)) errors.push(`${label} uses an unsupported question type. ${manualFallback}`);
+    if (question.title !== undefined) validateText(question.title, `${label} title`, errors, 200, true);
+    validateText(question.prompt, `${label} prompt`, errors, 5000);
+    if (typeof question.points !== 'number' || !Number.isFinite(question.points) || question.points <= 0) {
+      errors.push(`${label} must have a point value greater than zero.`);
+    } else if (question.points > 100) warnings.push(`${label} is worth more than 100 points.`);
+
+    if (question.type === 'multiple_choice' || question.type === 'multiple_answer') {
+      validateChoiceQuestion(question, label, errors);
+    } else if (question.type === 'true_false' && typeof question.correctAnswer !== 'boolean') {
+      errors.push(`${label} must identify True or False as the correct answer.`);
+    } else if (question.type === 'short_answer') {
+      if (!Array.isArray(question.acceptedAnswers) || question.acceptedAnswers.length === 0) {
+        errors.push(`${label} must include at least one accepted answer.`);
+      } else {
+        question.acceptedAnswers.forEach((answer, answerIndex) => {
+          validateText(answer, `${label} accepted answer ${answerIndex + 1}`, errors, 500);
+        });
+      }
+    } else if (question.type === 'essay' && question.feedback !== undefined) {
+      validateText(question.feedback, `${label} scoring guidance`, errors, 5000, true);
+    }
+  }
+
+  function validateChoiceQuestion(question, label, errors) {
+    if (!Array.isArray(question.choices) || question.choices.length < 2) {
+      errors.push(`${label} must include at least two answer choices.`);
+      return;
+    }
+    const choiceIds = new Set();
+    const packagedChoiceIds = new Set();
+    question.choices.forEach((choice, choiceIndex) => {
+      if (!isPlainObject(choice)) {
+        errors.push(`${label}, choice ${choiceIndex + 1}, is not structured correctly.`);
+        return;
+      }
+      validateText(choice.id, `${label}, choice ${choiceIndex + 1} identifier`, errors, 80);
+      validateText(choice.text, `${label}, choice ${choiceIndex + 1}`, errors, 2000);
+      if (typeof choice.id === 'string') {
+        if (choiceIds.has(choice.id)) errors.push(`${label} contains duplicate answer-choice identifiers.`);
+        choiceIds.add(choice.id);
+        const packagedId = choiceIdentifier(choice.id);
+        if (packagedChoiceIds.has(packagedId)) errors.push(`${label} has choices that become the same packaged identifier.`);
+        packagedChoiceIds.add(packagedId);
+      }
+    });
+    if (!Array.isArray(question.correctChoiceIds) || question.correctChoiceIds.length === 0) {
+      errors.push(`${label} must identify at least one correct answer choice.`);
+      return;
+    }
+    if (question.type === 'multiple_choice' && question.correctChoiceIds.length !== 1) {
+      errors.push(`${label} must identify exactly one correct answer.`);
+    }
+    for (const correctId of question.correctChoiceIds) {
+      if (!choiceIds.has(correctId)) errors.push(`${label} refers to a correct answer choice that does not exist.`);
+    }
+  }
+
+  function validateText(value, label, errors, maximumLength, allowEmpty = false) {
+    if (typeof value !== 'string') {
+      errors.push(`${label} must be text.`);
+      return;
+    }
+    if (!allowEmpty && value.trim() === '') errors.push(`${label} cannot be blank.`);
+    if (value.length > maximumLength) errors.push(`${label} is longer than ${maximumLength} characters.`);
+    if (/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/.test(value)) {
+      errors.push(`${label} contains an unsupported control character.`);
+    }
+  }
+
+  function findPrivacySignals(text) {
+    const signals = [];
+    if (/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i.test(text)) {
+      signals.push('Possible email address detected. Remove protected information before continuing.');
+    }
+    if (/\b(?:student|bergen)[- _]?(?:id|number)?[- _:]*\d{6,10}\b/i.test(text)) {
+      signals.push('Possible student identifier detected. Remove protected information before continuing.');
+    }
+    if (/\b[A-Za-z0-9_-]+\.(?:docx?|pdf|txt|rtf)\b/i.test(text)) {
+      signals.push('Possible identifying filename detected. Remove or de-identify it before continuing.');
+    }
+    return signals;
+  }
+
+  function collectText(value) {
+    if (typeof value === 'string') return value;
+    if (Array.isArray(value)) return value.map(collectText).join(' ');
+    if (isPlainObject(value)) return Object.values(value).map(collectText).join(' ');
+    return '';
+  }
+
+  function summarizeQuiz(transfer) {
+    const typeCounts = {};
+    let points = 0;
+    for (const question of transfer.quiz.questions) {
+      typeCounts[question.type] = (typeCounts[question.type] || 0) + 1;
+      points += question.points;
+    }
+    return {
+      title: transfer.quiz.title,
+      questionCount: transfer.quiz.questions.length,
+      points,
+      typeCounts,
+      settings: { ...transfer.quiz.settings },
+    };
+  }
+
+  function buildQtiPackage(transfer) {
+    const validation = validateTransfer(transfer);
+    if (!validation.valid) throw new Error(`The quiz cannot be packaged: ${validation.errors.join(' ')}`);
+    const quizToken = identifierToken(transfer.quiz.title || 'quiz');
+    const assessmentFile = 'assessment.xml';
+    const files = [
+      { name: 'imsmanifest.xml', data: buildManifest(quizToken, assessmentFile) },
+      { name: assessmentFile, data: buildAssessment(transfer.quiz, quizToken) },
+    ];
+    return {
+      fileName: `${fileToken(transfer.quiz.title)}-qti.zip`,
+      files,
+      bytes: createStoredZip(files),
+      summary: summarizeQuiz(transfer),
+    };
+  }
+
+  function buildManifest(quizToken, assessmentFile) {
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<manifest identifier="manifest_${quizToken}" xmlns="http://www.imsglobal.org/xsd/imscp_v1p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/imscp_v1p1 http://www.imsglobal.org/xsd/imscp_v1p1.xsd">
+  <metadata>
+    <schema>IMS Content</schema>
+    <schemaversion>1.1.3</schemaversion>
+  </metadata>
+  <organizations />
+  <resources>
+    <resource identifier="resource_${quizToken}" type="imsqti_xmlv1p2" href="${assessmentFile}">
+      <file href="${assessmentFile}" />
+    </resource>
+  </resources>
+</manifest>
+`;
+  }
+
+  function buildAssessment(quiz, quizToken) {
+    const items = quiz.questions.map((question, index) => buildItem(question, index)).join('\n');
+    const settings = quiz.settings;
+    const timeLimit = settings.timeLimitMinutes === null || settings.timeLimitMinutes === undefined
+      ? '' : formatNumber(settings.timeLimitMinutes);
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<questestinterop xmlns="http://www.imsglobal.org/xsd/ims_qtiasiv1p2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/ims_qtiasiv1p2 http://www.imsglobal.org/xsd/ims_qtiasiv1p2p1.xsd">
+  <assessment ident="assessment_${quizToken}" title="${escapeXml(quiz.title)}">
+    <qtimetadata>
+${indent(metadataField('qmd_description', quiz.instructions || ''), 6)}
+${indent(metadataField('quiz_type', 'assignment'), 6)}
+${indent(metadataField('points_possible', formatNumber(settings.pointsPossible)), 6)}
+${indent(metadataField('shuffle_answers', String(settings.shuffleAnswers)), 6)}
+${indent(metadataField('allowed_attempts', String(settings.allowedAttempts)), 6)}
+${indent(metadataField('time_limit', timeLimit), 6)}
+    </qtimetadata>
+    <section ident="root_section">
+${indent(items, 6)}
+    </section>
+  </assessment>
+</questestinterop>
+`;
+  }
+
+  function metadataField(label, value) {
+    return `<qtimetadatafield>
+  <fieldlabel>${escapeXml(label)}</fieldlabel>
+  <fieldentry>${escapeXml(value)}</fieldentry>
+</qtimetadatafield>`;
+  }
+
+  function buildItem(question, index) {
+    const itemId = `question_${index + 1}_${identifierToken(question.id)}`;
+    const title = question.title?.trim() || `Question ${index + 1}`;
+    return `<item ident="${itemId}" title="${escapeXml(title)}">
+${indent(buildQuestionMetadata(question, itemId), 2)}
+${indent(buildPresentation(question), 2)}
+${indent(buildScoring(question), 2)}
+</item>`;
+  }
+
+  function buildQuestionMetadata(question, itemId) {
+    return `<itemmetadata>
+  <qtimetadata>
+${indent(metadataField('question_type', canvasQuestionTypes[question.type]), 4)}
+${indent(metadataField('points_possible', formatNumber(question.points)), 4)}
+${indent(metadataField('assessment_question_identifierref', itemId), 4)}
+  </qtimetadata>
+</itemmetadata>`;
+  }
+
+  function buildPresentation(question) {
+    const prompt = `<material><mattext texttype="text/plain">${escapeXml(question.prompt)}</mattext></material>`;
+    if (question.type === 'multiple_choice' || question.type === 'multiple_answer') {
+      const cardinality = question.type === 'multiple_answer' ? 'Multiple' : 'Single';
+      const choices = question.choices.map((choice) => `<response_label ident="${choiceIdentifier(choice.id)}">
+  <material><mattext texttype="text/plain">${escapeXml(choice.text)}</mattext></material>
+</response_label>`).join('\n');
+      return `<presentation>
+  ${prompt}
+  <response_lid ident="response1" rcardinality="${cardinality}">
+    <render_choice shuffle="${question.shuffleAnswers === true ? 'Yes' : 'No'}">
+${indent(choices, 6)}
+    </render_choice>
+  </response_lid>
+</presentation>`;
+    }
+    if (question.type === 'true_false') {
+      return `<presentation>
+  ${prompt}
+  <response_lid ident="response1" rcardinality="Single">
+    <render_choice shuffle="No">
+      <response_label ident="answer_true"><material><mattext texttype="text/plain">True</mattext></material></response_label>
+      <response_label ident="answer_false"><material><mattext texttype="text/plain">False</mattext></material></response_label>
+    </render_choice>
+  </response_lid>
+</presentation>`;
+    }
+    const rows = question.type === 'essay' ? 8 : 1;
+    return `<presentation>
+  ${prompt}
+  <response_str ident="response1" rcardinality="Single">
+    <render_fib fibtype="String" prompt="Box" rows="${rows}" columns="80" />
+  </response_str>
+</presentation>`;
+  }
+
+  function buildScoring(question) {
+    const outcomes = `<outcomes>
+  <decvar maxvalue="${formatNumber(question.points)}" minvalue="0" varname="SCORE" vartype="Decimal" />
+</outcomes>`;
+    if (question.type === 'essay') return `<resprocessing>\n${indent(outcomes, 2)}\n</resprocessing>`;
+    let condition;
+    if (question.type === 'multiple_choice') {
+      condition = `<varequal respident="response1">${choiceIdentifier(question.correctChoiceIds[0])}</varequal>`;
+    } else if (question.type === 'true_false') {
+      condition = `<varequal respident="response1">answer_${question.correctAnswer ? 'true' : 'false'}</varequal>`;
+    } else if (question.type === 'multiple_answer') {
+      const correct = new Set(question.correctChoiceIds);
+      const clauses = question.choices.map((choice) => {
+        const comparison = `<varequal respident="response1">${choiceIdentifier(choice.id)}</varequal>`;
+        return correct.has(choice.id) ? comparison : `<not>${comparison}</not>`;
+      });
+      condition = `<and>\n${indent(clauses.join('\n'), 2)}\n</and>`;
+    } else {
+      const comparisons = question.acceptedAnswers.map((answer) => (
+        `<varequal case="No" respident="response1">${escapeXml(answer)}</varequal>`
+      ));
+      condition = comparisons.length === 1 ? comparisons[0] : `<or>\n${indent(comparisons.join('\n'), 2)}\n</or>`;
+    }
+    return `<resprocessing>
+${indent(outcomes, 2)}
+  <respcondition continue="No">
+    <conditionvar>
+${indent(condition, 6)}
+    </conditionvar>
+    <setvar action="Set" varname="SCORE">${formatNumber(question.points)}</setvar>
+  </respcondition>
+</resprocessing>`;
+  }
+
+  function createStoredZip(entries) {
+    const normalized = entries.map((entry) => {
+      const nameBytes = encoder.encode(entry.name);
+      const dataBytes = typeof entry.data === 'string' ? encoder.encode(entry.data) : entry.data;
+      return { nameBytes, dataBytes, crc: crc32(dataBytes) };
+    });
+    const localParts = [];
+    const centralParts = [];
+    let offset = 0;
+    for (const entry of normalized) {
+      const local = new Uint8Array(30 + entry.nameBytes.length);
+      const localView = new DataView(local.buffer);
+      localView.setUint32(0, 0x04034b50, true);
+      localView.setUint16(4, 20, true);
+      localView.setUint16(6, 0x0800, true);
+      localView.setUint16(8, 0, true);
+      localView.setUint16(10, 0, true);
+      localView.setUint16(12, 0x0021, true);
+      localView.setUint32(14, entry.crc, true);
+      localView.setUint32(18, entry.dataBytes.length, true);
+      localView.setUint32(22, entry.dataBytes.length, true);
+      localView.setUint16(26, entry.nameBytes.length, true);
+      local.set(entry.nameBytes, 30);
+      localParts.push(local, entry.dataBytes);
+
+      const central = new Uint8Array(46 + entry.nameBytes.length);
+      const centralView = new DataView(central.buffer);
+      centralView.setUint32(0, 0x02014b50, true);
+      centralView.setUint16(4, 20, true);
+      centralView.setUint16(6, 20, true);
+      centralView.setUint16(8, 0x0800, true);
+      centralView.setUint16(10, 0, true);
+      centralView.setUint16(12, 0, true);
+      centralView.setUint16(14, 0x0021, true);
+      centralView.setUint32(16, entry.crc, true);
+      centralView.setUint32(20, entry.dataBytes.length, true);
+      centralView.setUint32(24, entry.dataBytes.length, true);
+      centralView.setUint16(28, entry.nameBytes.length, true);
+      centralView.setUint32(42, offset, true);
+      central.set(entry.nameBytes, 46);
+      centralParts.push(central);
+      offset += local.length + entry.dataBytes.length;
+    }
+    const centralSize = centralParts.reduce((size, part) => size + part.length, 0);
+    const end = new Uint8Array(22);
+    const endView = new DataView(end.buffer);
+    endView.setUint32(0, 0x06054b50, true);
+    endView.setUint16(8, normalized.length, true);
+    endView.setUint16(10, normalized.length, true);
+    endView.setUint32(12, centralSize, true);
+    endView.setUint32(16, offset, true);
+    return concatenateBytes([...localParts, ...centralParts, end]);
+  }
+
+  function concatenateBytes(parts) {
+    const result = new Uint8Array(parts.reduce((total, part) => total + part.length, 0));
+    let position = 0;
+    for (const part of parts) {
+      result.set(part, position);
+      position += part.length;
+    }
+    return result;
+  }
+
+  function crc32(bytes) {
+    let crc = 0xffffffff;
+    for (const byte of bytes) crc = CRC_TABLE[(crc ^ byte) & 0xff] ^ (crc >>> 8);
+    return (crc ^ 0xffffffff) >>> 0;
+  }
+
+  const CRC_TABLE = (() => {
+    const table = new Uint32Array(256);
+    for (let index = 0; index < 256; index += 1) {
+      let value = index;
+      for (let bit = 0; bit < 8; bit += 1) value = value & 1 ? 0xedb88320 ^ (value >>> 1) : value >>> 1;
+      table[index] = value >>> 0;
+    }
+    return table;
+  })();
+
+  function escapeXml(value) {
+    return String(value)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&apos;');
+  }
+
+  function formatNumber(value) {
+    return Number.isInteger(value) ? String(value) : String(Number(value.toFixed(4)));
+  }
+
+  function identifierToken(value) {
+    const token = String(value).normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^A-Za-z0-9_.-]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 80);
+    return token && /^[A-Za-z_]/.test(token) ? token : `id_${token || 'item'}`;
+  }
+
+  function fileToken(value) {
+    return String(value).normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80) || 'bergen-quiz';
+  }
+
+  function choiceIdentifier(value) { return `answer_${identifierToken(value)}`; }
+  function indent(value, spaces) {
+    const padding = ' '.repeat(spaces);
+    return String(value).split('\n').map((line) => `${padding}${line}`).join('\n');
+  }
+  function isPlainObject(value) { return value !== null && typeof value === 'object' && !Array.isArray(value); }
+
+  return Object.freeze({
+    supportedTypes,
+    parseTransferBlock,
+    validateTransfer,
+    summarizeQuiz,
+    buildQtiPackage,
+    escapeXml,
+  });
+})();
+/* BERGEN_QTI_CORE_END */
+
+const BERGEN_SAFE_SAMPLE = {
+  "metadata": { "dataClassification": "synthetic/de-identified", "containsRealStudentData": false },
+  "format": "bergen-qti-transfer",
+  "version": "0.1",
+  "quiz": {
+    "title": "Bergen QTI Compatibility Check",
+    "instructions": "Answer all five questions. This quiz uses synthetic course content and contains no student information.",
+    "settings": { "shuffleAnswers": false, "timeLimitMinutes": null, "allowedAttempts": 1, "pointsPossible": 12 },
+    "questions": [
+      { "id": "q1", "type": "multiple_choice", "title": "Primary source", "prompt": "Which item is a primary source for studying a historical event?", "points": 2, "choices": [{ "id": "a", "text": "A modern textbook chapter" }, { "id": "b", "text": "A diary written during the event" }, { "id": "c", "text": "A recent encyclopedia entry" }, { "id": "d", "text": "A documentary produced last year" }], "correctChoiceIds": ["b"] },
+      { "id": "q2", "type": "true_false", "title": "Source evaluation", "prompt": "The author and purpose of a source can affect how the source should be interpreted.", "points": 1, "correctAnswer": true },
+      { "id": "q3", "type": "multiple_answer", "title": "Credibility checks", "prompt": "Which actions help evaluate the credibility of a source? Select all that apply.", "points": 3, "choices": [{ "id": "a", "text": "Identify the author" }, { "id": "b", "text": "Check the publication date" }, { "id": "c", "text": "Assume the first search result is accurate" }, { "id": "d", "text": "Compare the claim with other reliable sources" }], "correctChoiceIds": ["a", "b", "d"] },
+      { "id": "q4", "type": "short_answer", "title": "Source type", "prompt": "What term describes evidence created during the time being studied?", "points": 2, "acceptedAnswers": ["primary source", "a primary source"] },
+      { "id": "q5", "type": "essay", "title": "Evidence explanation", "prompt": "In two or three sentences, explain why corroborating a source can strengthen an argument.", "points": 4, "feedback": "Evaluate the explanation for a clear reason and an accurate connection to corroboration." }
+    ]
+  }
+};
+
+const BergenQtiApp = (() => {
+  'use strict';
+  const successMessage = 'QTI package ready. Download your ZIP and import it into an unpublished Canvas test course.';
+
+  function mount(doc, browser) {
+    const elements = {
+      transfer: doc.querySelector('#transfer-block'),
+      loadSample: doc.querySelector('#load-sample'),
+      check: doc.querySelector('#check-quiz'),
+      download: doc.querySelector('#download-qti'),
+      privacy: doc.querySelector('#privacy-confirmation'),
+      results: doc.querySelector('#results'),
+      summary: doc.querySelector('#quiz-summary'),
+      messages: doc.querySelector('#validation-messages'),
+      status: doc.querySelector('#status'),
+    };
+    let checkedTransfer = null;
+
+    elements.loadSample.addEventListener('click', () => {
+      elements.transfer.value = JSON.stringify(BERGEN_SAFE_SAMPLE, null, 2);
+      resetCheck();
+      setStatus('Safe sample loaded. Select Check quiz.');
+      elements.check.focus();
+    });
+    elements.transfer.addEventListener('input', resetCheck);
+    elements.privacy.addEventListener('change', updateDownloadState);
+    elements.check.addEventListener('click', checkQuiz);
+    elements.download.addEventListener('click', downloadPackage);
+
+    function resetCheck() {
+      checkedTransfer = null;
+      elements.privacy.checked = false;
+      elements.download.disabled = true;
+      elements.results.hidden = true;
+      setStatus('Quiz changed. Check it again before downloading.');
+    }
+
+    function checkQuiz() {
+      checkedTransfer = null;
+      elements.download.disabled = true;
+      elements.results.hidden = false;
+      elements.summary.replaceChildren();
+      elements.messages.replaceChildren();
+      try {
+        const transfer = BergenQti.parseTransferBlock(elements.transfer.value);
+        const validation = BergenQti.validateTransfer(transfer);
+        renderValidation(validation);
+        if (!validation.valid) {
+          setStatus(`The quiz needs corrections before a ZIP can be created. ${validation.fallback}`, true);
+          return;
+        }
+        checkedTransfer = transfer;
+        renderSummary(BergenQti.summarizeQuiz(transfer));
+        updateDownloadState();
+        setStatus(validation.warnings.length
+          ? 'Quiz structure passed. Review the messages and confirm the privacy statement.'
+          : 'Quiz structure passed. Confirm the privacy statement to enable download.');
+      } catch (error) {
+        renderMessages('Problems to fix', [error.message], 'error');
+        setStatus(`The transfer block could not be checked. Use reviewed copy-ready content for manual entry in Canvas.`, true);
+      }
+    }
+
+    function updateDownloadState() {
+      elements.download.disabled = !(checkedTransfer && elements.privacy.checked);
+    }
+
+    function downloadPackage() {
+      if (!checkedTransfer || !elements.privacy.checked) return;
+      try {
+        const result = BergenQti.buildQtiPackage(checkedTransfer);
+        const blob = new Blob([result.bytes], { type: 'application/zip' });
+        const objectUrl = browser.URL.createObjectURL(blob);
+        const link = doc.createElement('a');
+        link.href = objectUrl;
+        link.download = result.fileName;
+        doc.body.append(link);
+        link.click();
+        link.remove();
+        browser.setTimeout(() => browser.URL.revokeObjectURL(objectUrl), 1000);
+        setStatus(successMessage);
+      } catch (error) {
+        setStatus(`${error.message} Use reviewed copy-ready content for manual entry in Canvas.`, true);
+      }
+    }
+
+    function renderSummary(summary) {
+      const rows = [
+        ['Quiz', summary.title],
+        ['Questions', String(summary.questionCount)],
+        ['Total points', String(summary.points)],
+        ['Question types', Object.entries(summary.typeCounts)
+          .map(([type, count]) => `${displayType(type)}: ${count}`).join(' · ')],
+      ];
+      const list = doc.createElement('dl');
+      for (const [term, description] of rows) {
+        const dt = doc.createElement('dt');
+        const dd = doc.createElement('dd');
+        dt.textContent = term;
+        dd.textContent = description;
+        list.append(dt, dd);
+      }
+      elements.summary.append(list);
+    }
+
+    function renderValidation(validation) {
+      if (validation.errors.length) renderMessages('Problems to fix', validation.errors, 'error');
+      if (validation.warnings.length) renderMessages('Review before continuing', validation.warnings, 'warning');
+      if (!validation.errors.length && !validation.warnings.length) {
+        renderMessages('Check complete', ['The transfer block passed the local structure checks.'], 'success');
+      }
+    }
+
+    function renderMessages(title, messages, tone) {
+      const group = doc.createElement('section');
+      group.className = `message-group ${tone}`;
+      const heading = doc.createElement('h3');
+      heading.textContent = title;
+      const list = doc.createElement('ul');
+      for (const message of messages) {
+        const item = doc.createElement('li');
+        item.textContent = message;
+        list.append(item);
+      }
+      group.append(heading, list);
+      elements.messages.append(group);
+    }
+
+    function setStatus(message, isError = false) {
+      elements.status.textContent = message;
+      elements.status.dataset.tone = isError ? 'error' : 'neutral';
+    }
+
+    return Object.freeze({ checkQuiz, downloadPackage });
+  }
+
+  function displayType(type) {
+    return type.replaceAll('_', ' ').replace(/^./, (letter) => letter.toUpperCase());
+  }
+
+  return Object.freeze({ mount, successMessage });
+})();
+
+if (typeof document !== 'undefined' && document.querySelector('[data-bergen-qti-app]')) {
+  BergenQtiApp.mount(document, globalThis);
+}
+</script>
+
+  </body>
+</html>

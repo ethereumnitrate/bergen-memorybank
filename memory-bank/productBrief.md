@@ -14,7 +14,7 @@
 - **Version Target**: 1.0
 - **Value Proposition**: Help faculty remember course context and create aligned teaching materials through a guided conversational workflow without exposing protected student records or requiring technical skills.
 - **Product Type**: No-code workflow and document-template kit built around one classic custom Gemini Gem, Google Docs, Google Drive, and Canvas.
-- **Stage**: Concept and design planning
+- **Stage**: Version 1.0 local build complete; live Apps Script deployment and manual Canvas QTI compatibility review pending
 
 ## Key Functionality
 
@@ -100,6 +100,7 @@
 | Google Drive | Faculty-owned folder for reusable documents | Faculty manually creates the folder and manages files |
 | Google Docs | Editable memory and output documents | Faculty copies templates and manually applies approved updates |
 | Canvas | Student-record system and final publishing destination | Faculty manually reviews and publishes approved material; no Canvas API integration |
+| Bergen QTI Packager | Optional QTI 1.2 handoff for approved supported quizzes | Static Bergen-controlled Apps Script page; quiz validation and ZIP creation remain in browser memory; faculty imports and reviews manually |
 
 ## Constraints and Non-Goals
 
@@ -123,9 +124,9 @@
 
 ## Open Questions
 
-- [ ] Which document structure best minimizes duplication while keeping the four required Google Docs usable?
-- [ ] Which Bergen policy passages and Canvas guidance must be reflected verbatim or summarized in faculty materials?
-- [ ] What current classic custom Gem knowledge-file capabilities and limits affect the installation design?
+- [x] Which document structure best minimizes duplication while keeping the four required Google Docs usable? Resolved as two shared documents plus one Course Memory and Active Workbench pair per course.
+- [x] Which Bergen policy passages and Canvas guidance must be reflected verbatim or summarized in faculty materials? Resolved through the dated authoritative-source register and bounded faculty guidance.
+- [x] What current classic custom Gem knowledge-file capabilities and limits affect the installation design? Resolved as manual classic Gem configuration with four attached Drive documents and no automatic editing claim.
 - [ ] Who owns version review and updates after 1.0?
 
 ## Document History
@@ -133,6 +134,7 @@
 | Date | Author | Changes |
 |------|--------|---------|
 | 2026-08-04 | Alex and Codex | Initialized from the supplied Bergen Memory Bank v1.0 request |
+| 2026-08-04 | Alex and Codex | Completed the five-phase local v1.0 build; retained live deployment and manual Canvas compatibility as explicit gates |
 
 ## Last Refreshed
 

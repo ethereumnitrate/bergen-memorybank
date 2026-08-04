@@ -1,13 +1,13 @@
 ---
 slug: bergen-memory-bank-v1
 feature: bergen-memory-bank-v1
-status: IN_PROGRESS
+status: BUILD_COMPLETE
 ---
 
 # bergen-memory-bank-v1: Bergen Memory Bank v1.0
 
 **Complexity**: Level 4
-**Status**: IN_PROGRESS
+**Status**: BUILD_COMPLETE
 **Roadmap**: bergen-memory-bank-v1
 **Branch**: feature/bergen-memory-bank-v1
 **Worktree**: C:\Users\alexa\source\repos\bergen-memorybank
@@ -367,36 +367,41 @@ Yes. The release must include a five-minute installation guide with the exact ei
   - **Test Results**: RED confirmed at 8/8 intended missing-guide failures; review remediation RED confirmed at 5/8 and 4/8; final 8/8 focused Phase 4 and 42/42 full repository tests passing; build, lint, and aggregate validation PASS
   - **Code Review**: APPROVED on iteration 3 — 0 blocking, recommended, optional, security, dependency, upgrade, or scope findings
   - **Faculty Guide QA**: Nine guides cross-checked for exact eight-step installation, all twelve command examples and natural-language parity, privacy/context boundaries, a timed ten-minute presentation, approval-ordered demonstration, and optional manual QTI-to-Canvas fallback without a Phase 5 availability or compatibility claim
-- [ ] Phase 5: Productionize the client-side Bergen QTI Packager for Bergen-controlled Apps Script hosting, preserve the self-contained demo and ZIP fallback, verify supported QTI 1.2 packages, and complete the manual Canvas test-course compatibility gate.
+- [x] Phase 5: Productionize the client-side Bergen QTI Packager for Bergen-controlled Apps Script hosting, preserve the self-contained demo and ZIP fallback, and verify supported QTI 1.2 packages. The external AC-ASYNC-1 manual Canvas compatibility gate remains pending and is not represented as passed.
+  - **Test Results**: RED confirmed at 12/12 intended missing-artifact failures; first GREEN reached 12/12. Independent-review remediation confirmed RED at 3/6 for standards-compliant CRC-32, normalized choice-ID collisions, and protected/control-character safeguards; final 12/12 focused Phase 5 and 54/54 aggregate tests pass.
+  - **Artifact QA**: Deterministic demo and ZIP build PASS; Python `ZipFile.testzip()` returned `None`; both ZIP entries read successfully and parsed as XML; final ZIP SHA-256 is `1F32EC106F52583934B7D8BD3DBE692138F26AF4F82117ACAB980FEB7201C806`.
+  - **Code Review**: APPROVED after remediation — 0 blocking, recommended, or optional findings; security, privacy, dependency, and scope checks PASS.
+  - **Manual Gate**: AC-ASYNC-1 is pending until an authorized Bergen faculty or support user imports the synthetic ZIP into an unpublished Bergen Canvas test course and records the result without student data.
 
 ## Creative Phases
 
 - [x] Architecture design → completed through the approved brainstorm; recorded in `memory-bank/creative/bergen-memory-bank-v1-design.md`
 - [x] User Journey design → completed through the approved brainstorm; recorded in `memory-bank/creative/bergen-memory-bank-v1-design.md`
-- [x] UI/UX design → QTI Packager proof-of-concept validated on desktop and mobile; production refinements remain in Phase 5
+- [x] UI/UX design → QTI Packager proof of concept informed the production privacy-gated, responsive Apps Script page and self-contained fallback
 
 ---
 
 ## Build Execution State
 
-**Build Status**: IDLE
+**Build Status**: BUILD_COMPLETE
 **Current Phase**: 5 of 5
 **Auto-Build Mode**: YES
-**Current Step**: Phase 5 queued
-**Step Status**: COMPLETE
+**Current Step**: Phase 5 boundary complete; final whole-branch review remains owned by auto-build
+**Step Status**: COMPLETE_WITH_CONCERNS
 **Step Started**: 2026-08-04T18:09:53Z
-**Last Completed**: Phase 4 — Faculty guides and aligned demonstration
+**Last Completed**: Phase 5 — Privacy-first client-side QTI Packager
 **Phase 1 Boundary**: COMPLETE — Step 10 Memory Bank update finished 2026-08-04T16:18:04Z
 **Phase 2 Boundary**: COMPLETE — Step 10 Memory Bank update finished 2026-08-04T16:58:25Z
 **Phase 3 Boundary**: COMPLETE — Step 10 Memory Bank update finished 2026-08-04T17:57:14Z
 **Phase 4 Boundary**: COMPLETE — Step 10 Memory Bank update finished 2026-08-04T18:52:37Z
+**Phase 5 Boundary**: COMPLETE_WITH_CONCERNS — Step 10 Memory Bank update finished 2026-08-04T19:23:20Z; AC-ASYNC-1 pending
 **BRAINSTORM CRITIQUE**: skipped — unresolved:no-companion (glob=C:\Users\alexa\.claude\plugins\**\codex-companion.mjs; matches=0)
 
 ### Resumption Notes
 
-**Can Resume**: NO
-**Resume From**: Phase 5 - production QTI Packager and manual compatibility gate
-**Notes**: Phase 4 is complete and independently approved. `poc/` remains authorized prior Phase 5 work and was untouched. No remote is configured; the Phase 4 commit remains local until an origin is added. Phase 3 renderer and Google Drive deviations remain recorded below.
+**Can Resume**: YES
+**Resume From**: AC-ASYNC-1 — authorized unpublished Bergen Canvas test-course compatibility check
+**Notes**: The five implementation phases are locally complete. The Apps Script bundle is deployable but not deployed, and Bergen-domain access has not been verified. QTI compatibility remains unapproved until AC-ASYNC-1 passes. No remote is configured, so the Phase 5 commit remains local. Phase 3 renderer and Google Drive deviations remain recorded below.
 
 ### Halt State
 
@@ -412,10 +417,15 @@ Yes. The release must include a five-minute installation guide with the exact ei
 - The configured Codex review companion resolved `unresolved:no-companion`; the required Anthropic fallback review approved the phase with no findings.
 - The packaged ALA `commit-guard.sh` was absent. Step 11 used a deterministic equivalent over the committed file list; the clean-tree check allowed only the user-authorized untracked `poc/` tree, which could not be removed or staged.
 - Phase 4 Step 11 repeated that deterministic commit-guard equivalent: all 18 expected files were staged, production validation-script changes included content tests, and `poc/` remained the only authorized unstaged path.
+- Phase 5 Step 11 repeated the deterministic commit-guard equivalent because the packaged guard remains absent: production Apps Script/demo artifacts, QTI tests, release alignment, and Memory Bank updates are staged; the authorized historical `poc/` tree is the only unstaged path.
 - Phase 3 used the Documents skill's explicit missing-`soffice` fallback: no rendered pages or visual inspection were possible, so document QA is `DONE_WITH_CONCERNS`; sanitizer, privacy, accessibility, content-parity, and package-wide OOXML/preset gates passed for all four DOCX files.
 - Phase 3 | `dist/google-docs/*.docx` | The Google Drive connector was unavailable, so the phase produced four import-ready DOCX files instead of live native Drive documents and made no automatic-creation claim.
 - Cross-phase consistency correction: AC-ERROR-2, the Phase 2 Gem snapshot label/test, and the scenario matrix now use the exact approved field name `Concepts already introduced`.
 - Phase 4 review recovery: the independent review required two bounded TDD remediation rounds to correct approval ordering, complete the manual Canvas import path, remove internal release language from faculty prose, and strengthen the guide-alignment suite before final approval.
+- Phase 5 was completed without live Apps Script or Canvas account access. The bundle is deployable, but a Bergen-controlled deployment, actual domain restriction, and AC-ASYNC-1 Canvas compatibility remain authorized manual actions and are not claimed as verified.
+- Phase 5 real in-app visual QA was unavailable because browser policy blocked the local `file://` page. The deterministic desktop/mobile DOM journeys pass, and the earlier authorized proof of concept retains separate real-browser evidence; no production visual pass is claimed.
+- Phase 5 review recovery: the first independent review found an invalid CRC-32 table implementation that made both ZIP entries unreadable to standards-compliant readers. A regression test independently calculates CRC-32; the corrected ZIP passes Python `ZipFile.testzip()`, entry reads, and XML parsing. The same remediation added rejection for XML control characters, normalized choice-ID collisions, and an explicit real-student-data flag.
+- The user-authorized `poc/` tree remains intact and untracked as historical design evidence. Its prebuilt ZIP predates the CRC-32 remediation and is not a release artifact; only the verified files under `apps/qti-packager/` and `demo/` are Phase 5 deliverables.
 
 ### Active Sub-Agents
 
@@ -460,6 +470,14 @@ Yes. The release must include a five-minute installation guide with the exact ei
 - Phase 4 final review: APPROVED on iteration 3 with 0 findings; security, privacy, dependencies, upgrades, and scope PASS
 - Phase 4 documentation: `techContext.md` and `systemPatterns.md` updated for the nine-guide faculty layer and eight-check guide-alignment suite while preserving Phase 3 limitations
 - Phase 4 Memory Bank boundary: only Phase 4 checked; execution advanced to Phase 5
+- Phase 5 TDD: RED confirmed at 12/12 intended missing-artifact failures, then GREEN at 12/12 focused checks
+- Phase 5 integration TDD: RED confirmed at 3/12 for release inventory and guide state, then GREEN after Phase 5 status alignment
+- Phase 5 integration verification: full tests 54/54, build PASS, lint PASS, aggregate validation PASS, and deterministic QTI demo/ZIP build PASS
+- Phase 5 review remediation: RED confirmed at 3/6 for independent CRC-32, normalized choice-ID collision, explicit real-student-data, and XML-control safeguards; GREEN at 6/6 and 54/54 aggregate
+- Phase 5 artifact QA: Python `ZipFile.testzip()` returned `None`; `imsmanifest.xml` and `assessment.xml` both read and parsed successfully; SHA-256 `1F32EC106F52583934B7D8BD3DBE692138F26AF4F82117ACAB980FEB7201C806`
+- Phase 5 final independent review: APPROVED with 0 findings; security, privacy, dependency, and scope PASS; AC-ASYNC-1 remains pending
+- Phase 5 documentation: release contract, version, scenario matrix, faculty QTI guidance, source register, product brief, technology context, and system patterns updated without a live deployment or compatibility claim
+- Phase 5 Memory Bank boundary: implementation complete with manual AC-ASYNC-1 and local visual-browser limitations retained for final auto-build review
 
 ## Plan Critique
 

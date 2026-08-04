@@ -1,8 +1,25 @@
 # Scenario Verification Matrix
 
-## Verification purpose through Phase 4
+## Verification purpose through Phase 5
 
-This file is the human-readable content-contract matrix for Bergen Memory Bank v1.0 through Phase 4. It maps synthetic inputs to observable instructions, template content, and faculty guides for routing, context selection, stage state, document ownership, approval, privacy, and safe next steps. It does not claim access to Gemini's hidden behavior or that Phase 5 QTI packaging exists.
+This file is the human-readable verification matrix for Bergen Memory Bank v1.0 through Phase 5. It maps synthetic inputs to observable Gem instructions, template content, faculty guides, browser-packager behavior, artifact structure, approval, privacy, and safe next steps. It does not claim access to Gemini's hidden behavior, a live Apps Script deployment, or Bergen Canvas compatibility.
+
+## Phase 5 QTI Packager scenarios
+
+| Check | Source contract | Observable contract | Automated test |
+|---|---|---|---|
+| Transfer parsing | Approved Bergen Quiz Transfer Block | Plain and fenced JSON parse; malformed text reports a correctable issue | `qti-packager.test.mjs` check 1 |
+| Five item types and settings | Synthetic five-item fixture | Multiple choice, true/false, multiple answer, short answer, and essay validate with 12 total points | `qti-packager.test.mjs` check 2 |
+| Invalid and unsupported content | Missing answer, invalid points, or unsupported type | No ZIP; correctable issue and reviewed manual-entry fallback | `qti-packager.test.mjs` check 3 |
+| Protected-data signal | Synthetic possible-identifier pattern | Stop packaging and require removal; no ZIP | `qti-packager.test.mjs` check 4 |
+| QTI XML | Manifest and assessment | Well-formed QTI 1.2 XML contains five Canvas item labels plus approved quiz settings | `qti-packager.test.mjs` check 5 |
+| Deterministic ZIP | Valid synthetic transfer block | Local ZIP contains only `imsmanifest.xml` and `assessment.xml` and is byte-stable | `qti-packager.test.mjs` check 6 |
+| Deployment bundle | Apps Script source and deployment guide | Complete static bundle; domain restriction is an authorized deployment setting, not a manifest claim | `apps-script-bundle.test.mjs` check 1 |
+| Browser-only boundary | Apps Script entry point and browser script | Static HTML serving only; no quiz-content server call, storage, telemetry, URL transfer, or Canvas connection | `apps-script-bundle.test.mjs` check 2 |
+| Accessible privacy gate | Page shell, styles, and browser script | Labeled input, live status, explicit privacy checkbox, responsive layout, exact success text, and manual Canvas boundary | `apps-script-bundle.test.mjs` check 3 |
+| Desktop journey | Self-contained demo at desktop width | Load sample → check → privacy confirmation → local ZIP download succeeds | `browser-smoke.mjs` check 1 |
+| Mobile journey | Self-contained demo at mobile width | The same privacy-gated local journey succeeds | `browser-smoke.mjs` check 2 |
+| Browser fallback | Unsupported synthetic transfer block | Download remains disabled and the manual-entry fallback is visible | `browser-smoke.mjs` check 3 |
 
 ## Phase 4 guide scenarios
 
@@ -15,7 +32,7 @@ This file is the human-readable content-contract matrix for Bergen Memory Bank v
 | Ten-minute presentation | Presentation script | Contiguous timed sections total 10:00 and demonstrate safe value, privacy, context, course memory, commands, optional QTI, and manual Canvas | `guide-alignment.test.mjs` check 5 |
 | Prompt examples | Sample prompts | One safe alias example and one safe natural-language example for every workflow | `guide-alignment.test.mjs` check 6 |
 | Aligned demonstration | End-to-end demonstration | One synthetic course, outcome, concept set, and criteria remain aligned through lesson, assignment, rubric, review, approved revision, record proposal, and manual publishing packet | `guide-alignment.test.mjs` check 7 |
-| Recovery and QTI handoff | Troubleshooting and QTI-to-Canvas guide | Complete recovery paths, manual fallback, five item types, browser/local-only boundaries, unpublished test course, no Phase 5 availability or compatibility claim | `guide-alignment.test.mjs` check 8 |
+| Recovery and QTI handoff | Troubleshooting and QTI-to-Canvas guide | Complete recovery paths, manual fallback, five item types, browser/local-only boundaries, unpublished test course, no live-link availability or compatibility claim | `guide-alignment.test.mjs` check 8 |
 
 ## Phase 3 template and document scenarios
 
@@ -84,4 +101,4 @@ Phase 3 produced four Google Docs-ready DOCX files. It did not create live Drive
 
 ## What is not tested here
 
-No fixture or guide contains a real record, credential, email address, identifying filename, grade, accommodation, health detail, or raw student work. The content suite verifies committed static contracts, not hidden Gemini context, live tenant access, automatic Google Docs editing, Canvas automation, live APIs, browser packaging, QTI XML, a live QTI URL, or Canvas compatibility inferred from structure.
+No fixture or guide contains a real record, credential, email address, identifying filename, grade, accommodation, health detail, or raw student work. The suites verify committed static contracts, local browser behavior, and QTI artifact structure. They do not verify hidden Gemini context, live tenant access, automatic Google Docs editing, Canvas automation, a deployed Apps Script page, Bergen-domain access, a live packager location, or Canvas compatibility inferred from structure.

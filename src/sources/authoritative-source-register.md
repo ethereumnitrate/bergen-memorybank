@@ -46,4 +46,4 @@ Package origin, quiz engine, institution settings, and third-party variations st
 
 ### Apps Script hosting boundary
 
-Apps Script HTML Service pages run in an iframe sandbox. Active content and requests must use HTTPS. Because top-level navigation is restricted, a redirect should be presented as a user-activated link or button. The later packager may keep quiz transformation in client-side browser code, but deployment and network behavior must still be inspected in Phase 5. No Apps Script application is implemented in Phase 1.
+Apps Script HTML Service pages run in an iframe sandbox. Active content and requests must use HTTPS. Because top-level navigation is restricted, a redirect should be presented as a user-activated link or button. The implemented packager keeps quiz transformation in client-side browser code; its local source and network behavior are inspected in Phase 5, while live deployment and domain-access behavior remain manual checks. No Apps Script application was implemented in Phase 1.

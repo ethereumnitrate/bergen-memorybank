@@ -38,16 +38,17 @@ Developer release-validation lane
   Nine faculty guides
     → plain-language installation and daily-use guidance
     → observable response, privacy, alignment, and approval contracts
-    → manual Google Docs, Canvas, and optional future QTI handoffs
+    → manual Google Docs, Canvas, and optional QTI handoffs
 
-Optional QTI companion (planned Phase 5; absent through Phase 4)
+Optional QTI companion (implemented locally; deployment and compatibility remain manual)
   Faculty-approved synthetic or non-student quiz content
     → text-only Bergen Quiz Transfer Block from the Gem
-    → client-side browser validation and packaging
+    → static Apps Script page with client-side validation and QTI 1.2 ZIP creation
+    → local download; no quiz-content server transfer or browser storage
     → manual Canvas import and compatibility approval
 ```
 
-The developer lane verifies repository artifacts but is not part of faculty installation or daily use. The optional Phase 5 QTI companion is architecturally separate from the Gem and Google Docs memory workflow; it must not become a server, student-record store, Canvas API integration, or prerequisite for the core no-code experience.
+The developer lane verifies repository artifacts but is not part of faculty installation or daily use. The optional QTI companion is architecturally separate from the Gem and Google Docs memory workflow. Apps Script serves static HTML only; quiz content stays in browser memory and must never reach a server, student-record store, Canvas API integration, or URL. The companion is not a prerequisite for the core no-code experience.
 
 ## Component Responsibilities
 
@@ -58,13 +59,13 @@ The developer lane verifies repository artifacts but is not part of faculty inst
 - **Decisions, Reflections, and Reusable Practices**: Holds approved decisions and reusable faculty practices with enough context to judge future applicability.
 - **Class Learning Snapshot**: A reusable Markdown partial embedded exactly once in Active Workbench; it holds only de-identified, class-level observations needed to design reinforcement and does not produce a fifth knowledge document.
 - **Document Builder**: Generates four Google Docs-ready DOCX files from the primary Markdown sources with bundled `python-docx`, packaged title sanitation and privacy scrubbing, global OOXML `rsid` cleanup, and deterministic ZIP ordering and timestamps.
-- **Faculty Guides**: Provide nine aligned, plain-language entry points for exact installation, commands and natural-language requests, daily use, privacy recovery, demonstration and presentation, troubleshooting, and manual Google Docs, Canvas, and future optional QTI handoffs.
+- **Faculty Guides**: Provide nine aligned, plain-language entry points for exact installation, commands and natural-language requests, daily use, privacy recovery, demonstration and presentation, troubleshooting, and manual Google Docs, Canvas, and optional QTI handoffs.
 - **Canvas**: Holds protected student records and receives final faculty-approved publishing actions.
 - **Release Contract**: Defines the v1.0 scope, safeguard boundary, exact artifact inventory, phase ownership, and Ready/Pending state in `src/release/release-contract.md`.
 - **Authoritative Source Register**: Holds dated official-source pointers and narrow claim mappings in `src/sources/authoritative-source-register.md`; Memory Bank documents reference this register rather than duplicate its source details.
-- **Scenario Matrix and Fixtures**: Define observable Gem, template, and faculty-guide contracts through Phase 4 while supplying synthetic or de-identified workflow and quiz inputs without claiming unimplemented packaging behavior.
-- **Validation Harness and Tests**: Use dependency-free Node.js `.mjs` files to check release structure, inventory state, source discipline, fixture safety, Gem workflow contracts, template ownership, generated OOXML, faculty-guide alignment, and capability boundaries for repository contributors.
-- **QTI Packager**: Planned optional Phase 5 client-side companion that will validate a faculty-approved text-only transfer block and prepare a package for manual Canvas import; no QTI application exists through Phase 4.
+- **Scenario Matrix and Fixtures**: Define observable Gem, template, faculty-guide, packager, and manual compatibility contracts while supplying synthetic or de-identified workflow and quiz inputs.
+- **Validation Harness and Tests**: Use dependency-free Node.js `.mjs` files to check release structure, inventory state, source discipline, fixture safety, Gem workflows, template ownership, generated OOXML, faculty-guide alignment, QTI XML/ZIP structure, Apps Script privacy boundaries, and desktop/mobile presentation journeys.
+- **QTI Packager**: Optional static Apps Script companion that validates an approved text-only transfer block and creates a local QTI 1.2 ZIP in the browser. It has no quiz-content server call, database, account, telemetry, Canvas connection, or automatic publication authority.
 
 ## Conversational Routing Pattern
 
@@ -98,7 +99,7 @@ This ordering keeps aliases from acquiring authority, prevents retrieval or draf
 
 - The Gem may emit a Bergen Quiz Transfer Block only for an approved, reviewed, synthetic or non-student quiz with complete supported item and scoring information.
 - The block is structured text, not a QTI file or ZIP, and creating it does not claim validation, packaging, import, or compatibility.
-- The separate Phase 5 browser tool owns transfer-block validation and local packaging; the faculty member owns the manual unpublished-course import, review, and publication decision.
+- The separate browser tool owns transfer-block validation and local packaging; the faculty member owns the manual unpublished-course import, review, and publication decision.
 - Unsupported or incomplete items fall back to copy-ready Canvas quiz content so the core Assignment workflow does not depend on the optional packager.
 
 ## Safety and Error Patterns
@@ -134,11 +135,11 @@ This ordering keeps aliases from acquiring authority, prevents retrieval or draf
 - Faculty-facing documents must be copy-ready and avoid repository paths, Markdown mechanics, or developer workflow language.
 - Version identifiers and source-review dates must be visible in release-facing material where policy or platform drift matters.
 - Demonstrations and tests use synthetic, de-identified examples only.
-- The release contract is the complete artifact inventory. `Ready` means present and verified in the current phase; `Pending` means assigned to a later phase and intentionally absent. Validation checks both conditions so inventory rows cannot imply unimplemented capability.
+- The release contract is the complete artifact inventory. `Ready` means present and locally verified; `Pending` is reserved for evidence requiring an authorized manual action. Validation checks artifact state without turning structural evidence into a compatibility claim.
 - Detailed policy and platform citations live in the authoritative source register. Other Memory Bank and release documents point to that register and summarize only the boundary they need.
 - Google Docs deliverables retain Markdown as their source of truth. The Class Learning Snapshot partial is expanded into Active Workbench during authoring, and only the four primary knowledge-document sources produce standalone DOCX files.
 - The nine faculty guides are a coordinated content layer rather than independent advice: installation uses the exact eight-step setup, daily-use material shares the same twelve optional aliases and natural-language parity, and every consequential handoff preserves observable context, separate approvals, and manual faculty control.
-- Faculty examples and demonstrations stay synthetic and preserve one outcome, introduced-concept set, and criteria chain across lesson, assignment, rubric, review, approved revision, record proposal, and publication handoff. Future QTI guidance describes only a conditional handoff and manual fallback until the Phase 5 packager and Bergen compatibility evidence exist.
+- Faculty examples and demonstrations stay synthetic and preserve one outcome, introduced-concept set, and criteria chain across lesson, assignment, rubric, review, approved revision, record proposal, and publication handoff. QTI guidance describes only a conditional handoff and manual fallback; it never represents local packaging as Bergen Canvas compatibility.
 
 ## Release Validation Pattern
 
@@ -148,9 +149,10 @@ This ordering keeps aliases from acquiring authority, prevents retrieval or draf
 - `tests/content/source-register.test.mjs` maps the authoritative source register to dated-source completeness and bounded policy, Gemini, Canvas, QTI, and Apps Script claims.
 - `tests/content/gem-workflows.test.mjs` maps the complete Gem instruction source and its 18 synthetic scenarios to routing, context, stage, approval, privacy, prerequisite, handoff, and capability-boundary checks.
 - `tests/content/template-contracts.test.mjs` maps the five template sources and four generated DOCX files to the ownership, snapshot, privacy, explicit-selection, prerequisite, manual-record, and OOXML contracts.
-- `tests/content/guide-alignment.test.mjs` maps all nine faculty guides to nontechnical language, exact installation, routing parity, observable response fields, privacy recovery, context estimates, presentation timing, synthetic alignment, approval ordering, manual handoffs, and the future-QTI boundary.
+- `tests/content/guide-alignment.test.mjs` maps all nine faculty guides to nontechnical language, exact installation, routing parity, observable response fields, privacy recovery, context estimates, presentation timing, synthetic alignment, approval ordering, manual handoffs, and the optional-QTI boundary.
+- The three QTI suites map the production Apps Script bundle, QTI core, generated artifacts, and self-contained page to twelve browser-only privacy, validation, XML, ZIP, accessibility, and desktop/mobile journey checks.
 - `scripts/build-google-docs.mjs` is a separately invocable deterministic authoring step. It resolves bundled tooling through explicit environment variables or compatible cache discovery, then sanitizes, privacy-scrubs, and normalizes each generated DOCX.
-- The human-readable `src/testing/scenario-matrix.md` records verified Gem, template, and faculty-guide behaviors and distinguishes packaging and compatibility checks that remain Phase 5 or manual work.
+- The human-readable `src/testing/scenario-matrix.md` records verified Gem, template, guide, and packager behaviors and keeps the authorized manual Canvas compatibility gate distinct.
 - Automated Phase 3 release evidence includes title-sanitizer, accessibility, OOXML, `google_docs_default`, privacy, and deterministic-package checks for all four DOCX files. Render/PNG visual QA remains `DONE_WITH_CONCERNS` when LibreOffice/`soffice` is unavailable and must not be represented as a visual pass.
 
 ### Fixture Rules
@@ -183,11 +185,18 @@ This ordering keeps aliases from acquiring authority, prevents retrieval or draf
 <!-- AUTO-MANAGED: c4-architecture-start -->
 ## C4 Architecture
 
-C4 architecture documentation has not been generated. Phases 1 and 2 include developer-only validation plus the Markdown Gem instruction source, and Phase 5 plans an optional client-side QTI companion, but no C4 manifest exists and the QTI application is not implemented through Phase 2.
+C4 architecture documentation has not been generated. The implemented topology is documented above; no C4 manifest exists.
 
 <!-- AUTO-MANAGED: c4-architecture-end -->
 
 ## Recent Architecture Changes
+
+### 2026-08-04 - Implemented static-service, client-only QTI packaging
+
+- **What Changed**: Added the Apps Script static page shell, browser-only QTI core, privacy-gated UI, deterministic local ZIP generation, self-contained demo, synthetic fallback ZIP, and twelve focused tests.
+- **Reason**: Preserve the approved optional quiz-transfer journey while preventing quiz content from crossing a server boundary or granting automated Canvas authority.
+- **Trade-offs**: The static Apps Script host still requires an authorized Bergen deployment and access review. Local structure and browser checks cannot replace the unpublished-course Canvas compatibility gate.
+- **Affected Components**: QTI Packager, demo artifacts, synthetic quiz fixture, release inventory, scenario matrix, faculty QTI guidance, and aggregate validation.
 
 ### 2026-08-04 - Added the aligned faculty-guide layer
 

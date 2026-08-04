@@ -65,26 +65,27 @@ const expectedInventory = new Map([
   ['src/guides/troubleshooting.md', { status: 'Ready', phase: 4 }],
   ['src/guides/qti-canvas-handoff.md', { status: 'Ready', phase: 4 }],
   ['tests/content/guide-alignment.test.mjs', { status: 'Ready', phase: 4 }],
-  ['apps/qti-packager/Code.gs', { status: 'Pending', phase: 5 }],
-  ['apps/qti-packager/Index.html', { status: 'Pending', phase: 5 }],
-  ['apps/qti-packager/Styles.html', { status: 'Pending', phase: 5 }],
-  ['apps/qti-packager/Script.html', { status: 'Pending', phase: 5 }],
-  ['apps/qti-packager/appsscript.json', { status: 'Pending', phase: 5 }],
-  ['apps/qti-packager/README.md', { status: 'Pending', phase: 5 }],
-  ['demo/Bergen-QTI-Packager-Demo.html', { status: 'Pending', phase: 5 }],
-  ['demo/bergen-qti-compatibility-check-qti.zip', { status: 'Pending', phase: 5 }],
-  ['scripts/build-qti-demo.mjs', { status: 'Pending', phase: 5 }],
-  ['tests/qti/qti-packager.test.mjs', { status: 'Pending', phase: 5 }],
-  ['tests/qti/apps-script-bundle.test.mjs', { status: 'Pending', phase: 5 }],
-  ['tests/qti/browser-smoke.mjs', { status: 'Pending', phase: 5 }],
+  ['apps/qti-packager/Code.gs', { status: 'Ready', phase: 5 }],
+  ['apps/qti-packager/Index.html', { status: 'Ready', phase: 5 }],
+  ['apps/qti-packager/Styles.html', { status: 'Ready', phase: 5 }],
+  ['apps/qti-packager/Script.html', { status: 'Ready', phase: 5 }],
+  ['apps/qti-packager/appsscript.json', { status: 'Ready', phase: 5 }],
+  ['apps/qti-packager/README.md', { status: 'Ready', phase: 5 }],
+  ['demo/Bergen-QTI-Packager-Demo.html', { status: 'Ready', phase: 5 }],
+  ['demo/bergen-qti-compatibility-check-qti.zip', { status: 'Ready', phase: 5 }],
+  ['scripts/build-qti-demo.mjs', { status: 'Ready', phase: 5 }],
+  ['tests/qti/qti-packager.test.mjs', { status: 'Ready', phase: 5 }],
+  ['tests/qti/apps-script-bundle.test.mjs', { status: 'Ready', phase: 5 }],
+  ['tests/qti/browser-smoke.mjs', { status: 'Ready', phase: 5 }],
 ]);
 
 test('repository scripts provide dependency-free test, build, lint, and aggregate validation', async () => {
   const packageJson = await readJson('package.json');
 
   assert.deepEqual(packageJson.scripts, {
-    test: 'node --test tests/content/release-structure.test.mjs tests/content/source-register.test.mjs tests/content/gem-workflows.test.mjs tests/content/template-contracts.test.mjs tests/content/guide-alignment.test.mjs',
+    test: 'node --test tests/content/release-structure.test.mjs tests/content/source-register.test.mjs tests/content/gem-workflows.test.mjs tests/content/template-contracts.test.mjs tests/content/guide-alignment.test.mjs tests/qti/qti-packager.test.mjs tests/qti/apps-script-bundle.test.mjs tests/qti/browser-smoke.mjs',
     'build:google-docs': 'node scripts/build-google-docs.mjs',
+    'build:qti-demo': 'node scripts/build-qti-demo.mjs',
     build: 'node scripts/validate-release.mjs --mode build',
     lint: 'node scripts/validate-release.mjs --mode lint',
     validate: 'node scripts/validate-release.mjs --mode all',
@@ -104,7 +105,7 @@ test('release version identifies Bergen Memory Bank v1.0 and the 2026-08-04 sour
   assert.match(version, /QTI compatibility remains pending/i);
 });
 
-test('release contract inventories every v1.0 artifact and keeps unimplemented phases pending', async () => {
+test('release contract inventories every v1.0 artifact and keeps manual evidence distinct', async () => {
   const releaseContract = await readText('src/release/release-contract.md');
   const rows = [...releaseContract.matchAll(/^\|\s*`([^`]+)`\s*\|\s*(Ready|Pending)\s*\|\s*(\d)\s*\|/gm)];
   const actualInventory = new Map(rows.map(([, artifact, status, phase]) => [artifact, {
@@ -143,7 +144,9 @@ test('foundation fixtures are explicitly synthetic and contain no student-record
     assert.equal(fixture.metadata.containsRealStudentData, false);
   }
   assert.ok(workflowScenarios.scenarios.length >= 4, 'workflow fixture should seed later safeguard scenarios');
-  assert.ok(sampleQuiz.items.length >= 1, 'quiz fixture should seed later packaging checks');
+  assert.equal(sampleQuiz.format, 'bergen-qti-transfer');
+  assert.equal(sampleQuiz.version, '0.1');
+  assert.equal(sampleQuiz.quiz.questions.length, 5, 'quiz fixture must exercise every supported item type');
   for (const fieldName of forbiddenFieldNames) {
     assert.equal(serializedFixtures.includes(`\"${fieldName}\"`), false, `${fieldName} must not appear in fixtures`);
   }

@@ -2,20 +2,20 @@
 
 ## Release boundary
 
-Bergen Memory Bank v1.0 is planned as a no-code faculty kit: one custom Gemini Gem, four reusable Google Docs, faculty enablement material, and an optional browser-only QTI packaging handoff. Phases 1 through 4 establish the repository foundation, the complete classic custom Gem instruction system, the four-document hybrid memory model with a replaceable de-identified Class Learning Snapshot, and the aligned faculty guides. A listed artifact is evidence only for the phase and behavior its tests verify.
+Bergen Memory Bank v1.0 is a no-code faculty kit: one custom Gemini Gem, four reusable Google Docs, faculty enablement material, and an optional browser-only QTI packaging handoff. Phases 1 through 5 establish the repository foundation, complete classic custom Gem instruction system, four-document hybrid memory model with a replaceable de-identified Class Learning Snapshot, aligned faculty guides, and deployable client-side QTI Packager source with a self-contained demonstration and synthetic compatibility package. A listed artifact is evidence only for the phase and behavior its tests verify.
 
-Canvas remains the student-record system and the final manual publishing destination. The implemented Gem, memory documents, and faculty guides use teaching context and synthetic or de-identified class-level observations only; the future optional QTI Packager must preserve the same boundary. Revision requires explicit faculty approval, and recording and publication require separate approvals. Google Docs persistence and Canvas transfer require faculty manual action. Quiz import and publication also remain faculty-controlled manual steps.
+Canvas remains the student-record system and the final manual publishing destination. The implemented Gem, memory documents, and faculty guides, together with the implemented optional QTI Packager, use teaching context and synthetic or de-identified class-level observations only. Revision requires explicit faculty approval, and recording and publication require separate approvals. Google Docs persistence and Canvas transfer require faculty manual action. Quiz import and publication also remain faculty-controlled manual steps.
 
 ## Capability boundaries
 
 Version 1.0 does not claim or implement native Gemini commands, Gem plugins or custom actions, automatic Google Docs editing, a Canvas API, automated grading, individual student profiling, autonomous Canvas publication, server-side quiz-content handling, accounts, databases, or telemetry. Optional `bergen:<workflow>` strings are documented as case-insensitive prompt aliases with natural-language equivalents, not as platform integrations.
 
-Phase 4 creates and content-tests the command reference, installation guide, quick start, presentation script, sample prompts, aligned demonstration, privacy checklist, troubleshooting guidance, and QTI-to-Canvas handoff. It does not create or deploy the Phase 5 QTI Packager, live application, demonstration page, or ZIP. Those Phase 5 artifacts remain pending until implemented and verified.
+Phase 5 implements and locally verifies the optional QTI Packager as a Google Apps Script HTML Service bundle whose server entry point serves static HTML only. Quiz validation, QTI 1.2 XML generation, and ZIP creation occur in the active browser without sending quiz content to Apps Script functions or any external service. The phase also supplies a self-contained presentation page and a synthetic prebuilt ZIP. It does not deploy a live institution page, change Canvas, or establish Bergen Canvas compatibility.
 
 ## Status meanings
 
 - **Ready**: present and verified in a completed implementation phase.
-- **Pending**: required for v1.0, assigned to an unimplemented phase, and intentionally absent now.
+- **Pending**: required evidence that cannot be established by the local build and still requires an authorized manual action.
 
 ## Complete v1.0 artifact inventory
 
@@ -54,27 +54,27 @@ Phase 4 creates and content-tests the command reference, installation guide, qui
 | `src/guides/troubleshooting.md` | Ready | 4 | Capability, context, and fallback guidance |
 | `src/guides/qti-canvas-handoff.md` | Ready | 4 | Manual packaging and Canvas import guide |
 | `tests/content/guide-alignment.test.mjs` | Ready | 4 | Guide and demonstration consistency checks |
-| `apps/qti-packager/Code.gs` | Pending | 5 | Apps Script entry point and deployment surface |
-| `apps/qti-packager/Index.html` | Pending | 5 | Accessible packager page shell |
-| `apps/qti-packager/Styles.html` | Pending | 5 | HTML Service style include |
-| `apps/qti-packager/Script.html` | Pending | 5 | Browser-only validation and QTI packaging behavior |
-| `apps/qti-packager/appsscript.json` | Pending | 5 | Minimal Apps Script manifest |
-| `apps/qti-packager/README.md` | Pending | 5 | Deployment, verification, and rollback guide |
-| `demo/Bergen-QTI-Packager-Demo.html` | Pending | 5 | Self-contained presentation fallback |
-| `demo/bergen-qti-compatibility-check-qti.zip` | Pending | 5 | Synthetic compatibility fallback package |
-| `scripts/build-qti-demo.mjs` | Pending | 5 | Demo and fallback-package build entry point |
-| `tests/qti/qti-packager.test.mjs` | Pending | 5 | QTI validation and package checks |
-| `tests/qti/apps-script-bundle.test.mjs` | Pending | 5 | Deployment-bundle and privacy checks |
-| `tests/qti/browser-smoke.mjs` | Pending | 5 | Local presentation-journey smoke check |
+| `apps/qti-packager/Code.gs` | Ready | 5 | Static Apps Script HTML entry point |
+| `apps/qti-packager/Index.html` | Ready | 5 | Accessible packager page shell |
+| `apps/qti-packager/Styles.html` | Ready | 5 | Responsive HTML Service style include |
+| `apps/qti-packager/Script.html` | Ready | 5 | Browser-only validation and QTI packaging behavior |
+| `apps/qti-packager/appsscript.json` | Ready | 5 | Minimal Apps Script manifest |
+| `apps/qti-packager/README.md` | Ready | 5 | Authorized deployment, verification, and rollback guide |
+| `demo/Bergen-QTI-Packager-Demo.html` | Ready | 5 | Self-contained presentation fallback |
+| `demo/bergen-qti-compatibility-check-qti.zip` | Ready | 5 | Synthetic compatibility fallback package |
+| `scripts/build-qti-demo.mjs` | Ready | 5 | Deterministic demo and fallback-package build entry point |
+| `tests/qti/qti-packager.test.mjs` | Ready | 5 | QTI validation and package checks |
+| `tests/qti/apps-script-bundle.test.mjs` | Ready | 5 | Deployment-bundle and privacy checks |
+| `tests/qti/browser-smoke.mjs` | Ready | 5 | Local desktop/mobile presentation-journey smoke checks |
 
 ## Release gates
 
-The local `npm run validate` command is the aggregate repository gate. It runs the completed Phase 1 through Phase 4 content suites; Phase 5 will extend the focused suites without weakening this contract.
+The local `npm run validate` command is the aggregate repository gate. It runs all 54 completed Phase 1 through Phase 5 checks without third-party dependencies.
 
 Automated structure checks and local browser checks may establish artifact integrity. They cannot establish compatibility with Bergen's Canvas configuration. Version 1.0 QTI compatibility remains unapproved until an authorized Bergen faculty or support user imports the synthetic package into an unpublished Bergen Canvas test course, verifies the five supported item types and settings without student data, and records the result.
 
-## Deliberately not verified through Phase 4
+## Deliberately not verified by the local build
 
 The content suites verify static instructions, templates, and faculty-guide contracts; they cannot execute or inspect live Gemini responses. Phase 3 produced four Google Docs-ready DOCX files but did not create live Drive documents because a Drive connection was unavailable. Automated OOXML, privacy, accessibility, and source-parity checks passed, but visual rendering was unavailable because the bundled document runtime did not include the required office renderer; that visual QA limitation remains recorded.
 
-Phases 1–4 do not test hidden context, live tenant access, automatic Google Docs editing, Canvas publication, real student records, browser packaging, QTI XML, a live QTI URL, or Canvas import compatibility. Each is assigned to Phase 5, prohibited, unavailable to deterministic local tests, or reserved for the authorized manual release gate.
+The local build does not test hidden context, live tenant access, automatic Google Docs editing, Canvas publication, real student records, a deployed Apps Script page, Bergen-domain access controls, or Canvas import compatibility. Automated checks establish browser behavior, QTI structure, and deterministic artifacts only. The authorized manual unpublished-course import remains the QTI compatibility release gate.

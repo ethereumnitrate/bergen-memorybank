@@ -68,5 +68,5 @@ test('Apps Script claims capture the official sandbox, HTTPS, and navigation con
   assert.match(sourceRegister, /active content and requests must use HTTPS/i);
   assert.match(sourceRegister, /top-level navigation is restricted/i);
   assert.match(sourceRegister, /user-activated link or button/i);
-  assert.match(sourceRegister, /No Apps Script application is implemented in Phase 1/i);
+  assert.match(sourceRegister, /No Apps Script application was implemented in Phase 1/i);
 });

@@ -16,7 +16,7 @@ The core path is always available: assignment text uses manual copy into Canvas 
 - Include the quiz title, directions, settings, stable item identifiers, prompts, point values, and answer information where appropriate.
 - Do not place quiz content in the address bar or web address of any link. Open only the institution-provided page and paste the reviewed transfer block into the page itself.
 
-## Five planned supported item types
+## Five supported item types
 
 - Multiple choice
 - True/false

@@ -2,53 +2,73 @@
   "metadata": {
     "dataClassification": "synthetic/de-identified",
     "containsRealStudentData": false,
-    "phase": "foundation-only",
-    "contractStatus": "Pending QTI implementation and verification in Phase 5"
+    "phase": "qti-compatibility-fixture",
+    "contractStatus": "Automated structure verified; Bergen Canvas compatibility pending authorized manual import"
   },
+  "format": "bergen-qti-transfer",
+  "version": "0.1",
   "quiz": {
-    "identifier": "synthetic-ecology-check",
-    "title": "Synthetic Ecology Knowledge Check",
+    "title": "Bergen QTI Compatibility Check",
+    "instructions": "Answer all five questions. This quiz uses synthetic course content and contains no student information.",
     "settings": {
       "shuffleAnswers": false,
-      "oneQuestionAtATime": false
-    }
-  },
-  "items": [
-    {
-      "identifier": "synthetic-item-1",
-      "type": "multiple_choice",
-      "prompt": "Which term describes an organism that makes its own food?",
-      "choices": ["Producer", "Consumer", "Decomposer"],
-      "answerKey": ["Producer"],
-      "points": 2
+      "timeLimitMinutes": null,
+      "allowedAttempts": 1,
+      "pointsPossible": 12
     },
-    {
-      "identifier": "synthetic-item-2",
-      "type": "true_false",
-      "prompt": "Energy moves through an ecosystem.",
-      "answerKey": ["True"],
-      "points": 2
-    },
-    {
-      "identifier": "synthetic-item-3",
-      "type": "multiple_answer",
-      "prompt": "Select the renewable energy sources.",
-      "choices": ["Solar", "Wind", "Coal"],
-      "answerKey": ["Solar", "Wind"],
-      "points": 3
-    },
-    {
-      "identifier": "synthetic-item-4",
-      "type": "short_answer",
-      "prompt": "Name the process plants use to convert light into stored energy.",
-      "answerKey": ["photosynthesis"],
-      "points": 2
-    },
-    {
-      "identifier": "synthetic-item-5",
-      "type": "essay",
-      "prompt": "Explain one way a habitat change can affect a food web.",
-      "points": 3
-    }
-  ]
+    "questions": [
+      {
+        "id": "q1",
+        "type": "multiple_choice",
+        "title": "Primary source",
+        "prompt": "Which item is a primary source for studying a historical event?",
+        "points": 2,
+        "choices": [
+          { "id": "a", "text": "A modern textbook chapter" },
+          { "id": "b", "text": "A diary written during the event" },
+          { "id": "c", "text": "A recent encyclopedia entry" },
+          { "id": "d", "text": "A documentary produced last year" }
+        ],
+        "correctChoiceIds": ["b"]
+      },
+      {
+        "id": "q2",
+        "type": "true_false",
+        "title": "Source evaluation",
+        "prompt": "The author and purpose of a source can affect how the source should be interpreted.",
+        "points": 1,
+        "correctAnswer": true
+      },
+      {
+        "id": "q3",
+        "type": "multiple_answer",
+        "title": "Credibility checks",
+        "prompt": "Which actions help evaluate the credibility of a source? Select all that apply.",
+        "points": 3,
+        "choices": [
+          { "id": "a", "text": "Identify the author" },
+          { "id": "b", "text": "Check the publication date" },
+          { "id": "c", "text": "Assume the first search result is accurate" },
+          { "id": "d", "text": "Compare the claim with other reliable sources" }
+        ],
+        "correctChoiceIds": ["a", "b", "d"]
+      },
+      {
+        "id": "q4",
+        "type": "short_answer",
+        "title": "Source type",
+        "prompt": "What term describes evidence created during the time being studied?",
+        "points": 2,
+        "acceptedAnswers": ["primary source", "a primary source"]
+      },
+      {
+        "id": "q5",
+        "type": "essay",
+        "title": "Evidence explanation",
+        "prompt": "In two or three sentences, explain why corroborating a source can strengthen an argument.",
+        "points": 4,
+        "feedback": "Evaluate the explanation for a clear reason and an accurate connection to corroboration."
+      }
+    ]
+  }
 }

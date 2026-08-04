@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bergen QTI Packager</title>
+    <?!= include('Styles'); ?>
+  </head>
+  <body data-bergen-qti-app>
+    <header class="site-header">
+      <div class="page-width">
+        <p class="eyebrow">Bergen Memory Bank</p>
+        <h1>Bergen QTI Packager</h1>
+        <p class="subtitle">Turn an approved, student-data-free quiz into a local QTI package for manual Canvas testing.</p>
+      </div>
+    </header>
+
+    <main class="page-width">
+      <section class="privacy-banner" aria-labelledby="privacy-title">
+        <span class="privacy-mark" aria-hidden="true">✓</span>
+        <div>
+          <h2 id="privacy-title">Your quiz stays in this browser</h2>
+          <p>This page does not upload, save, or send quiz content. Do not paste student submissions, names, IDs, grades, feedback, accommodations, health information, or identifying details.</p>
+        </div>
+      </section>
+
+      <ol class="steps" aria-label="Packaging steps">
+        <li><span>1</span> Paste quiz</li>
+        <li><span>2</span> Check quiz</li>
+        <li><span>3</span> Download ZIP</li>
+      </ol>
+
+      <section class="card" aria-labelledby="paste-heading">
+        <div class="card-heading">
+          <div>
+            <p class="step-label">Step 1</p>
+            <h2 id="paste-heading">Paste the Bergen Quiz Transfer Block</h2>
+          </div>
+          <button class="button secondary" id="load-sample" type="button">Load safe sample</button>
+        </div>
+        <p class="helper">Use only a reviewed quiz whose content and packaging handoff the faculty member approved. Paste into this box, never into a web address.</p>
+        <label for="transfer-block">Bergen Quiz Transfer Block</label>
+        <textarea id="transfer-block" rows="16" spellcheck="false" placeholder="Paste the complete transfer block here"></textarea>
+        <button class="button primary" id="check-quiz" type="button">Check quiz</button>
+      </section>
+
+      <section class="card" id="results" aria-labelledby="results-heading" hidden>
+        <p class="step-label">Step 2</p>
+        <h2 id="results-heading">Quiz check</h2>
+        <div id="quiz-summary"></div>
+        <div id="validation-messages"></div>
+
+        <label class="confirmation" for="privacy-confirmation">
+          <input id="privacy-confirmation" type="checkbox">
+          <span>I confirm that this quiz contains no student-identifying or protected information.</span>
+        </label>
+
+        <div class="download-panel">
+          <div>
+            <p class="step-label">Step 3</p>
+            <h2>Download the QTI package</h2>
+            <p>Import the ZIP manually into an unpublished Canvas test course. Review every item and setting before any publication decision.</p>
+          </div>
+          <button class="button primary" id="download-qti" type="button" disabled>Download QTI package</button>
+        </div>
+      </section>
+
+      <aside class="support-note">
+        <strong>Compatibility boundary:</strong> The package includes multiple choice, true/false, multiple answer, short answer, and essay items. A local ZIP is not proof of Bergen Canvas compatibility. Use manual entry if validation or import is uncertain.
+      </aside>
+
+      <p id="status" class="status" role="status" aria-live="polite">Load the safe sample or paste an approved transfer block.</p>
+    </main>
+    <?!= include('Script'); ?>
+  </body>
+</html>

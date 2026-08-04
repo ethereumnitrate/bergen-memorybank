@@ -134,7 +134,7 @@ test('the command reference and quick start align all aliases, natural language,
   assert.match(combined, /approval.+before.+revis(?:e|ion).+record(?:ing)?.+publish/i);
   assert.doesNotMatch(releaseContract, /future Gem, memory documents/i);
   assert.match(releaseContract, /implemented Gem, memory documents, and faculty guides/i);
-  assert.match(releaseContract, /future optional QTI Packager/i);
+  assert.match(releaseContract, /implemented optional QTI Packager/i);
   assert.match(releaseContract, /revision requires explicit faculty approval/i);
   assert.match(releaseContract, /Google Docs persistence and Canvas transfer require faculty manual action/i);
 });

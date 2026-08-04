@@ -52,7 +52,7 @@ Use the synthetic course and examples below. Do not substitute real student info
 
 **Say:** “For an approved synthetic quiz, an optional QTI handoff may prepare a Bergen Quiz Transfer Block. The institution-provided packager link is not currently available, so use manual Canvas entry. Use with Bergen Canvas has not been approved.”
 
-**Show:** The manual Canvas path and the five planned supported item types: multiple choice, true/false, multiple answer, short answer, and essay.
+**Show:** The manual Canvas path and the five supported item types: multiple choice, true/false, multiple answer, short answer, and essay.
 
 ## [9:00–10:00] Close and verify
 

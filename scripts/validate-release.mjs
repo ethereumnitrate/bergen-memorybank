@@ -116,6 +116,9 @@ function runFocusedTests() {
     'tests/content/gem-workflows.test.mjs',
     'tests/content/template-contracts.test.mjs',
     'tests/content/guide-alignment.test.mjs',
+    'tests/qti/qti-packager.test.mjs',
+    'tests/qti/apps-script-bundle.test.mjs',
+    'tests/qti/browser-smoke.mjs',
   ], {
     cwd: repositoryRoot,
     encoding: 'utf8',
