@@ -83,7 +83,7 @@ test('repository scripts provide dependency-free test, build, lint, and aggregat
   const packageJson = await readJson('package.json');
 
   assert.deepEqual(packageJson.scripts, {
-    test: 'node --test tests/content/release-structure.test.mjs tests/content/source-register.test.mjs tests/content/gem-workflows.test.mjs tests/content/template-contracts.test.mjs tests/content/guide-alignment.test.mjs tests/qti/qti-packager.test.mjs tests/qti/apps-script-bundle.test.mjs tests/qti/browser-smoke.mjs',
+    test: 'node --test tests/content/release-structure.test.mjs tests/content/source-register.test.mjs tests/keep/memory-contract.test.mjs tests/course/course-transfer.test.mjs tests/content/gem-workflows.test.mjs tests/content/template-contracts.test.mjs tests/content/guide-alignment.test.mjs tests/qti/qti-packager.test.mjs tests/qti/apps-script-bundle.test.mjs tests/qti/browser-smoke.mjs',
     'build:google-docs': 'node scripts/build-google-docs.mjs',
     'build:qti-demo': 'node scripts/build-qti-demo.mjs',
     build: 'node scripts/validate-release.mjs --mode build',
@@ -96,18 +96,20 @@ test('repository scripts provide dependency-free test, build, lint, and aggregat
   assert.equal('devDependencies' in packageJson, false);
 });
 
-test('release version identifies Bergen Memory Bank v1.0 and the 2026-08-04 source review', async () => {
+test('release version preserves the v1.0 baseline and its 2026-08-04 source review', async () => {
   const version = await readText('src/release/version.md');
 
-  assert.match(version, /^# Bergen Memory Bank v1\.0$/m);
-  assert.match(version, /\*\*Release identifier\*\*: `Bergen Memory Bank v1\.0`/);
-  assert.match(version, /\*\*Source review date\*\*: `2026-08-04`/);
-  assert.match(version, /QTI compatibility remains pending/i);
+  assert.match(version, /\*\*Baseline release identifier\*\*: `Bergen Memory Bank v1\.0`/);
+  assert.match(version, /\*\*Baseline source review date\*\*: `2026-08-04`/);
+  assert.match(version, /v1\.0 QTI Packager remains available/i);
+  assert.match(version, /Canvas compatibility gate remains manual and unapproved/i);
 });
 
 test('release contract inventories every v1.0 artifact and keeps manual evidence distinct', async () => {
   const releaseContract = await readText('src/release/release-contract.md');
-  const rows = [...releaseContract.matchAll(/^\|\s*`([^`]+)`\s*\|\s*(Ready|Pending)\s*\|\s*(\d)\s*\|/gm)];
+  const v1Inventory = (releaseContract.split('## Complete v1.0 artifact inventory')[1] ?? '')
+    .split('## Bergen Memory Bank v2 inventory')[0];
+  const rows = [...v1Inventory.matchAll(/^\|\s*`([^`]+)`\s*\|\s*(Ready|Pending)\s*\|\s*(\d)\s*\|/gm)];
   const actualInventory = new Map(rows.map(([, artifact, status, phase]) => [artifact, {
     status,
     phase: Number(phase),
@@ -151,4 +153,45 @@ test('foundation fixtures are explicitly synthetic and contain no student-record
     assert.equal(serializedFixtures.includes(`\"${fieldName}\"`), false, `${fieldName} must not appear in fixtures`);
   }
   assert.doesNotMatch(serializedFixtures, /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
+});
+
+test('v2 Phase 1 identifies the dated foundation and inventories later work without overstating readiness', async () => {
+  const version = await readText('src/release/version.md');
+  const releaseContract = await readText('src/release/release-contract.md');
+  const packageJson = await readJson('package.json');
+  const v2Inventory = releaseContract.split('## Bergen Memory Bank v2 inventory')[1] ?? '';
+  const rows = [...v2Inventory.matchAll(/^\|\s*`([^`]+)`\s*\|\s*(Ready|Pending)\s*\|\s*(\d)\s*\|/gm)];
+  const inventory = new Map(rows.map(([, artifact, status, phase]) => [artifact, {
+    status,
+    phase: Number(phase),
+  }]));
+  const requiredV2Artifacts = new Map([
+    ['src/contracts/bergen-memory-v2.md', { status: 'Ready', phase: 1 }],
+    ['src/contracts/bergen-course-transfer-v0.1.json', { status: 'Ready', phase: 1 }],
+    ['tests/fixtures/sample-course-transfer.json', { status: 'Ready', phase: 1 }],
+    ['tests/keep/memory-contract.test.mjs', { status: 'Ready', phase: 1 }],
+    ['tests/course/course-transfer.test.mjs', { status: 'Ready', phase: 1 }],
+    ['src/gem/bergen-memory-bank-instructions.md', { status: 'Pending', phase: 2 }],
+    ['src/guides/keep-memory-workflow.md', { status: 'Pending', phase: 3 }],
+    ['src/guides/canvas-course-handoff.md', { status: 'Pending', phase: 6 }],
+    ['apps/course-packager/Script.html', { status: 'Pending', phase: 5 }],
+    ['scripts/build-course-demo.mjs', { status: 'Pending', phase: 5 }],
+    ['tests/course/common-cartridge.test.mjs', { status: 'Pending', phase: 5 }],
+    ['tests/course/apps-script-bundle.test.mjs', { status: 'Pending', phase: 5 }],
+    ['tests/course/browser-smoke.mjs', { status: 'Pending', phase: 5 }],
+  ]);
+
+  assert.match(version, /^# Bergen Memory Bank v2\.0 development$/m);
+  assert.match(version, /\*\*Release identifier\*\*: `Bergen Memory Bank v2\.0 Phase 1 foundation`/);
+  assert.match(version, /\*\*Source review date\*\*: `2026-08-26`/);
+  assert.match(version, /v1\.0 QTI Packager remains available/i);
+  assert.match(version, /Keep.*authorized live gate.*pending/i);
+  assert.match(version, /Common Cartridge.*unpublished Canvas sandbox.*pending/i);
+  assert.match(releaseContract, /69\/69/);
+  assert.match(releaseContract, /preserved v1\.0 checks.*v2 Phase 1 foundation checks/is);
+  assert.doesNotMatch(releaseContract, /all 54 completed Phase 1 through Phase 5 checks/i);
+  assert.deepEqual(inventory, requiredV2Artifacts);
+  assert.equal(packageJson.version, '2.0.0-dev.1');
+  assert.match(packageJson.scripts.test, /tests\/keep\/memory-contract\.test\.mjs/);
+  assert.match(packageJson.scripts.test, /tests\/course\/course-transfer\.test\.mjs/);
 });

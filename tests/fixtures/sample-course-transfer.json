@@ -1,0 +1,274 @@
+{
+  "format": "bergen-course-transfer",
+  "version": "0.1",
+  "metadata": {
+    "courseCode": "CIS-277",
+    "courseTitle": "Applied Agentic Systems",
+    "termLabel": "Synthetic Fall Term",
+    "locale": "en-US",
+    "sourceSummary": "Synthetic course design created only to verify the Bergen whole-course transfer contract.",
+    "dataClassification": "synthetic/de-identified",
+    "containsRealStudentData": false,
+    "finalReviewApproved": true,
+    "packageApproved": true
+  },
+  "privacy": {
+    "inputDerived": true,
+    "containsProtectedInformation": false,
+    "containsIdentifiableStudentInformation": false,
+    "containsCredentials": false,
+    "containsRawStudentWork": false,
+    "canvasStudentRecordsExcluded": true
+  },
+  "course": {
+    "code": "CIS-277",
+    "title": "Applied Agentic Systems",
+    "description": "A synthetic course about planning, building, and evaluating bounded agentic workflows.",
+    "credits": 3,
+    "published": false
+  },
+  "modules": [
+    {
+      "id": "module-foundations",
+      "position": 1,
+      "title": "Foundations and Boundaries",
+      "overview": "Frame a bounded workflow, identify evidence, and establish privacy and approval boundaries.",
+      "published": false,
+      "items": [
+        {
+          "position": 1,
+          "type": "page",
+          "ref": "page-agent-boundaries"
+        },
+        {
+          "position": 2,
+          "type": "discussion",
+          "ref": "discussion-evidence-boundaries"
+        },
+        {
+          "position": 3,
+          "type": "assignment",
+          "ref": "assignment-workflow-map"
+        },
+        {
+          "position": 4,
+          "type": "quiz",
+          "ref": "quiz-foundations-check"
+        }
+      ],
+      "completionRuleRefs": [
+        "completion-foundations-page",
+        "completion-foundations-map"
+      ]
+    },
+    {
+      "id": "module-evaluation",
+      "position": 2,
+      "title": "Evaluation and Handoff",
+      "overview": "Evaluate an input-derived workflow and prepare a conservative human-controlled handoff.",
+      "published": false,
+      "items": [
+        {
+          "position": 1,
+          "type": "page",
+          "ref": "page-verification-loop"
+        },
+        {
+          "position": 2,
+          "type": "assignment",
+          "ref": "assignment-evaluation-plan"
+        },
+        {
+          "position": 3,
+          "type": "exam",
+          "ref": "exam-course-synthesis"
+        }
+      ],
+      "completionRuleRefs": [
+        "completion-evaluation-exam"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "id": "page-agent-boundaries",
+      "title": "Agent Boundaries",
+      "body": "A bounded agent acts only within stated authority, preserves human approval for consequential decisions, and reports unverified external actions as unverified.",
+      "published": false
+    },
+    {
+      "id": "page-verification-loop",
+      "title": "Observable Verification Loops",
+      "body": "A verification loop compares intended and observed results, records mismatches, and keeps failure visible for the next safe decision.",
+      "published": false
+    }
+  ],
+  "assignments": [
+    {
+      "id": "assignment-workflow-map",
+      "title": "Map a Bounded Workflow",
+      "instructions": "Create a process map that names the input, approval points, observable evidence, failure states, and final human decision.",
+      "pointsPossible": 20,
+      "submissionType": "online_upload",
+      "rubricRef": "rubric-workflow-map",
+      "published": false
+    },
+    {
+      "id": "assignment-evaluation-plan",
+      "title": "Design an Evaluation Plan",
+      "instructions": "Write an evaluation plan that distinguishes repository checks from authorized external acceptance evidence.",
+      "pointsPossible": 30,
+      "submissionType": "online_text_entry",
+      "rubricRef": "rubric-evaluation-plan",
+      "published": false
+    }
+  ],
+  "discussions": [
+    {
+      "id": "discussion-evidence-boundaries",
+      "title": "What Counts as Evidence?",
+      "prompt": "Compare a structural repository check with an observed external action. Explain why one cannot substitute for the other.",
+      "graded": true,
+      "pointsPossible": 10,
+      "rubricRef": "rubric-workflow-map",
+      "published": false
+    }
+  ],
+  "rubrics": [
+    {
+      "id": "rubric-workflow-map",
+      "title": "Bounded Workflow Rubric",
+      "criteria": [
+        {
+          "id": "criterion-boundaries",
+          "description": "The workflow names authority and privacy boundaries.",
+          "points": 10
+        },
+        {
+          "id": "criterion-evidence",
+          "description": "The workflow identifies observable success and failure evidence.",
+          "points": 10
+        }
+      ],
+      "published": false
+    },
+    {
+      "id": "rubric-evaluation-plan",
+      "title": "Evaluation Plan Rubric",
+      "criteria": [
+        {
+          "id": "criterion-test-design",
+          "description": "The plan uses focused checks that map to the stated contract.",
+          "points": 15
+        },
+        {
+          "id": "criterion-handoff",
+          "description": "The plan preserves the human-controlled external handoff.",
+          "points": 15
+        }
+      ],
+      "published": false
+    }
+  ],
+  "quizzes": [
+    {
+      "id": "quiz-foundations-check",
+      "title": "Foundations Check",
+      "instructions": "Select the response that preserves an observable capability boundary.",
+      "pointsPossible": 5,
+      "questions": [
+        {
+          "id": "question-foundations-boundary",
+          "type": "multiple-choice",
+          "prompt": "Which result is sufficient to claim an external write succeeded?",
+          "points": 5,
+          "choices": [
+            "A generated success message",
+            "An observed write retrieved and compared with the intended content",
+            "A valid local schema",
+            "A prior successful demonstration"
+          ],
+          "correctChoiceIndexes": [
+            1
+          ]
+        }
+      ],
+      "published": false
+    }
+  ],
+  "exams": [
+    {
+      "id": "exam-course-synthesis",
+      "title": "Course Synthesis",
+      "instructions": "Explain how approval, verification, and conservative failure behavior work together in a bounded system.",
+      "pointsPossible": 25,
+      "questions": [
+        {
+          "id": "question-synthesis-response",
+          "type": "essay",
+          "prompt": "Propose an evidence-backed handoff that keeps publication under human control.",
+          "points": 25
+        }
+      ],
+      "published": false
+    }
+  ],
+  "completionRules": [
+    {
+      "id": "completion-foundations-page",
+      "moduleRef": "module-foundations",
+      "itemRef": "page-agent-boundaries",
+      "requirement": "view"
+    },
+    {
+      "id": "completion-foundations-map",
+      "moduleRef": "module-foundations",
+      "itemRef": "assignment-workflow-map",
+      "requirement": "submit"
+    },
+    {
+      "id": "completion-evaluation-exam",
+      "moduleRef": "module-evaluation",
+      "itemRef": "exam-course-synthesis",
+      "requirement": "score_at_least",
+      "minimumScore": 18
+    }
+  ],
+  "references": [
+    {
+      "from": "module-foundations",
+      "to": "completion-foundations-page",
+      "relation": "requires"
+    },
+    {
+      "from": "module-foundations",
+      "to": "completion-foundations-map",
+      "relation": "requires"
+    },
+    {
+      "from": "module-evaluation",
+      "to": "completion-evaluation-exam",
+      "relation": "requires"
+    },
+    {
+      "from": "assignment-workflow-map",
+      "to": "rubric-workflow-map",
+      "relation": "uses-rubric"
+    },
+    {
+      "from": "discussion-evidence-boundaries",
+      "to": "rubric-workflow-map",
+      "relation": "uses-rubric"
+    },
+    {
+      "from": "assignment-evaluation-plan",
+      "to": "rubric-evaluation-plan",
+      "relation": "uses-rubric"
+    },
+    {
+      "from": "page-verification-loop",
+      "to": "page-agent-boundaries",
+      "relation": "links-to"
+    }
+  ]
+}

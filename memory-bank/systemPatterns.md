@@ -141,7 +141,35 @@ This ordering keeps aliases from acquiring authority, prevents retrieval or draf
 - The nine faculty guides are a coordinated content layer rather than independent advice: installation uses the exact eight-step setup, daily-use material shares the same twelve optional aliases and natural-language parity, and every consequential handoff preserves observable context, separate approvals, and manual faculty control.
 - Faculty examples and demonstrations stay synthetic and preserve one outcome, introduced-concept set, and criteria chain across lesson, assignment, rubric, review, approved revision, record proposal, and publication handoff. QTI guidance describes only a conditional handoff and manual fallback; it never represents local packaging as Bergen Canvas compatibility.
 
+## Bergen Memory v2 Phase 1 Contract Patterns
+
+These patterns are normative Phase 1 contracts and test evidence, not live connected integrations. Google Keep is the approved v2 active-memory target only when a later observable connected action can satisfy the verification boundary below; Google Docs remain the curated archive.
+
+### Atomic Immutable Memory Record Pattern
+
+- Every record is one atomic Keep note with an exact title, ordered body fields, stable `Record ID`, memory class, authority evidence, timestamp, and complete intended content.
+- Low-risk temporary checkpoints may be automatic. Durable records and every replacement or archive successor require faculty approval for the exact displayed revision.
+- Revisions are append-only: replacement, archive, or content change creates the next note, retains stable record identity and record type, and points to the exact prior title through `Supersedes`. Prior notes are never edited.
+- Retrieval is isolated to the explicitly selected course. Gaps, cycles, broken links, duplicate heads, or ambiguous exact-title results remain unresolved until the minimum faculty decision resolves them.
+- The privacy stop runs before retrieval or creation. Protected or identifiable student information, credentials, grades, accommodations, individual feedback, and raw student work never enter the memory flow.
+- Phase 1 evidence is `src/contracts/bergen-memory-v2.md` plus its structural test; no Keep retrieval, write, chain-selection, or connected-app client is implemented yet.
+
+### Verified Write Boundary
+
+Every later Keep write must be observable as `create → retrieve the exact title → compare every body field and the full intended content → report`. Success requires one exact-title result and a complete match. Unavailable access, creation failure, missing or duplicate retrieval, incomplete retrieval, or any mismatch is reported as failed and cannot become active memory. Repository structure and a platform-generated confirmation do not satisfy this external evidence gate.
+
+### Versioned Whole-Course Transfer Boundary
+
+- `src/contracts/bergen-course-transfer-v0.1.json` defines a strict, versioned input contract for approved course-design content, with a complete synthetic/de-identified fixture at `tests/fixtures/sample-course-transfer.json`.
+- Course, module, page, assignment, discussion, rubric, quiz, and exam objects default to unpublished; submissions, grades, individual feedback, accommodations, identifying records, credentials, and raw student work remain excluded.
+- The schema and fixture establish local structure only. Phase 1 includes no executable validator, browser packager, generated Common Cartridge or `.imscc` file, Canvas API access, import automation, compatibility evidence, or publication authority.
+- Later compatibility requires an authorized import into an unpublished Bergen Canvas sandbox followed by faculty review; publication remains a separate faculty decision.
+
+These patterns reinforce the existing Privacy by Design, Canvas Is the Student-Record System, Human Approval at Consequential Steps, Transparent Capability Boundaries, Minimum Necessary Context, and Source-Dated Claims principles. They do not require a new or contradictory guiding principle.
+
 ## Release Validation Pattern
+
+The v2 Phase 1 foundation extends the dependency-free validation lane with atomic-memory, whole-course transfer, dated-source, and release-delta checks. The aggregate command reports 69/69 passing checks, but this evidence is limited to repository contracts, fixtures, and existing local implementation behavior; it does not establish live Keep access, successful persistence, Common Cartridge generation, Canvas compatibility, or publication.
 
 - Repository validation uses Node.js ECMAScript modules (`.mjs`) and built-in modules only. `package.json` intentionally has no `dependencies` or `devDependencies`.
 - `scripts/validate-release.mjs` provides build and lint modes and composes them with the focused tests in aggregate mode.
@@ -190,6 +218,13 @@ C4 architecture documentation has not been generated. The implemented topology i
 <!-- AUTO-MANAGED: c4-architecture-end -->
 
 ## Recent Architecture Changes
+
+### 2026-08-26 - Established v2 atomic-memory and whole-course transfer contracts
+
+- **What Changed**: Added the immutable atomic note and verified-write boundaries for the future Keep memory layer, plus a strict versioned whole-course transfer schema with unpublished defaults and explicit external acceptance gates.
+- **Reason**: Make privacy, authority, record identity, failure, and Canvas handoff constraints testable before any connected action or browser packager is implemented.
+- **Trade-offs**: The repository can now validate stable contracts and synthetic reference integrity, but it intentionally cannot claim live Keep persistence, Common Cartridge output, Canvas compatibility, or a new faculty-facing workflow.
+- **Affected Components**: V2 contracts, synthetic fixture, source register, release metadata, aggregate validation, and future Keep and course-packaging phases.
 
 ### 2026-08-04 - Implemented static-service, client-only QTI packaging
 

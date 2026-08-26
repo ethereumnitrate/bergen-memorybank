@@ -15,6 +15,9 @@ const forbiddenFixtureFields = new Set([
   'disability',
   'healthRecord',
   'disciplinaryRecord',
+  'password',
+  'accessToken',
+  'apiKey',
 ]);
 
 function repositoryPath(relativePath) {
@@ -43,8 +46,14 @@ function parseMode(argumentsList) {
   return mode;
 }
 
-function parseInventory(releaseContract) {
-  return [...releaseContract.matchAll(/^\|\s*`([^`]+)`\s*\|\s*(Ready|Pending)\s*\|\s*(\d)\s*\|/gm)]
+function extractSection(source, heading, nextHeading) {
+  const section = source.split(heading)[1] ?? '';
+  return nextHeading ? section.split(nextHeading)[0] : section;
+}
+
+function parseInventory(releaseContract, heading, nextHeading) {
+  const section = extractSection(releaseContract, heading, nextHeading);
+  return [...section.matchAll(/^\|\s*`([^`]+)`\s*\|\s*(Ready|Pending)\s*\|\s*(\d)\s*\|/gm)]
     .map(([, artifact, status, phase]) => ({ artifact, status, phase: Number(phase) }));
 }
 
@@ -63,30 +72,53 @@ function findForbiddenFixtureFields(value, location = '$') {
 
 async function validateBuild() {
   const releaseContract = await readRepositoryFile('src/release/release-contract.md');
-  const inventory = parseInventory(releaseContract);
-  assert.equal(inventory.length, 45, 'Release inventory must contain exactly 45 v1.0 artifacts');
-  assert.equal(new Set(inventory.map(({ artifact }) => artifact)).size, inventory.length, 'Release inventory paths must be unique');
+  const v1Inventory = parseInventory(
+    releaseContract,
+    '## Complete v1.0 artifact inventory',
+    '## Bergen Memory Bank v2 inventory',
+  );
+  const v2Inventory = parseInventory(releaseContract, '## Bergen Memory Bank v2 inventory');
+  assert.equal(v1Inventory.length, 45, 'Release inventory must contain exactly 45 preserved v1.0 artifacts');
+  assert.equal(new Set(v1Inventory.map(({ artifact }) => artifact)).size, v1Inventory.length, 'V1.0 release inventory paths must be unique');
+  assert.equal(v2Inventory.length, 13, 'Release inventory must contain exactly 13 v2 delta artifacts');
+  assert.equal(new Set(v2Inventory.map(({ artifact }) => artifact)).size, v2Inventory.length, 'V2 release inventory paths must be unique');
 
-  for (const { artifact, status } of inventory) {
+  for (const { artifact, status } of v1Inventory) {
     const artifactExists = await exists(artifact);
     assert.equal(artifactExists, status === 'Ready', `${artifact} must be ${status === 'Ready' ? 'present' : 'absent'} for its declared release status`);
   }
+  for (const { artifact, status } of v2Inventory) {
+    if (status === 'Ready') {
+      assert.equal(await exists(artifact), true, `${artifact} must be present for its v2 Ready status`);
+    }
+  }
 
   const version = await readRepositoryFile('src/release/version.md');
-  assert.match(version, /^# Bergen Memory Bank v1\.0$/m);
-  assert.match(version, /2026-08-04/);
+  assert.match(version, /^# Bergen Memory Bank v2\.0 development$/m);
+  assert.match(version, /2026-08-26/);
+  assert.match(version, /Bergen Memory Bank v1\.0/);
 
   const sourceRegister = await readRepositoryFile('src/sources/authoritative-source-register.md');
-  const datedSourceRows = [...sourceRegister.matchAll(/^\|\s*\[[^\]]+\]\(https:\/\/[^)]+\)\s*\|\s*2026-08-04\s*\|\s*(?:Primary|Official)\s*\|/gm)];
-  assert.equal(datedSourceRows.length, 13, 'Source register must contain 13 dated official-source entries');
+  const v1DatedSourceRows = [...sourceRegister.matchAll(/^\|\s*\[[^\]]+\]\(https:\/\/[^)]+\)\s*\|\s*2026-08-04\s*\|\s*(?:Primary|Official)\s*\|/gm)];
+  const v2DatedSourceRows = [...sourceRegister.matchAll(/^\|\s*\[[^\]]+\]\(https:\/\/[^)]+\)\s*\|\s*2026-08-26\s*\|\s*Official\s*\|/gm)];
+  assert.equal(v1DatedSourceRows.length, 13, 'Source register must preserve 13 dated v1.0 source entries');
+  assert.equal(v2DatedSourceRows.length, 8, 'Source register must contain 8 dated v2 platform-source entries');
+
+  const packageJson = JSON.parse(await readRepositoryFile('package.json'));
+  assert.equal(packageJson.version, '2.0.0-dev.1');
 }
 
 async function validateLint() {
   const releaseContract = await readRepositoryFile('src/release/release-contract.md');
-  const inventory = parseInventory(releaseContract);
-  const readyTextFiles = inventory
+  const v1Inventory = parseInventory(
+    releaseContract,
+    '## Complete v1.0 artifact inventory',
+    '## Bergen Memory Bank v2 inventory',
+  );
+  const v2Inventory = parseInventory(releaseContract, '## Bergen Memory Bank v2 inventory');
+  const readyTextFiles = [...new Set([...v1Inventory, ...v2Inventory]
     .filter(({ artifact, status }) => status === 'Ready' && /\.(?:json|md|mjs)$/.test(artifact))
-    .map(({ artifact }) => artifact);
+    .map(({ artifact }) => artifact))];
 
   for (const relativePath of readyTextFiles) {
     const source = await readRepositoryFile(relativePath);
@@ -94,7 +126,11 @@ async function validateLint() {
     assert.doesNotMatch(source, /[ \t]+$/m, `${relativePath} must not contain trailing whitespace`);
   }
 
-  for (const relativePath of ['tests/fixtures/workflow-scenarios.json', 'tests/fixtures/sample-quiz.json']) {
+  for (const relativePath of [
+    'tests/fixtures/workflow-scenarios.json',
+    'tests/fixtures/sample-quiz.json',
+    'tests/fixtures/sample-course-transfer.json',
+  ]) {
     const source = await readRepositoryFile(relativePath);
     const fixture = JSON.parse(source);
     assert.equal(fixture.metadata.dataClassification, 'synthetic/de-identified');
@@ -113,6 +149,8 @@ function runFocusedTests() {
     '--test',
     'tests/content/release-structure.test.mjs',
     'tests/content/source-register.test.mjs',
+    'tests/keep/memory-contract.test.mjs',
+    'tests/course/course-transfer.test.mjs',
     'tests/content/gem-workflows.test.mjs',
     'tests/content/template-contracts.test.mjs',
     'tests/content/guide-alignment.test.mjs',

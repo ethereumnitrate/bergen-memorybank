@@ -1,6 +1,14 @@
-# Bergen Memory Bank v1.0 Release Contract
+# Bergen Memory Bank Release Contract
 
-## Release boundary
+## Bergen Memory Bank v2 Phase 1 boundary
+
+Bergen Memory Bank v2.0 is in development. Phase 1 establishes only the dated source boundary, the normative atomic Google Keep note contract, the machine-readable whole-course transfer contract, one complete synthetic CIS-277 fixture, and repository structure checks. It does not yet implement the v2 Gem commands, Keep retrieval or write behavior, immutable-chain selection, faculty guides, course-transfer validator, browser packager, Common Cartridge generator, or aggregate finalization.
+
+The v2 design changes the v1 manual-only persistence boundary only for a connected Google Keep action that is observed and then verified by exact-title retrieval and full content comparison. Repository structure checks cannot satisfy that live gate. A creation, retrieval, comparison, authorization, or availability failure remains failed and unverified.
+
+The whole-course schema is strict input evidence for later work, not a generated Common Cartridge. Every Canvas-facing fixture object defaults to unpublished, protected or identifiable student information is prohibited, and authorized import into an unpublished Bergen Canvas sandbox remains required before any compatibility claim. Canvas publication remains a separate faculty decision.
+
+## Preserved v1.0 release boundary
 
 Bergen Memory Bank v1.0 is a no-code faculty kit: one custom Gemini Gem, four reusable Google Docs, faculty enablement material, and an optional browser-only QTI packaging handoff. Phases 1 through 5 establish the repository foundation, complete classic custom Gem instruction system, four-document hybrid memory model with a replaceable de-identified Class Learning Snapshot, aligned faculty guides, and deployable client-side QTI Packager source with a self-contained demonstration and synthetic compatibility package. A listed artifact is evidence only for the phase and behavior its tests verify.
 
@@ -15,7 +23,7 @@ Phase 5 implements and locally verifies the optional QTI Packager as a Google Ap
 ## Status meanings
 
 - **Ready**: present and verified in a completed implementation phase.
-- **Pending**: required evidence that cannot be established by the local build and still requires an authorized manual action.
+- **Pending**: for the preserved v1.0 inventory, required evidence that still needs an authorized manual action; for the v2 inventory, a planned v2 implementation or authorized external gate that Phase 1 has not completed. A v1 artifact may exist while its v2 extension remains Pending.
 
 ## Complete v1.0 artifact inventory
 
@@ -67,9 +75,29 @@ Phase 5 implements and locally verifies the optional QTI Packager as a Google Ap
 | `tests/qti/apps-script-bundle.test.mjs` | Ready | 5 | Deployment-bundle and privacy checks |
 | `tests/qti/browser-smoke.mjs` | Ready | 5 | Local desktop/mobile presentation-journey smoke checks |
 
+## Bergen Memory Bank v2 inventory
+
+This delta inventory describes v2 readiness only. It does not downgrade the preserved v1.0 artifacts above. Phase 1 tests and contracts marked Ready validate foundation structure; later behavior remains Pending even where a v1 file at the same path already exists.
+
+| Artifact | Status | Phase | V2 responsibility |
+|---|---|---:|---|
+| `src/contracts/bergen-memory-v2.md` | Ready | 1 | Normative atomic Keep note, authority, revision, isolation, verification, conflict, privacy, and failure contract |
+| `src/contracts/bergen-course-transfer-v0.1.json` | Ready | 1 | Strict versioned whole-course transfer schema |
+| `tests/fixtures/sample-course-transfer.json` | Ready | 1 | Complete synthetic and de-identified CIS-277 transfer fixture |
+| `tests/keep/memory-contract.test.mjs` | Ready | 1 | Phase 1 memory-contract structure check; revision algorithms remain later work |
+| `tests/course/course-transfer.test.mjs` | Ready | 1 | Phase 1 schema, fixture, safety, and reference checks; the executable validator remains later work |
+| `src/gem/bergen-memory-bank-instructions.md` | Pending | 2 | V2 professor commands and observable connected Keep behavior |
+| `src/guides/keep-memory-workflow.md` | Pending | 3 | No-code faculty Keep workflow and recovery guidance |
+| `src/guides/canvas-course-handoff.md` | Pending | 6 | No-code whole-course packaging, sandbox review, and publication boundary |
+| `apps/course-packager/Script.html` | Pending | 5 | Browser-only validation and Common Cartridge generation |
+| `scripts/build-course-demo.mjs` | Pending | 5 | Deterministic local course-packager demonstration build |
+| `tests/course/common-cartridge.test.mjs` | Pending | 5 | Manifest, resource, embedded assessment, escaping, and determinism checks |
+| `tests/course/apps-script-bundle.test.mjs` | Pending | 5 | Static hosting and client-only privacy checks |
+| `tests/course/browser-smoke.mjs` | Pending | 5 | Desktop and mobile whole-course packaging journey checks |
+
 ## Release gates
 
-The local `npm run validate` command is the aggregate repository gate. It runs all 54 completed Phase 1 through Phase 5 checks without third-party dependencies.
+The local `npm run validate` command is the aggregate repository gate. Its authoritative result is 69/69 passing checks without third-party dependencies, combining the preserved v1.0 checks with the v2 Phase 1 foundation checks.
 
 Automated structure checks and local browser checks may establish artifact integrity. They cannot establish compatibility with Bergen's Canvas configuration. Version 1.0 QTI compatibility remains unapproved until an authorized Bergen faculty or support user imports the synthetic package into an unpublished Bergen Canvas test course, verifies the five supported item types and settings without student data, and records the result.
 

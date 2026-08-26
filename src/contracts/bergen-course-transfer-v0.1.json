@@ -1,0 +1,585 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bergen.edu/bergen-memory-bank/contracts/bergen-course-transfer-v0.1.schema.json",
+  "title": "Bergen Course Transfer Contract v0.1",
+  "description": "Strict whole-course input contract for later local packaging. It permits approved course-design content only, defaults every Canvas-facing object to unpublished, and rejects protected or identifiable student information before substantive processing.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "version",
+    "metadata",
+    "privacy",
+    "course",
+    "modules",
+    "pages",
+    "assignments",
+    "discussions",
+    "rubrics",
+    "quizzes",
+    "exams",
+    "completionRules",
+    "references"
+  ],
+  "properties": {
+    "format": {
+      "const": "bergen-course-transfer"
+    },
+    "version": {
+      "const": "0.1"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "courseCode",
+        "courseTitle",
+        "termLabel",
+        "locale",
+        "sourceSummary",
+        "dataClassification",
+        "containsRealStudentData",
+        "finalReviewApproved",
+        "packageApproved"
+      ],
+      "properties": {
+        "courseCode": {
+          "$ref": "#/$defs/courseCode"
+        },
+        "courseTitle": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "termLabel": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "locale": {
+          "type": "string",
+          "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$"
+        },
+        "sourceSummary": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "dataClassification": {
+          "enum": [
+            "synthetic/de-identified",
+            "Public",
+            "Internal"
+          ]
+        },
+        "containsRealStudentData": {
+          "const": false
+        },
+        "finalReviewApproved": {
+          "const": true
+        },
+        "packageApproved": {
+          "const": true
+        }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "inputDerived",
+        "containsProtectedInformation",
+        "containsIdentifiableStudentInformation",
+        "containsCredentials",
+        "containsRawStudentWork",
+        "canvasStudentRecordsExcluded"
+      ],
+      "properties": {
+        "inputDerived": {
+          "const": true,
+          "description": "All values must be derived from the currently approved course design, not placeholders or hidden memory."
+        },
+        "containsProtectedInformation": {
+          "const": false
+        },
+        "containsIdentifiableStudentInformation": {
+          "const": false
+        },
+        "containsCredentials": {
+          "const": false
+        },
+        "containsRawStudentWork": {
+          "const": false
+        },
+        "canvasStudentRecordsExcluded": {
+          "const": true,
+          "description": "Submissions, grades, individual feedback, accommodations, and identifying records remain in Canvas."
+        }
+      }
+    },
+    "course": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "title",
+        "description",
+        "credits",
+        "published"
+      ],
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/courseCode"
+        },
+        "title": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "description": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "credits": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 12
+        },
+        "published": {
+          "const": false
+        }
+      }
+    },
+    "modules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/module"
+      }
+    },
+    "pages": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/page"
+      }
+    },
+    "assignments": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/assignment"
+      }
+    },
+    "discussions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/discussion"
+      }
+    },
+    "rubrics": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/rubric"
+      }
+    },
+    "quizzes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/assessment"
+      }
+    },
+    "exams": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/assessment"
+      }
+    },
+    "completionRules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/completionRule"
+      }
+    },
+    "references": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/reference"
+      }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{2,63}$"
+    },
+    "courseCode": {
+      "type": "string",
+      "pattern": "^[A-Z]{2,6}-[0-9]{3}[A-Z]?$"
+    },
+    "nonEmptyText": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 20000
+    },
+    "module": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "position",
+        "title",
+        "overview",
+        "published",
+        "items",
+        "completionRuleRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "position": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "title": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "overview": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "published": {
+          "const": false
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "position",
+              "type",
+              "ref"
+            ],
+            "properties": {
+              "position": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "type": {
+                "enum": [
+                  "page",
+                  "assignment",
+                  "discussion",
+                  "quiz",
+                  "exam"
+                ]
+              },
+              "ref": {
+                "$ref": "#/$defs/identifier"
+              }
+            }
+          }
+        },
+        "completionRuleRefs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        }
+      }
+    },
+    "page": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "body",
+        "published"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "title": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "body": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "published": {
+          "const": false
+        }
+      }
+    },
+    "assignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "instructions",
+        "pointsPossible",
+        "submissionType",
+        "rubricRef",
+        "published"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "title": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "instructions": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "pointsPossible": {
+          "type": "number",
+          "minimum": 0
+        },
+        "submissionType": {
+          "enum": [
+            "online_text_entry",
+            "online_upload",
+            "no_submission"
+          ]
+        },
+        "rubricRef": {
+          "$ref": "#/$defs/identifier"
+        },
+        "published": {
+          "const": false
+        }
+      }
+    },
+    "discussion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "prompt",
+        "graded",
+        "pointsPossible",
+        "rubricRef",
+        "published"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "title": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "prompt": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "graded": {
+          "type": "boolean"
+        },
+        "pointsPossible": {
+          "type": "number",
+          "minimum": 0
+        },
+        "rubricRef": {
+          "$ref": "#/$defs/identifier"
+        },
+        "published": {
+          "const": false
+        }
+      }
+    },
+    "rubric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "criteria",
+        "published"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "title": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "criteria": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "description",
+              "points"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/identifier"
+              },
+              "description": {
+                "$ref": "#/$defs/nonEmptyText"
+              },
+              "points": {
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "published": {
+          "const": false
+        }
+      }
+    },
+    "assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "instructions",
+        "pointsPossible",
+        "questions",
+        "published"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "title": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "instructions": {
+          "$ref": "#/$defs/nonEmptyText"
+        },
+        "pointsPossible": {
+          "type": "number",
+          "minimum": 0
+        },
+        "questions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "type",
+              "prompt",
+              "points"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/identifier"
+              },
+              "type": {
+                "enum": [
+                  "multiple-choice",
+                  "multiple-answer",
+                  "true-false",
+                  "short-answer",
+                  "essay"
+                ]
+              },
+              "prompt": {
+                "$ref": "#/$defs/nonEmptyText"
+              },
+              "points": {
+                "type": "number",
+                "minimum": 0
+              },
+              "choices": {
+                "type": "array",
+                "minItems": 2,
+                "items": {
+                  "$ref": "#/$defs/nonEmptyText"
+                }
+              },
+              "correctChoiceIndexes": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "acceptedAnswers": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "$ref": "#/$defs/nonEmptyText"
+                }
+              }
+            }
+          }
+        },
+        "published": {
+          "const": false
+        }
+      }
+    },
+    "completionRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "moduleRef",
+        "itemRef",
+        "requirement"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "moduleRef": {
+          "$ref": "#/$defs/identifier"
+        },
+        "itemRef": {
+          "$ref": "#/$defs/identifier"
+        },
+        "requirement": {
+          "enum": [
+            "view",
+            "submit",
+            "score_at_least"
+          ]
+        },
+        "minimumScore": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "from",
+        "to",
+        "relation"
+      ],
+      "properties": {
+        "from": {
+          "$ref": "#/$defs/identifier"
+        },
+        "to": {
+          "$ref": "#/$defs/identifier"
+        },
+        "relation": {
+          "enum": [
+            "contains",
+            "uses-rubric",
+            "requires",
+            "links-to"
+          ]
+        }
+      }
+    }
+  }
+}

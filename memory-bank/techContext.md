@@ -2,17 +2,19 @@
 
 ## Current State
 
-This is a content-first project with one optional faculty-facing browser companion and no API integration or automated deployment. Phases 1 through 4 provide the release foundation, complete classic custom Gem instructions, synthetic scenarios, the four-document memory model, deterministic Google Docs-ready DOCX files, and nine aligned faculty guides. Phase 5 adds a deployable static Apps Script page that performs validation and QTI 1.2 ZIP creation entirely in the browser. Node.js and the bundled document-authoring runtime remain contributor tooling and are never faculty prerequisites.
+This is a content-first project with one preserved optional faculty-facing browser companion and no API integration or automated deployment. The v1.0 baseline includes the complete classic custom Gem instructions, synthetic scenarios, four-document memory model, deterministic Google Docs-ready DOCX files, nine aligned faculty guides, and browser-only QTI 1.2 packager. Bergen Memory Bank v2.0 is currently at Phase 1 of 6 and package version `2.0.0-dev.1`: the repository now contains dated platform claims, an atomic Google Keep note contract, a whole-course transfer schema, a complete synthetic fixture, and focused contract checks. Phase 1 does not add executable Keep retrieval or write behavior, a Keep client or API, v2 Gem commands, an executable course-transfer validator, a browser course packager, or Common Cartridge generation. Node.js and the bundled document-authoring runtime remain contributor tooling and are never faculty prerequisites.
 
 ## Component Structure
 
 | Component | Purpose | Current Location | Format |
 |-----------|---------|------------------|--------|
 | Memory Bank | Durable planning, task, decision, and verification context for producing the kit | `memory-bank/` | Markdown |
-| Release foundation | Version boundary, 45-artifact inventory, status, phase ownership, and review date | `src/release/release-contract.md`, `src/release/version.md` | Markdown |
-| Authoritative source register | Source-dated pointers and narrow claim mappings for policy and platform assertions | `src/sources/authoritative-source-register.md` | Markdown |
+| Release foundation | Preserved 45-artifact v1.0 inventory, 13-artifact v2 delta inventory, package version, phase ownership, status, and review dates | `src/release/release-contract.md`, `src/release/version.md`, `package.json` | Markdown and JSON |
+| Authoritative source register | Source-dated pointers and narrow claim mappings for policy and platform assertions, including the 2026-08-26 Keep connected-app and Common Cartridge boundaries | `src/sources/authoritative-source-register.md` | Markdown |
+| V2 atomic-memory contract | Normative atomic note title/body, temporary and durable authority, immutable revision chain, course isolation, privacy stop, exact-title verification, and conservative failure rules | `src/contracts/bergen-memory-v2.md` | Markdown contract only; no executable Keep client or API |
+| Whole-course transfer contract | Strict versioned schema and complete synthetic CIS-277 fixture with unpublished Canvas-facing defaults, internal references, and protected-data exclusions | `src/contracts/bergen-course-transfer-v0.1.json`, `tests/fixtures/sample-course-transfer.json` | JSON Schema and JSON fixture only; no validator, packager, or `.imscc` output |
 | Verification contract and fixtures | Observable Gem, template, guide, packager, and manual-gate contracts plus synthetic, de-identified test inputs | `src/testing/scenario-matrix.md`, `tests/fixtures/` | Markdown and JSON |
-| Validation tooling | Dependency-free build, lint, aggregate validation, and 54 Phase 1–5 tests | `package.json`, `scripts/validate-release.mjs`, `tests/content/*.test.mjs`, `tests/qti/*.mjs` | Node.js ECMAScript modules (`.mjs`) |
+| Validation tooling | Dependency-free build, lint, aggregate validation, and 69 passing checks across ten test files | `package.json`, `scripts/validate-release.mjs`, `tests/content/*.test.mjs`, `tests/keep/*.test.mjs`, `tests/course/*.test.mjs`, `tests/qti/*.mjs` | Node.js ECMAScript modules (`.mjs`) |
 | Gemini Gem instructions | Complete privacy kernel, routing, context selection, staged workflow, approval-gate, and manual-handoff instructions for the classic “Bergen Memory Bank” Gem | `src/gem/bergen-memory-bank-instructions.md` | Copy-ready Markdown |
 | Google Docs templates | Four faculty knowledge documents generated from four primary Markdown sources; the fifth Markdown source is the reusable Class Learning Snapshot partial embedded in Active Workbench, not a fifth knowledge document | `src/templates/`, `dist/google-docs/` | Markdown sources and four Google Docs-ready DOCX files |
 | Document build pipeline | Converts the Markdown sources with `python-docx`, runs the packaged title sanitizer and privacy scrubber, removes `rsid` markup across all XML members, and normalizes ZIP ordering and timestamps | `scripts/build-google-docs.mjs` | Node.js orchestrator with bundled Python document tooling |
@@ -25,8 +27,9 @@ This is a content-first project with one optional faculty-facing browser compani
 |----------|------|----------------------|
 | Classic custom Gemini Gem | Hosts the conversational instructions and interprets prompt aliases | Manual configuration only; exact current capabilities must be confirmed from official Google documentation |
 | Google Drive | Holds the faculty-created Bergen Memory Bank folder | Manual file management only |
-| Google Docs | Holds reusable memory documents | Manual copy, edit, and approved update workflow |
-| Canvas | Stores student records and receives final approved course content | Manual faculty workflow only; no Canvas API or autonomous publishing |
+| Google Docs | Holds reusable memory documents and remains the curated archive | Manual copy, edit, and approved update workflow |
+| Google Keep | Approved v2 target for an active atomic memory layer | Phase 1 defines only the observable connected-action contract; live access, create, exact-title retrieval, and full-content comparison remain later authorized implementation and acceptance work |
+| Canvas | Stores student records and receives final approved course content | Manual faculty workflow only; Phase 1 adds an unpublished whole-course input contract but no Canvas API, course packager, import automation, or autonomous publishing |
 
 ## Development Commands
 
@@ -34,7 +37,7 @@ Run repository validation from the project root. On Windows, use the `.cmd` exec
 
 | Purpose | Windows-safe command | Portable equivalent |
 |---------|----------------------|---------------------|
-| Run the 54 focused Phase 1–5 tests | `npm.cmd test` | `npm test` |
+| Run the 69 aggregate contract and implementation checks | `npm.cmd test` | `npm test` |
 | Regenerate the self-contained packager demo and synthetic ZIP | `npm.cmd run build:qti-demo` | `npm run build:qti-demo` |
 | Regenerate the four Google Docs-ready DOCX files | `npm.cmd run build:google-docs` | `npm run build:google-docs` |
 | Validate release structure, inventory state, version, and source-register count | `npm.cmd run build` | `npm run build` |
@@ -47,9 +50,11 @@ The document build also requires the Codex-bundled Python runtime with `python-d
 
 ## Test Execution Strategy
 
-- Phases 1 through 5 contain 54 dependency-free tests across the five content suites and three QTI suites, executed with the Node.js built-in test runner.
-- The four release-structure tests cover repository scripts and dependency boundaries, release version and review date, the exact 45-artifact inventory with all implementation artifacts ready, and synthetic fixture safeguards.
-- The four source-register tests cover dated source completeness, Bergen policy boundaries, Gem and Canvas capability claims, and Apps Script hosting constraints.
+- The aggregate Node.js run reports 69/69 passing checks across ten dependency-free test files, combining the preserved v1.0 suites with the v2 Phase 1 foundation suites.
+- The five release-structure tests preserve the v1.0 scripts, dependency boundaries, release version, exact 45-artifact inventory, and synthetic fixture safeguards while checking the v2 Phase 1 identifier, 13-artifact delta inventory, `2.0.0-dev.1` package version, pending live gates, and new suite registration.
+- The six source-register tests preserve the dated v1.0 sources and policy/platform boundaries while checking the 2026-08-26 Keep connected-app and Common Cartridge claims without promoting documentation into tenant or compatibility evidence.
+- The atomic-memory contract test checks exact note fields, allowed authority classes, stable immutable revision identity, course isolation, privacy-before-access, exact-title full-content verification, and conservative failure behavior. It does not execute Google Keep operations or revision-selection code.
+- The two whole-course transfer tests check the strict schema, complete synthetic CIS-277 fixture, unpublished defaults, unique and resolvable references, ordered modules, and protected-data exclusions. They do not validate or generate a Common Cartridge package.
 - The 18 Gem-workflow tests cover the always-on privacy and capability kernel, all twelve aliases and natural-language routing, explicit course and context selection, the seven-stage engine, approval gates, protected-data recovery, prerequisite safeguards, manual record and Canvas boundaries, the text-only quiz handoff, and qualified visible-chat estimates.
 - The eight template-contract tests cover the four-document ownership model, source-to-DOCX parity, the embedded Class Learning Snapshot and its exact ordered fields, privacy and Canvas boundaries, explicit course selection, prerequisite constraints, manual faculty-approved recording, and the Google Docs OOXML contract.
 - The eight guide-alignment tests cover the complete nine-guide set and nontechnical language, exact eight-step installation, all twelve aliases plus natural-language parity, observable response fields, privacy recovery, conservative context estimates, the ten-minute presentation, synthetic prompts and demonstration alignment, approval ordering, manual Google Docs and Canvas actions, and the optional QTI boundary.
@@ -64,12 +69,13 @@ The document build also requires the Codex-bundled Python runtime with `python-d
 
 - **Repository documentation**: Markdown.
 - **Repository validation runtime**: Node.js ECMAScript modules using only built-in modules, including `node:test`; no third-party dependencies or development dependencies.
-- **Package scripts**: npm command aliases in `package.json` for test, build, lint, and aggregate validation.
+- **Package scripts**: npm command aliases in `package.json` for test, build, lint, and aggregate validation; the current development package version is `2.0.0-dev.1`.
 - **Document authoring runtime**: Codex-bundled Python with `python-docx`, plus the bundled documents package title-sanitization and privacy-scrubbing helpers; this is a contributor build-time dependency, not a package.json dependency or faculty prerequisite.
-- **Faculty-facing authoring and memory**: Google Docs in Google Drive.
+- **Faculty-facing authoring and archive**: Google Docs in Google Drive; Phase 1 has not changed the existing manual workflow.
+- **V2 active-memory target**: Google Keep through observable connected actions; Phase 1 supplies the contract only and no executable client, API, retrieval, or write behavior.
 - **Conversational host**: Classic custom Gemini Gem created with a `bergen.edu` account.
 - **Student-record and publishing system**: Canvas.
-- **APIs and product automation**: No Canvas API, autonomous document editing, automated grading, or autonomous publishing in version 1.0. Repository validation automation is developer-only.
+- **APIs and product automation**: No Canvas API, Keep API/client, autonomous document editing, automated grading, autonomous publishing, or whole-course packaging was added in v2 Phase 1. Repository validation automation is developer-only.
 - **Implemented optional companion**: The Gem prepares only an approved text-only Bergen Quiz Transfer Block. The separate client-side QTI Packager validates it and creates the local ZIP without sending quiz content to Apps Script or another service.
 
 <!-- AUTO-MANAGED: c4-references-start -->
@@ -80,6 +86,13 @@ C4 architecture documentation has not been generated, and no C4 manifest exists.
 <!-- AUTO-MANAGED: c4-references-end -->
 
 ## Recent Technology Changes
+
+### 2026-08-26 - Established the v2 Phase 1 contract and validation foundation
+
+- **What Changed**: Advanced the package to `2.0.0-dev.1`; added the normative atomic Keep note contract, strict whole-course JSON Schema, complete synthetic CIS-277 fixture, eight dated v2 platform sources, two new focused test files, and v2 release-inventory checks.
+- **Reason**: Fix privacy, authority, immutable revision, observable write-verification, unpublished transfer, and external acceptance boundaries before implementing connected behavior or browser packaging.
+- **Impact**: Aggregate validation now reports 69/69 passing checks with zero third-party dependencies. No executable Keep client or API, v2 Gem behavior, course-transfer validator, course packager, Common Cartridge file, Canvas integration, or faculty-facing capability was added.
+- **Migration Notes**: None. The preserved v1.0 Gem, Google Docs archive, and optional QTI Packager remain intact while v2 implementation proceeds through later phases.
 
 ### 2026-08-04 - Implemented the privacy-first QTI Packager
 

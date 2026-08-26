@@ -28,6 +28,17 @@ const officialSources = [
   'https://developers.google.com/apps-script/guides/html/best-practices',
 ];
 
+const v2OfficialSources = [
+  'https://support.google.com/gemini/answer/15230597?hl=en',
+  'https://support.google.com/gemini/answer/14959807?hl=en',
+  'https://support.google.com/a/answer/15293691?hl=en',
+  'https://community.instructure.com/en/kb/articles/660732-how-do-i-import-content-from-common-cartridge-into-canvas',
+  'https://community.instructure.com/en/kb/articles/660738-how-do-i-view-the-status-of-current-and-prior-course-imports',
+  'https://community.instructure.com/en/kb/articles/662748-what-is-the-course-import-tool',
+  'https://www.1edtech.org/standards/cc',
+  'https://www.imsglobal.org/cc/ccv1p3/imscc_Implementation-v1p3.html',
+];
+
 test('source register contains one dated primary or official entry for every required source', async () => {
   const sourceRegister = await readSourceRegister();
   const rows = [...sourceRegister.matchAll(/^\|\s*\[[^\]]+\]\((https:\/\/[^)]+)\)\s*\|\s*(2026-08-04)\s*\|\s*(Primary|Official)\s*\|/gm)];
@@ -69,4 +80,31 @@ test('Apps Script claims capture the official sandbox, HTTPS, and navigation con
   assert.match(sourceRegister, /top-level navigation is restricted/i);
   assert.match(sourceRegister, /user-activated link or button/i);
   assert.match(sourceRegister, /No Apps Script application was implemented in Phase 1/i);
+});
+
+test('v2 Keep claims are dated to current official sources and stop at observable connected-app evidence', async () => {
+  const sourceRegister = await readSourceRegister();
+  const rows = [...sourceRegister.matchAll(/^\|\s*\[[^\]]+\]\((https:\/\/[^)]+)\)\s*\|\s*(2026-08-26)\s*\|\s*(Official)\s*\|/gm)];
+  const registeredUrls = rows.map(([, url]) => url);
+
+  assert.deepEqual(registeredUrls, v2OfficialSources);
+  assert.match(sourceRegister, /Gemini Apps can create and find Google Keep notes and lists/i);
+  assert.match(sourceRegister, /availability varies by account, Workspace edition, administrator settings, location, language, device, and Gemini app/i);
+  assert.match(sourceRegister, /does not establish that the Bergen classic custom Gem can complete the v2 protocol/i);
+  assert.match(sourceRegister, /authorized live.*create.*exact-title retrieval.*full content comparison/i);
+  assert.match(sourceRegister, /failed or unverified persistence remains a failure/i);
+});
+
+test('v2 Common Cartridge claims distinguish standards and repository structure from Canvas import evidence', async () => {
+  const sourceRegister = await readSourceRegister();
+
+  assert.match(sourceRegister, /Common Cartridge 1\.x Package/i);
+  assert.match(sourceRegister, /ZIP or IMSCC file/i);
+  assert.match(sourceRegister, /Queued, Running, Completed, Partially Completed, and Failed/i);
+  assert.match(sourceRegister, /draft-state settings are retained in course imports/i);
+  assert.match(sourceRegister, /1EdTech.*packages and exchanges digital learning materials and assessments/i);
+  assert.match(sourceRegister, /\.imscc/);
+  assert.match(sourceRegister, /Phase 1 schema and fixture are not a generated cartridge/i);
+  assert.match(sourceRegister, /authorized import into an unpublished Bergen Canvas sandbox/i);
+  assert.match(sourceRegister, /does not establish compatibility, conformance, successful import, or publication/i);
 });
