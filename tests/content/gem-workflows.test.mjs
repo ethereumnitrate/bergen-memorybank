@@ -7,6 +7,9 @@ const repositoryFile = (relativePath) => new URL(`../../${relativePath}`, import
 const workflows = [
   ['help', 'Help'],
   ['setup', 'Setup'],
+  ['init <course>', 'Initialize'],
+  ['resume <course>', 'Resume'],
+  ['memory', 'Memory'],
   ['course', 'Course'],
   ['lesson', 'Lesson'],
   ['assignment', 'Assignment'],
@@ -17,6 +20,8 @@ const workflows = [
   ['message', 'Message'],
   ['reflect', 'Reflect'],
   ['record', 'Record'],
+  ['package course', 'Package Course'],
+  ['package assessment', 'Package Assessment'],
 ];
 
 async function readInstructions() {
@@ -51,7 +56,7 @@ test('classic Gem instructions establish an always-on privacy and capability ker
   assert.match(instructions, /no Git, terminal, API, code, or developer tooling/i);
 });
 
-test('router recognizes all twelve aliases case-insensitively with optional parameters', async () => {
+test('router recognizes all seventeen aliases case-insensitively with optional parameters and natural-language parity', async () => {
   const instructions = await readInstructions();
 
   assert.match(instructions, /match `bergen:<workflow>` case-insensitively/i);
@@ -110,12 +115,20 @@ test('stage engine follows Remember through Record without skipping approval gat
   assert.match(instructions, /never skip a required approval gate/i);
 });
 
-test('help workflow is a complete installation-verification and safe recovery surface', async () => {
+test('help workflow discovers the complete v2 command set while preserving the safe recovery surface', async () => {
   const instructions = await readInstructions();
 
   assert.match(instructions, /### `bergen:help` â€” Help/);
   assert.match(instructions, /begin exactly with `Bergen Memory Bank Â· Help`/i);
-  assert.match(instructions, /list all twelve aliases with a plain-language purpose/i);
+  assert.match(instructions, /list all seventeen aliases with a plain-language purpose/i);
+  assertContainsAll(instructions, [
+    'bergen:init <course>',
+    'bergen:resume <course>',
+    'bergen:memory',
+    'bergen:record',
+    'bergen:package course',
+    'bergen:package assessment',
+  ], 'v2 help command set');
   assert.match(instructions, /safe examples and natural-language alternatives/i);
   assert.match(instructions, /protected-data boundary/i);
   assert.match(instructions, /Current stage: Remember/);
@@ -226,34 +239,55 @@ test('concepts-not-yet-introduced guard blocks prerequisite creep in reinforceme
   assert.match(instructions, /do not infer prerequisites merely because they are common in the discipline/i);
 });
 
-test('revision recording and publication require explicit human approval and manual action', async () => {
+test('revision, durable recording, and packaging require distinct faculty approvals', async () => {
   const instructions = await readInstructions();
 
   assert.match(instructions, /## Approval gates and manual boundaries/);
   assert.match(instructions, /explicit faculty approval before revision/i);
-  assert.match(instructions, /explicit faculty approval before preparing a record update/i);
+  assert.match(instructions, /record-specific faculty approval/i);
   assert.match(instructions, /explicit faculty approval before a Canvas publishing handoff/i);
-  assert.match(instructions, /approval for one action does not authorize another/i);
-  assert.match(instructions, /never claim to have saved, synchronized, modified, imported, or published anything/i);
+  assert.match(instructions, /revision approval is not record approval/i);
+  assert.match(instructions, /approval for one record does not authorize another/i);
+  assert.match(instructions, /whole-course review and approval.*distinct from package approval/is);
 });
 
-test('record workflow names one target and supplies copy-ready text for manual Google Docs editing', async () => {
+test('record workflow proposes one durable immutable Keep revision and waits for record-specific approval', async () => {
   const instructions = await readInstructions();
 
-  assert.match(instructions, /name exactly one primary target document/i);
-  assert.match(instructions, /copy-ready text/i);
-  assert.match(instructions, /paste it manually into that Google Doc in the Bergen Memory Bank Drive folder/i);
-  assert.match(instructions, /attached documents are faculty-controlled references, not automatically editable memory/i);
-  assert.match(instructions, /do not claim that the Gem saved, synchronized, modified, or retained the document/i);
+  assert.match(instructions, /one atomic immutable Google Keep note/i);
+  assert.match(instructions, /BMB \| <COURSE> \| <TYPE> \| <RECORD-SLUG> \| R<NNN> \| <DATE>/);
+  assertContainsAll(instructions, [
+    'Schema:',
+    'Course:',
+    'Record ID:',
+    'Revision:',
+    'Record type:',
+    'Memory class:',
+    'Status:',
+    'Supersedes:',
+    'Approval:',
+    'Approval evidence:',
+    'Timestamp:',
+    'Content:',
+  ], 'Keep note body schema');
+  assert.match(instructions, /Schema: bergen-memory-v2\/0\.1/);
+  assert.match(instructions, /Status: Active \| Archived/);
+  assert.match(instructions, /leave the superseded note unchanged/i);
+  assert.match(instructions, /Google Docs remain an optional curated archive/i);
 });
 
-test('Canvas and quiz handoffs are copy-ready, manual, approved, and safely separable', async () => {
+test('whole-course and assessment-only package routes remain approved, manual, and distinct', async () => {
   const instructions = await readInstructions();
 
   assert.match(instructions, /## Canvas Publishing Packet/);
   assert.match(instructions, /Canvas is the final publishing destination/i);
   assert.match(instructions, /manual faculty transfer, review, saving, and publication/i);
   assert.match(instructions, /## Bergen Quiz Transfer Block/);
+  assert.match(instructions, /### `bergen:package course`/);
+  assert.match(instructions, /### `bergen:package assessment`/);
+  assert.match(instructions, /whole-course review and approval.*distinct from package approval/is);
+  assert.match(instructions, /versioned Bergen Course Transfer Block/i);
+  assert.match(instructions, /Canvas items default to unpublished/i);
   assertContainsAll(instructions, [
     'quiz settings',
     'item identifiers',
@@ -271,6 +305,110 @@ test('Canvas and quiz handoffs are copy-ready, manual, approved, and safely sepa
   assert.match(instructions, /does not package, generate, or attach a ZIP/i);
   assert.match(instructions, /unsupported or incomplete items.*copy-ready Canvas quiz content/is);
   assert.match(instructions, /confirm that the block contains no student data/i);
+  assert.match(instructions, /manual(?:ly)? import.*unpublished Canvas (?:test course|sandbox)/is);
+  assert.match(instructions, /assessment-only.*does not require or generate.*\.imscc/is);
+});
+
+test('initialization uses the supplied syllabus but auto-saves only a meaningful temporary checkpoint', async () => {
+  const instructions = await readInstructions();
+
+  assert.match(instructions, /### `bergen:init <course>`/);
+  assert.match(instructions, /require an attached or pasted syllabus/i);
+  assert.match(instructions, /select and echo the named course/i);
+  assert.match(instructions, /propose.*durable syllabus facts/is);
+  assert.match(instructions, /durable facts.*never.*automatic authority/is);
+  assert.match(instructions, /meaningful state change/i);
+  assert.match(instructions, /temporary Active Workbench checkpoint/i);
+  assert.match(instructions, /stage and recommended next (?:step|command)/i);
+});
+
+test('Keep writes are atomic and report success only after exact-title retrieval and comparison', async () => {
+  const instructions = await readInstructions();
+
+  assert.match(instructions, /classify.*approve.*create.*retrieve the exact title.*compare.*report success/is);
+  assert.match(instructions, /do not overwrite, edit, append to, or silently merge an existing note/i);
+  assertContainsAll(instructions, [
+    'Memory action: Created',
+    'Keep note: <exact title>',
+    'Memory class: Temporary',
+    'Memory class: Durable',
+    'Approval: Automatic low-risk',
+    'Approval: Faculty approved',
+    'Verification:',
+  ], 'verified Keep success response');
+  assert.match(instructions, /only after.*exactly one exact-title result.*required fields and content match/is);
+});
+
+test('Keep failures preserve safe proposed content and offer only in-chat recovery choices', async () => {
+  const instructions = await readInstructions();
+
+  assertContainsAll(instructions, [
+    'create failure',
+    'exact-title retrieval failure',
+    'content mismatch',
+    'duplicate exact title',
+    'unavailable result',
+    'Memory action: Failed',
+    'Retry memory write',
+    'Continue without persistence',
+  ], 'Keep failure contract');
+  assert.match(instructions, /preserve the safe proposed content.*current Gemini conversation/is);
+  assert.match(instructions, /offer only `Retry memory write` or `Continue without persistence`/i);
+  assert.match(instructions, /never claim.*saved or verified/is);
+  assert.match(instructions, /do not direct.*manual Keep repair/is);
+});
+
+test('resume retrieves only one course and surfaces invalid revision evidence without guessing', async () => {
+  const instructions = await readInstructions();
+
+  assert.match(instructions, /### `bergen:resume <course>`/);
+  assert.match(instructions, /retrieve only.*selected course.*BMB notes/is);
+  assert.match(instructions, /follow valid `Supersedes` chains/i);
+  assert.match(instructions, /select the newest verified active record/i);
+  assert.match(instructions, /exact Keep note titles used/i);
+  assertContainsAll(instructions, [
+    'missing note',
+    'ambiguous record',
+    'conflicting active records',
+    'broken Supersedes chain',
+    'revision gap',
+    'schema error',
+  ], 'resume conflict cases');
+  assert.match(instructions, /do not guess, merge, or use another course['â€™]s notes/i);
+  assert.match(instructions, /Current stage.*Recommended next command/is);
+});
+
+test('memory inspection exposes its active basis without inventing hidden retrieval details', async () => {
+  const instructions = await readInstructions();
+
+  assert.match(instructions, /### `bergen:memory`/);
+  assertContainsAll(instructions, [
+    'Selected course:',
+    'Active Keep notes:',
+    'Memory class:',
+    'Superseded records:',
+    'Conflicts or missing information:',
+    'Last verified write:',
+  ], 'memory report');
+  assert.match(instructions, /exact active note titles/i);
+  assert.match(instructions, /do not claim.*hidden retrieval.*context meter/is);
+});
+
+test('protected-data detection precedes every v2 retrieval, write, drafting, transfer, and package route', async () => {
+  const instructions = await readInstructions();
+
+  assert.match(instructions, /protected-data check.*before Keep retrieval, Keep creation, course drafting, transfer generation, or packaging/is);
+  assert.match(instructions, /do not echo, quote, transform, summarize, analyze, classify, or retain the protected content/i);
+  assert.match(instructions, /Canvas is the student-record system/i);
+  assert.match(instructions, /blank de-identified Class Learning Snapshot/i);
+  assertContainsAll(instructions, [
+    'bergen:init',
+    'bergen:resume',
+    'bergen:memory',
+    'bergen:record',
+    'bergen:package course',
+    'bergen:package assessment',
+  ], 'privacy precedence routes');
 });
 
 test('visible-chat estimate is conservative, qualified, and avoids false precision', async () => {
@@ -297,8 +435,8 @@ test('synthetic scenario fixture maps Phase 2 workflows to observable response c
   assert.equal(fixture.metadata.dataClassification, 'synthetic/de-identified');
   assert.equal(fixture.metadata.containsRealStudentData, false);
   assert.equal(fixture.metadata.phase, 'phase-2');
-  assert.equal(fixture.scenarios.length, 18);
-  assert.equal(new Set(fixture.scenarios.map(({ id }) => id)).size, 18);
+  assert.equal(fixture.scenarios.length, 37);
+  assert.equal(new Set(fixture.scenarios.map(({ id }) => id)).size, 37);
 
   const aliasScenarios = new Map(fixture.scenarios
     .filter(({ id }) => id.startsWith('alias-'))
@@ -307,8 +445,31 @@ test('synthetic scenario fixture maps Phase 2 workflows to observable response c
     const scenario = aliasScenarios.get(name.toLowerCase());
     assert.ok(scenario, `fixture must include the ${alias} alias`);
     assert.equal(scenario.expectedHeader, `Bergen Memory Bank Â· ${name}`);
-    assert.match(scenario.expectedNextCommand, /^bergen:(?:help|setup|course|lesson|assignment|rubric|reinforce|review|revise|message|reflect|record)$/);
+    assert.match(scenario.expectedNextCommand, /^bergen:(?:help|setup|init|resume|memory|course|lesson|assignment|rubric|reinforce|review|revise|message|reflect|record|package course|package assessment)$/);
   }
+
+  const phaseTwoScenarioIds = fixture.scenarios.map(({ id }) => id);
+  assertContainsAll(phaseTwoScenarioIds, [
+    'alias-init',
+    'alias-resume',
+    'alias-memory',
+    'alias-package-course',
+    'alias-package-assessment',
+    'natural-language-init',
+    'natural-language-resume',
+    'natural-language-memory',
+    'natural-language-package-course',
+    'natural-language-package-assessment',
+    'init-temporary-checkpoint',
+    'record-durable-revision',
+    'write-failure-create',
+    'write-failure-exact-title-retrieval',
+    'write-failure-content-mismatch',
+    'write-failure-duplicate-exact-title',
+    'write-failure-unavailable',
+    'resume-conflict',
+    'memory-report',
+  ], 'Phase 2 scenario IDs');
 
   for (const scenario of fixture.scenarios) {
     assert.ok(scenario.expectedHeader.startsWith('Bergen Memory Bank Â· '));
@@ -317,4 +478,142 @@ test('synthetic scenario fixture maps Phase 2 workflows to observable response c
     assert.ok(scenario.expectedSafeguards.length > 0);
   }
   assert.match(instructions, /## Scenario coverage commitments/);
+});
+
+test('Record stage and alias scenario use verified Keep persistence instead of manual Google Docs', async () => {
+  const instructions = await readInstructions();
+  const fixture = await readScenarios();
+  const recordScenario = fixture.scenarios.find(({ id }) => id === 'alias-record');
+
+  assert.doesNotMatch(
+    instructions,
+    /\*\*Record\*\*[^\r\n]*manual placement in one named document/i,
+    'Record stage must not retain the v1 manual document path',
+  );
+  assert.match(
+    instructions,
+    /\*\*Record\*\*[^\r\n]*propose one durable record[^\r\n]*record-specific approval[^\r\n]*create one immutable note[^\r\n]*retrieve the exact title[^\r\n]*compare[^\r\n]*report/i,
+  );
+  assert.ok(recordScenario, 'alias-record scenario must exist');
+  assert.equal(recordScenario.expectedContext, 'One proposed durable record and its observable Keep result');
+  assert.equal(recordScenario.expectedNextCommand, 'bergen:memory');
+  assert.deepEqual(recordScenario.expectedSafeguards, [
+    'record-specific faculty approval',
+    'one immutable Keep note',
+    'exact-title retrieval and full comparison',
+  ]);
+  assert.ok(!JSON.stringify(recordScenario).includes('Google Docs'));
+});
+
+test('Gem note body is structurally identical to the normative immutable-memory fields', async () => {
+  const instructions = await readInstructions();
+
+  assert.match(instructions, /Record ID: <COURSE>\/<TYPE>\/<RECORD-SLUG>/);
+  assert.match(instructions, /Timestamp: <ISO 8601 timestamp with offset>/);
+  assert.match(instructions, /Content:\r?\n<complete intended record content>/);
+  assert.match(
+    instructions,
+    /Schema: bergen-memory-v2\/0\.1\r?\nCourse: <COURSE>\r?\nRecord ID: <COURSE>\/<TYPE>\/<RECORD-SLUG>\r?\nRevision: R<NNN>\r?\nRecord type: <allowed record type>\r?\nMemory class: Temporary \| Durable\r?\nStatus: Active \| Archived\r?\nSupersedes: None \| <exact prior note title>\r?\nApproval: Automatic low-risk \| Faculty approved\r?\nApproval evidence: <meaningful state change> \| <exact approval statement from the current conversation>\r?\nTimestamp: <ISO 8601 timestamp with offset>\r?\nContent:\r?\n<complete intended record content>/,
+  );
+});
+
+test('Gem lists every allowed record type and treats Replacement and Archive only as actions', async () => {
+  const instructions = await readInstructions();
+
+  assertContainsAll(instructions, [
+    'Workflow checkpoint',
+    'Temporary idea',
+    'Open question',
+    'Missing course information',
+    'De-identified Active Workbench summary',
+    'Faculty profile',
+    'Course fact',
+    'Course outcome',
+    'Course policy',
+    'Durable decision',
+    'Reusable practice',
+    'Promoted reflection',
+  ], 'allowed memory record types');
+  assert.match(instructions, /Replacement and Archive are faculty-approved durable actions, not record types/i);
+  assert.match(instructions, /preserve the original record type and stable identity/i);
+  assert.match(instructions, /never substitutes `REPLACEMENT` or `ARCHIVE` into the title, `Record ID`, or `Record type` field/i);
+});
+
+test('scenario command matrix discovers all seventeen workflows and validates every alias input', async () => {
+  const fixture = await readScenarios();
+  const helpScenario = fixture.scenarios.find(({ id }) => id === 'alias-help');
+  const aliasScenarios = new Map(fixture.scenarios
+    .filter(({ id }) => id.startsWith('alias-'))
+    .map((scenario) => [scenario.expectedWorkflow, scenario]));
+
+  assert.ok(helpScenario.expectedSafeguards.includes('all seventeen workflows'));
+  assert.equal(aliasScenarios.size, workflows.length);
+  for (const [alias, workflow] of workflows) {
+    const scenario = aliasScenarios.get(workflow);
+    const command = `bergen:${alias.replace(/ <course>$/, '')}`;
+    assert.ok(scenario, `missing alias scenario for ${alias}`);
+    assert.equal(scenario.expectedHeader, `Bergen Memory Bank Â· ${workflow}`);
+    assert.match(scenario.input, new RegExp(`^${command.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:\\s|$)`, 'i'));
+  }
+});
+
+test('scenario matrix gives command safeguards to each equivalent natural-language v2 route', async () => {
+  const fixture = await readScenarios();
+  const parityCases = [
+    ['natural-language-lesson', 'Lesson'],
+    ['natural-language-init', 'Initialize'],
+    ['natural-language-resume', 'Resume'],
+    ['natural-language-memory', 'Memory'],
+    ['natural-language-package-course', 'Package Course'],
+    ['natural-language-package-assessment', 'Package Assessment'],
+  ];
+
+  for (const [id, expectedWorkflow] of parityCases) {
+    const scenario = fixture.scenarios.find((candidate) => candidate.id === id);
+    assert.ok(scenario, `missing natural-language scenario ${id}`);
+    assert.doesNotMatch(scenario.input, /^bergen:/i);
+    assert.equal(scenario.expectedWorkflow, expectedWorkflow);
+    assert.ok(scenario.expectedSafeguards.includes('natural-language parity') || id === 'natural-language-lesson');
+  }
+});
+
+test('success, failure, initialization, and later-memory scenarios carry exact observable semantics', async () => {
+  const instructions = await readInstructions();
+  const fixture = await readScenarios();
+  const temporarySuccessFields = [
+    'Memory action: Created',
+    'Keep note: <exact title>',
+    'Memory class: Temporary',
+    'Approval: Automatic low-risk',
+    'Verification: Retrieved exactly one exact-title note; required fields and content match.',
+  ];
+  const durableSuccessFields = [
+    'Memory action: Created',
+    'Keep note: <exact title>',
+    'Memory class: Durable',
+    'Approval: Faculty approved',
+    'Verification: Retrieved exactly one exact-title note; required fields and content match.',
+  ];
+  const recoveryChoices = ['Retry memory write', 'Continue without persistence'];
+
+  assert.ok(instructions.includes(temporarySuccessFields.join('\n')));
+  assert.ok(instructions.includes(durableSuccessFields.join('\n')));
+  assert.match(
+    instructions,
+    /Recovery choices:\r?\n- Retry memory write\r?\n- Continue without persistence/,
+  );
+
+  const initScenario = fixture.scenarios.find(({ id }) => id === 'init-temporary-checkpoint');
+  assert.equal(initScenario.durableFactsPersisted, false);
+  assert.deepEqual(initScenario.expectedSuccessFields, temporarySuccessFields);
+
+  const recordScenario = fixture.scenarios.find(({ id }) => id === 'record-durable-revision');
+  assert.deepEqual(recordScenario.expectedSuccessFields, durableSuccessFields);
+
+  const failureScenarios = fixture.scenarios.filter(({ id }) => id.startsWith('write-failure-'));
+  assert.equal(failureScenarios.length, 5);
+  for (const scenario of failureScenarios) {
+    assert.deepEqual(scenario.expectedRecoveryChoices, recoveryChoices);
+    assert.equal(scenario.listedAsActiveMemory, false);
+  }
 });

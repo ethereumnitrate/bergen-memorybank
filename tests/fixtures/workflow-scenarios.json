@@ -15,7 +15,7 @@
       "expectedStage": "Remember",
       "expectedNextCommand": "bergen:setup",
       "expectedSafeguards": [
-        "all twelve workflows",
+        "all seventeen workflows",
         "safe-data guidance",
         "natural-language examples"
       ]
@@ -155,12 +155,13 @@
       "input": "bergen:record propose a durable update from the approved reflection",
       "expectedWorkflow": "Record",
       "expectedHeader": "Bergen Memory Bank Â· Record",
-      "expectedContext": "Approved synthetic teaching context and one target document",
+      "expectedContext": "One proposed durable record and its observable Keep result",
       "expectedStage": "Record",
-      "expectedNextCommand": "bergen:help",
+      "expectedNextCommand": "bergen:memory",
       "expectedSafeguards": [
-        "explicit record approval",
-        "manual Google Docs paste"
+        "record-specific faculty approval",
+        "one immutable Keep note",
+        "exact-title retrieval and full comparison"
       ]
     },
     {
@@ -243,6 +244,290 @@
         "Bergen Quiz Transfer Block boundary",
         "no ZIP packaging claim",
         "copy-ready fallback"
+      ]
+    },
+    {
+      "id": "alias-init",
+      "input": "bergen:init CIS-277",
+      "expectedWorkflow": "Initialize",
+      "expectedHeader": "Bergen Memory Bank Â· Initialize",
+      "expectedContext": "Named synthetic course and supplied de-identified syllabus",
+      "expectedStage": "Remember",
+      "expectedNextCommand": "bergen:course",
+      "expectedSafeguards": [
+        "temporary checkpoint only",
+        "durable facts remain proposed"
+      ]
+    },
+    {
+      "id": "alias-resume",
+      "input": "BERGEN:RESUME CIS-277",
+      "expectedWorkflow": "Resume",
+      "expectedHeader": "Bergen Memory Bank Â· Resume",
+      "expectedContext": "Verified CIS-277 BMB notes only",
+      "expectedStage": "Remember",
+      "expectedNextCommand": "bergen:course",
+      "expectedSafeguards": [
+        "course isolation",
+        "exact note titles"
+      ]
+    },
+    {
+      "id": "alias-memory",
+      "input": "bergen:memory",
+      "expectedWorkflow": "Memory",
+      "expectedHeader": "Bergen Memory Bank Â· Memory",
+      "expectedContext": "Selected synthetic course and verified active-note basis",
+      "expectedStage": "Remember",
+      "expectedNextCommand": "bergen:course",
+      "expectedSafeguards": [
+        "active and superseded records",
+        "no hidden retrieval claims"
+      ]
+    },
+    {
+      "id": "alias-package-course",
+      "input": "bergen:package course",
+      "expectedWorkflow": "Package Course",
+      "expectedHeader": "Bergen Memory Bank Â· Package Course",
+      "expectedContext": "Reviewed and approved synthetic whole-course design",
+      "expectedStage": "Review",
+      "expectedNextCommand": "bergen:package course",
+      "expectedSafeguards": [
+        "separate package approval",
+        "unpublished Canvas defaults"
+      ]
+    },
+    {
+      "id": "alias-package-assessment",
+      "input": "bergen:package assessment",
+      "expectedWorkflow": "Package Assessment",
+      "expectedHeader": "Bergen Memory Bank Â· Package Assessment",
+      "expectedContext": "Reviewed and approved synthetic assessment only",
+      "expectedStage": "Review",
+      "expectedNextCommand": "bergen:package assessment",
+      "expectedSafeguards": [
+        "five supported QTI item types",
+        "manual unpublished Canvas import"
+      ]
+    },
+    {
+      "id": "natural-language-init",
+      "input": "Initialize CIS-277 from the de-identified syllabus I supplied.",
+      "expectedWorkflow": "Initialize",
+      "expectedHeader": "Bergen Memory Bank Â· Initialize",
+      "expectedContext": "Named synthetic course and supplied de-identified syllabus",
+      "expectedStage": "Remember",
+      "expectedNextCommand": "bergen:course",
+      "expectedSafeguards": [
+        "natural-language parity",
+        "temporary checkpoint only"
+      ]
+    },
+    {
+      "id": "natural-language-resume",
+      "input": "Resume CIS-277 and show the next course-development step.",
+      "expectedWorkflow": "Resume",
+      "expectedHeader": "Bergen Memory Bank Â· Resume",
+      "expectedContext": "Verified CIS-277 BMB notes only",
+      "expectedStage": "Remember",
+      "expectedNextCommand": "bergen:course",
+      "expectedSafeguards": [
+        "natural-language parity",
+        "no cross-course notes"
+      ]
+    },
+    {
+      "id": "natural-language-memory",
+      "input": "Show the active memory for the selected course.",
+      "expectedWorkflow": "Memory",
+      "expectedHeader": "Bergen Memory Bank Â· Memory",
+      "expectedContext": "Selected synthetic course and verified active-note basis",
+      "expectedStage": "Remember",
+      "expectedNextCommand": "bergen:course",
+      "expectedSafeguards": [
+        "natural-language parity",
+        "observable note titles only"
+      ]
+    },
+    {
+      "id": "natural-language-package-course",
+      "input": "Prepare the final whole-course transfer after I approve packaging.",
+      "expectedWorkflow": "Package Course",
+      "expectedHeader": "Bergen Memory Bank Â· Package Course",
+      "expectedContext": "Reviewed and approved synthetic whole-course design",
+      "expectedStage": "Record",
+      "expectedNextCommand": "bergen:help",
+      "expectedSafeguards": [
+        "natural-language parity",
+        "one versioned course transfer block"
+      ]
+    },
+    {
+      "id": "natural-language-package-assessment",
+      "input": "Prepare the assessment-only QTI transfer for my approved synthetic quiz.",
+      "expectedWorkflow": "Package Assessment",
+      "expectedHeader": "Bergen Memory Bank Â· Package Assessment",
+      "expectedContext": "Reviewed and approved synthetic assessment only",
+      "expectedStage": "Record",
+      "expectedNextCommand": "bergen:help",
+      "expectedSafeguards": [
+        "natural-language parity",
+        "no whole-course cartridge"
+      ]
+    },
+    {
+      "id": "init-temporary-checkpoint",
+      "input": "bergen:init CIS-277 using the supplied synthetic syllabus",
+      "expectedWorkflow": "Initialize",
+      "expectedHeader": "Bergen Memory Bank Â· Initialize",
+      "expectedContext": "Proposed durable syllabus facts and one temporary Active Workbench checkpoint",
+      "expectedStage": "Frame",
+      "expectedNextCommand": "bergen:course",
+      "expectedSafeguards": [
+        "Memory class: Temporary",
+        "Approval: Automatic low-risk",
+        "exact-title verification"
+      ],
+      "expectedMemoryAction": "Created",
+      "expectedSuccessFields": [
+        "Memory action: Created",
+        "Keep note: <exact title>",
+        "Memory class: Temporary",
+        "Approval: Automatic low-risk",
+        "Verification: Retrieved exactly one exact-title note; required fields and content match."
+      ],
+      "durableFactsPersisted": false
+    },
+    {
+      "id": "record-durable-revision",
+      "input": "bergen:record the displayed synthetic policy after this record-specific approval",
+      "expectedWorkflow": "Record",
+      "expectedHeader": "Bergen Memory Bank Â· Record",
+      "expectedContext": "One approved durable synthetic course-policy revision",
+      "expectedStage": "Record",
+      "expectedNextCommand": "bergen:memory",
+      "expectedSafeguards": [
+        "Memory class: Durable",
+        "Approval: Faculty approved",
+        "immutable superseding note"
+      ],
+      "expectedMemoryAction": "Created",
+      "expectedSuccessFields": [
+        "Memory action: Created",
+        "Keep note: <exact title>",
+        "Memory class: Durable",
+        "Approval: Faculty approved",
+        "Verification: Retrieved exactly one exact-title note; required fields and content match."
+      ]
+    },
+    {
+      "id": "write-failure-create",
+      "input": "Simulate an unavailable Keep create result for the safe synthetic proposal.",
+      "expectedWorkflow": "Record",
+      "expectedHeader": "Bergen Memory Bank Â· Record",
+      "expectedContext": "Safe proposed content remains visible in Gemini only",
+      "expectedStage": "Record",
+      "expectedNextCommand": "bergen:record",
+      "expectedSafeguards": [
+        "Memory action: Failed",
+        "create failure",
+        "in-chat recovery only"
+      ],
+      "expectedRecoveryChoices": ["Retry memory write", "Continue without persistence"],
+      "listedAsActiveMemory": false
+    },
+    {
+      "id": "write-failure-exact-title-retrieval",
+      "input": "Simulate no exact-title result after creating the safe synthetic note.",
+      "expectedWorkflow": "Record",
+      "expectedHeader": "Bergen Memory Bank Â· Record",
+      "expectedContext": "Safe proposed content remains visible in Gemini only",
+      "expectedStage": "Record",
+      "expectedNextCommand": "bergen:record",
+      "expectedSafeguards": [
+        "Memory action: Failed",
+        "exact-title retrieval failure",
+        "no verified claim"
+      ],
+      "expectedRecoveryChoices": ["Retry memory write", "Continue without persistence"],
+      "listedAsActiveMemory": false
+    },
+    {
+      "id": "write-failure-content-mismatch",
+      "input": "Simulate a required-field mismatch in the retrieved synthetic note.",
+      "expectedWorkflow": "Record",
+      "expectedHeader": "Bergen Memory Bank Â· Record",
+      "expectedContext": "Safe proposed content remains visible in Gemini only",
+      "expectedStage": "Record",
+      "expectedNextCommand": "bergen:record",
+      "expectedSafeguards": [
+        "Memory action: Failed",
+        "content mismatch",
+        "no saved claim"
+      ],
+      "expectedRecoveryChoices": ["Retry memory write", "Continue without persistence"],
+      "listedAsActiveMemory": false
+    },
+    {
+      "id": "write-failure-duplicate-exact-title",
+      "input": "Simulate two exact-title results for the synthetic note.",
+      "expectedWorkflow": "Record",
+      "expectedHeader": "Bergen Memory Bank Â· Record",
+      "expectedContext": "Safe proposed content remains visible in Gemini only",
+      "expectedStage": "Record",
+      "expectedNextCommand": "bergen:record",
+      "expectedSafeguards": [
+        "Memory action: Failed",
+        "duplicate exact title",
+        "no guessed winner"
+      ],
+      "expectedRecoveryChoices": ["Retry memory write", "Continue without persistence"],
+      "listedAsActiveMemory": false
+    },
+    {
+      "id": "write-failure-unavailable",
+      "input": "Simulate an unavailable connected Keep action result.",
+      "expectedWorkflow": "Record",
+      "expectedHeader": "Bergen Memory Bank Â· Record",
+      "expectedContext": "Safe proposed content remains visible in Gemini only",
+      "expectedStage": "Record",
+      "expectedNextCommand": "bergen:record",
+      "expectedSafeguards": [
+        "Memory action: Failed",
+        "unavailable result",
+        "continue without persistence"
+      ],
+      "expectedRecoveryChoices": ["Retry memory write", "Continue without persistence"],
+      "listedAsActiveMemory": false
+    },
+    {
+      "id": "resume-conflict",
+      "input": "bergen:resume CIS-277 with a synthetic broken Supersedes chain",
+      "expectedWorkflow": "Resume",
+      "expectedHeader": "Bergen Memory Bank Â· Resume",
+      "expectedContext": "Exact conflicting CIS-277 note titles and missing revision relationship",
+      "expectedStage": "Remember",
+      "expectedNextCommand": "bergen:memory",
+      "expectedSafeguards": [
+        "pause context-dependent work",
+        "no guessed active record",
+        "minimum faculty decision"
+      ]
+    },
+    {
+      "id": "memory-report",
+      "input": "bergen:memory for the selected synthetic course",
+      "expectedWorkflow": "Memory",
+      "expectedHeader": "Bergen Memory Bank Â· Memory",
+      "expectedContext": "Exact temporary, durable, active, superseded, and conflicting note evidence",
+      "expectedStage": "Remember",
+      "expectedNextCommand": "bergen:course",
+      "expectedSafeguards": [
+        "last verified write",
+        "exact active titles",
+        "failed writes excluded",
+        "no context-meter claim"
       ]
     }
   ]
