@@ -8,8 +8,27 @@ async function readRequired(relativePath) {
   try {
     return await readFile(repositoryFile(relativePath), 'utf8');
   } catch (error) {
-    assert.fail(`Expected Phase 4 guide ${relativePath} to exist: ${error.message}`);
+    assert.fail(`Expected guide ${relativePath} to exist: ${error.message}`);
   }
+}
+
+function decisionTable(source, headers) {
+  const lines = source.split(/\r?\n/).map((line) => line.trim());
+  const header = `| ${headers.join(' | ')} |`;
+  const headerIndex = lines.indexOf(header);
+  assert.notEqual(headerIndex, -1, `missing guide decision table header: ${header}`);
+  assert.match(lines[headerIndex + 1] ?? '', /^\|(?:\s*:?-+:?\s*\|)+$/,
+    'guide decision table needs a Markdown separator row');
+
+  const rows = [];
+  for (const line of lines.slice(headerIndex + 2)) {
+    if (!line.startsWith('|') || !line.endsWith('|')) break;
+    const cells = line.slice(1, -1).split('|').map((cell) => cell.trim());
+    assert.equal(cells.length, headers.length, `malformed guide decision row: ${line}`);
+    rows.push(Object.fromEntries(headers.map((name, index) => [name, cells[index]])));
+  }
+  assert.ok(rows.length > 0, 'guide decision table needs at least one scenario row');
+  return rows;
 }
 
 const guidePaths = [
@@ -316,4 +335,109 @@ test('troubleshooting and QTI handoff cover safe recovery, complete import steps
   assert.match(qti, /does not connect directly to Canvas/i);
   assert.match(qti, /do not place quiz content in (?:the )?(?:address bar|web address)/i);
   assert.match(qti, /use with Bergen Canvas has not been approved/i);
+});
+
+test('the Keep workflow guide gives executable no-code paths for all four memory commands', async () => {
+  const guide = await readRequired('src/guides/keep-memory-workflow.md');
+
+  assert.match(guide, /^# Bergen Memory Bank/m);
+  assert.match(guide, /no-code/i);
+  assert.doesNotMatch(guide, /\b(?:API|developer|repository|Git|terminal|programming|src\/|tests\/|\.mjs\b|npm\b)\b/i);
+  for (const command of ['bergen:init', 'bergen:resume', 'bergen:memory', 'bergen:record']) {
+    assert.match(guide, new RegExp(command.replace(':', '\\:'), 'i'), `missing ${command} guidance`);
+  }
+  assert.match(guide, /initializ(?:e|ation).+supplied syllabus/is);
+  assert.match(guide, /automatic.+temporary.+checkpoint/is);
+  assert.match(guide, /durable syllabus facts?.+proposed.+faculty approval/is);
+  assert.match(guide, /resume.+only.+selected course/is);
+  assert.match(guide, /exact (?:Keep )?note titles? used/i);
+});
+
+test('the Keep workflow guide explains immutable durable recording and observable verification', async () => {
+  const guide = await readRequired('src/guides/keep-memory-workflow.md');
+
+  assert.match(guide, /bergen:record.+displayed.+proposed record.+explicit.+approval/is);
+  assert.match(guide, /new revision.+leaves? the (?:prior|earlier) note unchanged/is);
+  assert.match(guide, /Supersedes.+exact (?:title|prior note)/is);
+  for (const label of [
+    'Memory action: Created',
+    'Keep note: <exact title>',
+    'Memory class: Temporary',
+    'Memory class: Durable',
+    'Approval: Automatic low-risk',
+    'Approval: Faculty approved',
+    'Verification:',
+  ]) assert.match(guide, new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  assert.match(guide, /create.+retrieve.+compare.+report/is);
+});
+
+test('the Keep workflow guide keeps conflicts and write recovery entirely inside Gemini', async () => {
+  const guide = await readRequired('src/guides/keep-memory-workflow.md');
+
+  const conflictRows = decisionTable(
+    guide,
+    ['What Gemini finds', 'What happens now', 'What can persist for a future conversation'],
+  );
+  assert.deepEqual(conflictRows, [
+    {
+      'What Gemini finds': 'A clear active replacement chain',
+      'What happens now': 'Use the newest active note even though the earlier note still says Active',
+      'What can persist for a future conversation': 'The verified chain already provides one current head',
+    },
+    {
+      'What Gemini finds': 'A clear archived head',
+      'What happens now': 'Show it as archived and do not use it as active memory',
+      'What can persist for a future conversation': 'The verified chain already records the archive',
+    },
+    {
+      'What Gemini finds': 'Broken link, cycle, gap, competing heads, duplicate exact title, or course mismatch',
+      'What happens now': 'Do not use the disputed note content; you may approve a newly stated safe fact for this chat only',
+      'What can persist for a future conversation': 'Only a separately approved and verified clean record; the old conflict remains visible',
+    },
+  ]);
+  assert.match(guide, /new clean record starts at R001 and does not claim to repair the old immutable notes/i);
+  assert.match(guide, /no manual Keep repair/i);
+  assert.match(guide, /Memory action: Failed/);
+  assert.match(guide, /Retry memory write/);
+  assert.match(guide, /Continue without persistence/);
+
+  const retryRows = decisionTable(
+    guide,
+    ['Retry finds', 'Gemini action'],
+  );
+  assert.deepEqual(retryRows, [
+    { 'Retry finds': 'One exact note whose full body matches', 'Gemini action': 'Verify it and do not create another note' },
+    { 'Retry finds': 'No exact note', 'Gemini action': 'Create once, then retrieve and compare' },
+    { 'Retry finds': 'One exact title with different content', 'Gemini action': 'Do not create; report failure' },
+    { 'Retry finds': 'Multiple exact titles or Keep is unavailable', 'Gemini action': 'Do not create; report failure' },
+  ]);
+  assert.match(guide, /before every retry.+privacy.+selected course.+record class.+exact intended title/is);
+  assert.match(guide, /confirmed creation failure.+may create once/is);
+});
+
+test('the Keep workflow guide aligns memory inspection, privacy precedence, and capability limits', async () => {
+  const [guide, gem] = await Promise.all([
+    readRequired('src/guides/keep-memory-workflow.md'),
+    readRequired('src/gem/bergen-memory-bank-instructions.md'),
+  ]);
+
+  for (const label of [
+    'Selected course:',
+    'Active Keep notes:',
+    'Memory class:',
+    'Superseded records:',
+    'Conflicts or missing information:',
+    'Last verified write:',
+  ]) {
+    const expression = new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    assert.match(guide, expression);
+    assert.match(gem, expression);
+  }
+  assert.match(guide, /privacy check.+before.+Keep retrieval.+(?:creation|write|persistence)/is);
+  assert.match(guide, /Canvas is the student-record system/i);
+  assert.match(guide, /does? not echo|without echoing/i);
+  assert.match(guide, /instructions do not prove Keep availability/i);
+  assert.match(guide, /verify.+authorized Bergen account/i);
+  assert.doesNotMatch(guide, /structural check|release gate|repository/i);
+  assert.match(guide, /does not.+(?:invent|claim).+(?:Keep API|hidden|unobserved)/is);
 });
