@@ -44,9 +44,10 @@ Fill the snapshot from safe class-level observations only. Omit names, identifie
 
 - Confirm that the output contains no student record or identifying combination.
 - Review it for accuracy, quality, accessibility, and bias.
-- Approve revision, recording, and publication separately.
-- Keep memory updates in the appropriate faculty-controlled document and final course records in Canvas.
+- Approve revision, each durable Keep record, each packaging handoff, and publication separately.
+- Confirm a Keep write only when the response shows `Memory action: Created`, `Keep note: <exact title>`, the memory class, the approval mode, and a successful `Verification:` result.
+- Keep rejected content out of Keep, the Bergen Course Transfer Block, the Bergen Quiz Transfer Block, `.imscc` files, and QTI ZIP files. Final student and course records remain in Canvas.
 
 ## Source note
 
-These boundaries were reviewed on 2026-08-04 against the [Bergen AI Acceptable Use Policy](https://bergen.edu/wp-content/uploads/Artificial-Intelligence-AI-Acceptable-Use-Policy.pdf), [Bergen Data Classification and Handling Policy](https://bergen.edu/wp-content/uploads/IT-002-001.2019-Data-Classification-and-Handling-Policy.pdf), [Bergen Google Drive and Docs Usage Guidelines](https://bergen.edu/wp-content/uploads/IT-001-001.2019-BCC-Google-Drive-Docs-Usage-Guidelines-and-Support-Agreement.pdf), and [Bergen Canvas LMS](https://bergen.edu/faculty-staff/citl/instructional-technology/lms/).
+These boundaries were reviewed on 2026-08-26 against the dated Bergen privacy, Google Keep, Common Cartridge, and Canvas sources recorded for Bergen Memory Bank.

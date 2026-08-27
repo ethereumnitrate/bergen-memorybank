@@ -116,3 +116,7 @@ The safe proposed content stays visible in the current Gemini conversation but i
 A confirmed creation failure still checks first and may create once only when the exact title is absent. When creation may have succeeded but retrieval or comparison failed, this check prevents a duplicate. `Continue without persistence` keeps working only from the visible conversation.
 
 All recovery stays inside Gemini. You never need to open, rename, label, merge, delete, or otherwise repair a Keep note manually.
+
+## Source note
+
+Connected Google Keep claims were reviewed on 2026-08-26 against the dated official sources recorded for Bergen Memory Bank. This guide remains conditional on an authorized account exposing the connected action and on observing the exact verification sequence.

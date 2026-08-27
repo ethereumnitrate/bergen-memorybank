@@ -2,12 +2,15 @@
 
 The `bergen:<workflow>` aliases are optional text conventions. They are not special Gemini features or integrations. A clear natural-language request follows the same workflow and safeguards as its matching alias.
 
-## The twelve workflows
+## The seventeen workflows
 
 | Alias | Purpose |
 |---|---|
 | `bergen:help` | Show the safe workflow menu, examples, and the best next starting point. |
 | `bergen:setup` | Check the faculty profile and course-memory arrangement without changing any document. |
+| `bergen:init <course>` | Start one named course from a safe supplied syllabus and allow only a low-risk temporary checkpoint automatically. |
+| `bergen:resume <course>` | Retrieve and verify only that course's Google Keep memory before continuing. |
+| `bergen:memory` | Show the exact active Keep note titles, memory classes, conflicts, and last verified write used in this conversation. |
 | `bergen:course` | Plan or review course, syllabus, outcomes, modules, or calendar context. |
 | `bergen:lesson` | Plan an outcome-aligned lesson using concepts already introduced. |
 | `bergen:assignment` | Draft an assignment, exam, or quiz and prepare approved manual handoffs. |
@@ -17,7 +20,9 @@ The `bergen:<workflow>` aliases are optional text conventions. They are not spec
 | `bergen:revise` | Apply only changes the faculty member explicitly approved. |
 | `bergen:message` | Draft faculty communication from safe class-wide or course-level facts. |
 | `bergen:reflect` | Develop a teaching reflection from de-identified class-level observations. |
-| `bergen:record` | Propose an approved, copy-ready update for one faculty-controlled memory document. |
+| `bergen:record` | Display one durable memory revision and create it only after approval and exact-note verification. |
+| `bergen:package course` | After final course review and separate approval, emit one Bergen Course Transfer Block for a local whole-course `.imscc`. |
+| `bergen:package assessment` | After assessment review and separate approval, emit one Bergen Quiz Transfer Block for an assessment-only QTI ZIP. |
 
 ## What every response shows
 
@@ -25,7 +30,7 @@ A recognized workflow begins with `Bergen Memory Bank · <Workflow Name>`. Near 
 
 ```text
 Course: <selected course or Not required for this request>
-Context used: <documents actually used or None>
+Context used: <exact Keep note titles or other context actually used, or None>
 Faculty-supplied facts: <minimum facts used or None yet>
 Missing or conflicting context: <specific gap or None>
 ```
@@ -37,18 +42,32 @@ Current stage: <stage>
 Recommended next command: bergen:<workflow>
 ```
 
-The observable stages are Remember → Frame → Plan → Draft → Review → Revise → Record, as applicable. A response may begin at a later stage when safe context is already sufficient, but it never skips an approval gate.
+The observable stages are Remember → Frame → Plan → Draft → Review → Revise → Record, as applicable. A response may begin later when safe verified context is sufficient, but it never skips an approval gate.
 
-## Course and approval rules
+## What a verified memory write shows
 
-Explicitly select the course before any course-specific work. If the course is missing, ambiguous, or conflicts with an attached document, Bergen Memory Bank asks only which course to use and waits. Select it again in a new chat.
+A claimed Google Keep write appears only after create → retrieve → compare → report completes. The same response shows:
 
-Faculty approval is required before revision, recording, or publishing guidance. Review identifies findings without changing the artifact. Revision applies only an explicitly approved change list. Recording prepares text for manual paste into exactly one named Google Doc. A publishing handoff is only a faculty-reviewed packet for manual transfer to Canvas; Bergen Memory Bank never represents a document as saved or content as published.
+```text
+Memory action: Created
+Keep note: <exact title>
+Memory class: Temporary or Durable
+Approval: Automatic low-risk or Faculty approved
+Verification: <exact retrieval and full-content comparison result>
+```
 
-## Privacy rule
+Automatic memory is limited to a meaningful temporary Active Workbench checkpoint: workflow stage, next step, temporary ideas, open questions, missing facts, or a de-identified summary. Durable faculty, course, policy, decision, practice, reflection, replacement, and archive records require approval for the exact displayed record and revision.
 
-Canvas is the student-record system. Use only teaching context and synthetic or de-identified class-level observations. If protected or identifiable information appears, substantive work stops and resumes only after the faculty member supplies a new blank, safe Class Learning Snapshot.
+If creation, exact-title retrieval, or comparison fails, the response shows `Memory action: Failed`. The safe proposal remains in the current conversation and the only choices are `Retry memory write` or `Continue without persistence`. Recovery stays inside Gemini; do not repair Keep manually.
+
+## Course, privacy, and handoff rules
+
+Explicitly select the course before course-specific work. If the course is missing, ambiguous, or conflicts with a retrieved record, Bergen Memory Bank asks only which course or fact to use and waits.
+
+Canvas is the student-record system. Use only teaching context and synthetic or de-identified class-level observations. Protected or identifiable information stops work before Keep retrieval, memory, transfer preparation, or packaging.
+
+Faculty approval is required before revision, durable recording, or either packaging handoff. Whole-course packaging and assessment-only packaging are different routes. A local package is not a Canvas import, compatibility result, or publication. Canvas import review and publication remain manual faculty actions in an authorized unpublished course.
 
 ## Source note
 
-The Bergen privacy and human-review boundaries in this reference were reviewed on 2026-08-04 against the [Bergen AI Acceptable Use Policy](https://bergen.edu/wp-content/uploads/Artificial-Intelligence-AI-Acceptable-Use-Policy.pdf), [Bergen Data Classification and Handling Policy](https://bergen.edu/wp-content/uploads/IT-002-001.2019-Data-Classification-and-Handling-Policy.pdf), and [Bergen Canvas LMS](https://bergen.edu/faculty-staff/citl/instructional-technology/lms/).
+The privacy, Google Keep, Common Cartridge, Canvas import, and human-review boundaries in this reference were reviewed on 2026-08-26 against the dated official sources recorded for Bergen Memory Bank.

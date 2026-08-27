@@ -3,7 +3,7 @@
 ## Project Foundation
 
 - **Project Name**: Bergen Memory Bank
-- **Objective**: Design and package version 1.0 of a privacy-safe, no-code faculty workflow system for Bergen Community College.
+- **Objective**: Design and package version 2.0 of a privacy-safe, no-code faculty workflow system for Bergen Community College.
 - **Scope**: The repository holds the source-of-truth instructions, reusable document templates, guides, demonstrations, privacy material, and planning records used to produce the faculty-facing kit. Faculty do not interact with this repository.
 - **Repository Structure**: `memory-bank/` contains durable project context and task state. The deliverable layout will be chosen during planning.
 - **Key Stakeholders**: Bergen Community College faculty are the primary users. Institutional owners for AI policy, data classification, Canvas guidance, accessibility, and faculty enablement remain to be confirmed.
@@ -11,21 +11,23 @@
 ## Product Overview
 
 - **Name**: Bergen Memory Bank
-- **Version Target**: 1.0
+- **Version Target**: 2.0
 - **Value Proposition**: Help faculty remember course context and create aligned teaching materials through a guided conversational workflow without exposing protected student records or requiring technical skills.
-- **Product Type**: No-code workflow and document-template kit built around one classic custom Gemini Gem, Google Docs, Google Drive, and Canvas.
-- **Stage**: Version 1.0 local build complete; live Apps Script deployment and manual Canvas QTI compatibility review pending
+- **Product Type**: No-code workflow and document-template kit built around one classic custom Gemini Gem, connected Google Keep actions, optional Google Docs archives, browser-only packaging companions, and Canvas.
+- **Stage**: Version 2.0 repository candidate complete; authorized live classic Gem/Keep verification and unpublished Canvas sandbox acceptance remain pending
 
 ## Key Functionality
 
 - One classic custom Gemini Gem named “Bergen Memory Bank.”
 - A case-insensitive `bergen:<workflow>` prompt-alias protocol with natural-language equivalents.
-- Workflows for help, setup, course design, lessons, assignments, rubrics, reinforcement, review, revision, messages, reflection, and proposed memory updates.
-- Four reusable memory documents: Faculty Profile, Course Memory, Active Workbench, and Decisions, Reflections, and Reusable Practices.
+- Seventeen workflows spanning help, setup, course initialization and resume, memory inspection, teaching-material creation, review and revision, verified recording, and separate whole-course and assessment-only packaging handoffs.
+- Atomic, course-scoped Google Keep memory with temporary and durable authority classes, immutable revisions, exact-title retrieval, full-content comparison, conflict handling, and visible recovery when persistence cannot be verified.
+- Four reusable Google Docs documents retained as an optional curated archive rather than the daily memory layer.
 - A de-identified Class Learning Snapshot for class-level reinforcement planning.
 - A staged workflow: Remember → Frame → Plan → Draft → Review → Revise → Record.
-- Human approval before revision, proposed memory recording, or Canvas publication.
-- Installation, quick-start, presentation, sample prompt, demonstration, privacy, and troubleshooting materials.
+- Human approval before revision, durable memory recording, either packaging handoff, or Canvas publication.
+- Browser-only creation of a local whole-course Common Cartridge `.imscc` and a distinct assessment-only QTI ZIP after review and approval.
+- Eleven coordinated installation, quick-start, presentation, sample prompt, demonstration, privacy, troubleshooting, memory, and Canvas handoff guides.
 
 ## Market and Context
 
@@ -55,7 +57,9 @@
 - **Onboarding**: Create a Bergen Memory Bank folder in Google Drive, copy supplied templates, create a classic custom Gem with a `bergen.edu` account, paste the supplied instructions, attach the Drive documents as Gem knowledge, save, and enter `bergen:help`.
 - **Primary Flow**: Faculty enters a supported command or natural-language request; the Gem identifies the workflow, states the memory context it is using, asks only for required information, follows the staged workflow, pauses at approval gates, and ends with the current stage and recommended next command.
 - **Protected-Data Recovery**: If identifiable or protected student information appears, the Gem stops processing it, explains the boundary, and helps the faculty member replace it with a de-identified Class Learning Snapshot.
-- **Publishing**: The Gem prepares copy-ready material. The faculty member reviews and manually publishes approved content in Canvas.
+- **Verified Memory**: After approval when required, the Gem creates a Keep note, retrieves exactly one exact-title note, compares its complete content, and reports success only when the comparison passes. Failure leaves the proposal in the current Gemini conversation.
+- **Whole-Course Handoff**: After separate final review and approval, the Gem emits one Bergen Course Transfer Block. The browser-only Course Packager creates a local `.imscc`; faculty manually imports it into an authorized unpublished Canvas sandbox and reviews it before any later publication decision.
+- **Assessment Handoff**: For one approved quiz or exam, the separate assessment route creates a local QTI ZIP for manual unpublished Canvas import and review.
 
 ## Success Criteria
 
@@ -65,7 +69,8 @@
 - Every workflow makes its context and current stage visible.
 - Review does not silently become revision; revision, recording, and publication remain faculty-approved actions.
 - Privacy scenarios consistently reject protected data and guide de-identification.
-- The complete lesson → assignment → rubric → review → record demonstration is internally aligned.
+- The complete lesson → assignment → rubric → review → revise → verified record → whole-course package → unpublished Canvas review demonstration is internally aligned.
+- Local repository artifacts and aggregate verification are Ready without claiming live Keep persistence or Bergen Canvas compatibility.
 - Faculty-facing content contains no requirement for Git, programming, APIs, terminals, or developer terminology.
 
 ## Non-Functional Requirements
@@ -88,7 +93,7 @@
 ### Transparency and Reliability
 
 - Prompt aliases must never be represented as native Gemini commands, plugins, integrations, or additional system access.
-- Never claim to save, modify, publish, or synchronize documents automatically.
+- Never claim a Keep write until exact-title retrieval and full-content comparison succeed, or claim Canvas import, compatibility, or publication without the corresponding observed manual action.
 - State the context being used and surface missing information rather than inventing it.
 - Treat attached memory documents as reference material that may require faculty confirmation when incomplete or inconsistent.
 
@@ -98,16 +103,18 @@
 |--------|---------|-------------|
 | Classic custom Gemini Gem | Conversational workflow host | Faculty manually creates and configures the Gem; no plugin or API integration |
 | Google Drive | Faculty-owned folder for reusable documents | Faculty manually creates the folder and manages files |
-| Google Docs | Editable memory and output documents | Faculty copies templates and manually applies approved updates |
-| Canvas | Student-record system and final publishing destination | Faculty manually reviews and publishes approved material; no Canvas API integration |
+| Google Keep | Active course-scoped memory | The classic Gem uses observable connected actions; no Keep API or custom client is included, and success requires create → exact-title retrieve → compare → report evidence |
+| Google Docs | Optional curated memory and output archive | Faculty copies templates and manually applies approved updates; Docs are not the daily memory layer or a Keep-repair requirement |
+| Canvas | Student-record system and final publishing destination | Faculty manually imports into an authorized unpublished sandbox, reviews, and later decides whether to publish; no Canvas API integration |
 | Bergen QTI Packager | Optional QTI 1.2 handoff for approved supported quizzes | Static Bergen-controlled Apps Script page; quiz validation and ZIP creation remain in browser memory; faculty imports and reviews manually |
+| Bergen Course Packager | Optional whole-course Common Cartridge 1.3 handoff | Static Bergen-controlled Apps Script page; validation and `.imscc` creation remain in browser memory; faculty imports and reviews manually |
 
 ## Constraints and Non-Goals
 
 - No Canvas API integration.
 - No automated grading or individual student profiling.
 - No protected student records in Gemini or Gem knowledge.
-- No automatic document modification or autonomous Canvas publishing.
+- No Keep API/client, automatic document modification, Canvas import automation, or autonomous Canvas publishing.
 - No Gemini Labs or Opal dependency.
 - No Git, code, command-line, API, or developer-tool requirement for faculty.
 - Current Bergen AI Acceptable Use Policy, Data Classification Policy, Canvas guidance, and official Google Gem documentation are authoritative and must be verified during design and content production.
@@ -118,8 +125,9 @@
 |------|------------|--------|------------|
 | Faculty enters protected student information | Medium | High | Prominent safe-data guidance, immediate stop behavior, de-identification recovery, and scenario testing |
 | The Gem implies capabilities it does not have | Medium | High | Explicit capability boundaries, copy-ready outputs, and tests for recording/publishing claims |
-| Institutional or Google guidance changes | Medium | High | Cite current authoritative sources, date the v1.0 source review, and provide update instructions |
-| Memory documents become inconsistent or too burdensome | Medium | Medium | Compare viable structures during design, minimize duplication, define document ownership, and use proposed rather than automatic updates |
+| Institutional or platform guidance changes | Medium | High | Cite current authoritative sources, preserve source-review dates, and provide update instructions |
+| Course memory becomes inconsistent or cannot be verified | Medium | High | Use immutable revisions, exact-title retrieval, full-content comparison, conflict quarantine, and visible continue-without-persistence recovery |
+| A local package is mistaken for Canvas compatibility | Medium | High | Keep repository readiness distinct from authorized unpublished sandbox evidence and require manual review before publication |
 | Generated materials introduce inaccessible or biased content | Medium | High | Make review criteria explicit and retain faculty approval before revision or publishing |
 
 ## Open Questions
@@ -135,7 +143,8 @@
 |------|--------|---------|
 | 2026-08-04 | Alex and Codex | Initialized from the supplied Bergen Memory Bank v1.0 request |
 | 2026-08-04 | Alex and Codex | Completed the five-phase local v1.0 build; retained live deployment and manual Canvas compatibility as explicit gates |
+| 2026-08-27 | Alex and Codex | Refreshed for the completed v2 repository candidate, verified Keep semantics, separate package handoffs, and pending authorized external acceptance gates |
 
 ## Last Refreshed
 
-2026-08-04
+2026-08-27

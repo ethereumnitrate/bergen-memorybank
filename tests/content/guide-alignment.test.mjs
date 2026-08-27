@@ -40,12 +40,17 @@ const guidePaths = [
   'src/guides/end-to-end-demonstration.md',
   'src/guides/privacy-checklist.md',
   'src/guides/troubleshooting.md',
+  'src/guides/keep-memory-workflow.md',
+  'src/guides/canvas-course-handoff.md',
   'src/guides/qti-canvas-handoff.md',
 ];
 
 const aliases = [
   'help',
   'setup',
+  'init',
+  'resume',
+  'memory',
   'course',
   'lesson',
   'assignment',
@@ -56,6 +61,8 @@ const aliases = [
   'message',
   'reflect',
   'record',
+  'package course',
+  'package assessment',
 ];
 
 const snapshotFields = [
@@ -80,7 +87,7 @@ function minutesToSeconds(value) {
   return (minutes * 60) + seconds;
 }
 
-test('all Phase 4 faculty guides are present and keep the faculty experience nontechnical', async () => {
+test('all faculty guides are present and keep the faculty experience nontechnical', async () => {
   const guides = await Promise.all(guidePaths.map(async (relativePath) => ({
     relativePath,
     source: await readRequired(relativePath),
@@ -88,7 +95,7 @@ test('all Phase 4 faculty guides are present and keep the faculty experience non
 
   for (const { relativePath, source } of guides) {
     assert.match(source, /^# Bergen Memory Bank/m, `${relativePath} needs a faculty-facing title`);
-    assert.doesNotMatch(source, /Phase 5|release item|release gate|\b(?:runtime|API|developer|repository|Git|terminal|code|programming|deployed|URL)\b|(?:src\/|tests\/|memory-bank\/|\.mjs\b|\.md\b|npm\b|GitHub\b|command line|developer workflow)/i,
+    assert.doesNotMatch(source, /Phase 5|release item|release gate|\b(?:runtime|API|developer|repository|Git|terminal|programming|deployed|URL)\b|(?<!no-)\bcode\b|(?:src\/|tests\/|memory-bank\/|\.mjs\b|\.md\b|npm\b|GitHub\b|command line|developer workflow)/i,
       `${relativePath} must not expose internal release, implementation, source-format, or developer vocabulary`);
   }
 });
@@ -139,7 +146,7 @@ test('the command reference and quick start align all aliases, natural language,
     'explicitly approved',
     'faculty communication',
     'teaching reflection',
-    'copy-ready update',
+    'durable memory revision',
   ]) {
     assert.match(reference, new RegExp(purpose, 'i'));
   }
@@ -229,11 +236,73 @@ test('sample prompts include a safe alias and natural-language example for every
     assert.match(section[1], /\*\*Natural-language example\*\*:/i);
     assert.match(section[1], new RegExp(`bergen:${alias}\\b`, 'i'));
   }
-  assert.equal(occurrences(prompts, /^\*\*Alias example\*\*:/gm), 12);
-  assert.equal(occurrences(prompts, /^\*\*Natural-language example\*\*:/gm), 12);
+  assert.equal(occurrences(prompts, /^\*\*Alias example\*\*:/gm), 17);
+  assert.equal(occurrences(prompts, /^\*\*Natural-language example\*\*:/gm), 17);
 });
 
-test('the end-to-end demonstration preserves one synthetic course through gated manual handoff', async () => {
+test('installation, prompts, presentation, and scenario matrix tell one verified Keep-to-Canvas journey', async () => {
+  const [installation, prompts, presentation, scenarios] = await Promise.all([
+    readRequired('src/guides/installation-guide.md'),
+    readRequired('src/guides/sample-prompts.md'),
+    readRequired('src/guides/presentation-script.md'),
+    readRequired('src/testing/scenario-matrix.md'),
+  ]);
+
+  for (const guide of [installation, prompts, presentation]) {
+    assert.match(guide, /Google Keep/i);
+    assert.match(guide, /retriev(?:e|es|ed|al).+exact (?:new )?(?:Keep )?note.+compar(?:e|es|ed|ison)/is,
+      'a successful Keep write must follow exact-note retrieval and comparison');
+    assert.match(guide, /fail(?:ed|ure).+visible.+Gemini/is,
+      'a failed Keep write must remain visible in Gemini');
+  }
+  assert.doesNotMatch(installation, /paste.+(?:named )?Google Doc/i);
+  assert.doesNotMatch(prompts, /manually paste.+Course Memory|Do not claim to save/i);
+
+  for (const alias of ['bergen:init', 'bergen:resume', 'bergen:memory', 'bergen:package course', 'bergen:package assessment']) {
+    assert.match(presentation, new RegExp(alias.replace(' ', '\\s+'), 'i'),
+      `presentation must demonstrate ${alias}`);
+  }
+  assert.match(presentation, /whole course.+local.+\.imscc/is);
+  assert.match(presentation, /assessment-only.+QTI.+local ZIP/is);
+  assert.match(presentation, /Canvas.+(?:import|publication).+manual/is);
+
+  assert.match(scenarios, /Eleven faculty guides/i);
+  assert.match(scenarios, /All seventeen (?:aliases|workflows)/i);
+  assert.match(scenarios, /verified Google Keep.+Bergen Course Transfer Block.+local `?\.imscc`?.+unpublished Canvas/is);
+  assert.match(scenarios, /whole-course.+\.imscc.+assessment-only.+QTI/is);
+  assert.match(scenarios, /connected (?:Gem\/)?Keep.+Pending/i);
+  assert.match(scenarios, /Canvas.+publication.+manual/i);
+});
+
+test('installation and presentation source-date their new v2 platform claims against the official register entries', async () => {
+  const [installation, presentation] = await Promise.all([
+    readRequired('src/guides/installation-guide.md'),
+    readRequired('src/guides/presentation-script.md'),
+  ]);
+  const currentKeepSources = [
+    'https://support.google.com/gemini/answer/15230597?hl=en',
+    'https://support.google.com/gemini/answer/14959807?hl=en',
+    'https://support.google.com/a/answer/15293691?hl=en',
+  ];
+  const currentCoursePackageSources = [
+    'https://community.instructure.com/en/kb/articles/660732-how-do-i-import-content-from-common-cartridge-into-canvas',
+    'https://community.instructure.com/en/kb/articles/660738-how-do-i-view-the-status-of-current-and-prior-course-imports',
+    'https://www.imsglobal.org/cc/ccv1p3/imscc_Implementation-v1p3.html',
+  ];
+
+  for (const guide of [installation, presentation]) {
+    assert.match(guide, /2026-08-26/, 'new v2 platform claims need the current reviewed-source date');
+    assert.match(guide, /2026-08-04/, 'inherited Bergen policy, Gem, and QTI claims keep their v1 review date');
+    for (const source of currentKeepSources) {
+      assert.ok(guide.includes(source), `missing current official Google Keep source: ${source}`);
+    }
+  }
+  for (const source of currentCoursePackageSources) {
+    assert.ok(presentation.includes(source), `missing current official course-package source: ${source}`);
+  }
+});
+
+test('the end-to-end demonstration preserves one synthetic course through verified memory and gated Canvas handoff', async () => {
   const demonstration = await readRequired('src/guides/end-to-end-demonstration.md');
   const course = 'COM-101: Public Speaking Fundamentals';
   const outcome = 'Construct a clear central claim supported by relevant evidence';
@@ -254,16 +323,19 @@ test('the end-to-end demonstration preserves one synthetic course through gated 
   const approvalStart = demonstration.indexOf('## Step 5 — Revision approval');
   const reviseStart = demonstration.indexOf('## Step 6 — Revise');
   const recordStart = demonstration.indexOf('## Step 7 — Record proposal');
-  const canvasStart = demonstration.indexOf('## Step 8 — Canvas Publishing Packet');
+  const transferStart = demonstration.indexOf('## Step 8 — Whole-course transfer approval');
+  const packagerStart = demonstration.indexOf('## Step 9 — Local Course Packager');
+  const canvasStart = demonstration.indexOf('## Step 10 — Unpublished Canvas sandbox');
   assert.ok(assignmentStart < rubricStart && rubricStart < reviewStart && reviewStart < approvalStart
-    && approvalStart < reviseStart && reviseStart < recordStart && recordStart < canvasStart,
+    && approvalStart < reviseStart && reviseStart < recordStart && recordStart < transferStart
+    && transferStart < packagerStart && packagerStart < canvasStart,
   'demonstration stages must stay ordered');
 
   const assignment = demonstration.slice(assignmentStart, rubricStart);
   const review = demonstration.slice(reviewStart, approvalStart);
   const revise = demonstration.slice(reviseStart, recordStart);
-  const record = demonstration.slice(recordStart, canvasStart);
-  const publication = demonstration.slice(canvasStart);
+  const record = demonstration.slice(recordStart, transferStart);
+  const publication = demonstration.slice(transferStart);
   const approvedAddition = 'You may submit the outline as text or as an accessible document.';
   assert.doesNotMatch(assignment, new RegExp(approvedAddition.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')),
     'the approved revision must not already exist in the assignment draft');
@@ -274,26 +346,25 @@ test('the end-to-end demonstration preserves one synthetic course through gated 
   assert.equal(occurrences(demonstration, /^\*\*(?:Revision|Record-proposal|Publication-handoff) faculty decision:\*\*/gm), 3,
     'revision, recording, and publication need three distinct faculty decisions');
   assert.match(demonstration, /\*\*Revision faculty decision:\*\*.+approve.+revision/is);
-  assert.match(record, /\*\*Record-proposal faculty decision:\*\*.+approve.+record proposal/is);
-  assert.match(publication, /\*\*Publication-handoff faculty decision:\*\*.+approve.+prepare.+Canvas publishing handoff/is);
+  assert.match(record, /\*\*Record-proposal faculty decision:\*\*.+approve.+durable.+record.+revision/is);
+  assert.match(publication, /\*\*Publication-handoff faculty decision:\*\*.+approve.+prepare.+whole-course handoff/is);
   const recordApproval = record.indexOf('**Record-proposal faculty decision:**');
   const recordSummary = record.indexOf('**Record proposal summary:**');
-  const copyReadyBlock = record.indexOf('**Copy-ready record text:**');
-  const manualPaste = record.search(/manual paste/i);
   assert.ok(recordSummary >= 0 && recordSummary < recordApproval,
     'a short record proposal summary must precede the record-approval decision');
-  assert.ok(recordApproval >= 0 && copyReadyBlock > recordApproval && manualPaste > copyReadyBlock,
-    'record approval must precede the copy-ready block and manual Google Docs paste');
+  const memorySuccess = record.indexOf('Memory action: Created');
+  assert.ok(recordApproval >= 0 && memorySuccess > recordApproval,
+    'record approval must precede the observable verified-memory result');
   const publicationApproval = publication.indexOf('**Publication-handoff faculty decision:**');
-  const packetPreparation = publication.indexOf('Bergen Memory Bank prepares a **Canvas Publishing Packet**');
-  assert.ok(publicationApproval >= 0 && packetPreparation > publicationApproval,
-    'publication-handoff approval must precede preparation of the Canvas Publishing Packet');
-  assert.match(publication, /prepares a \*\*Canvas Publishing Packet\*\*[\s\S]+faculty.+review.+manual(?:ly)? transfer.+save.+publish/i,
-    'packet preparation must be followed by faculty review, manual transfer, saving, and publication');
+  const transferBlock = publication.indexOf('**Bergen Course Transfer Block**');
+  assert.ok(publicationApproval >= 0 && transferBlock > publicationApproval,
+    'publication-handoff approval must precede the Bergen Course Transfer Block');
+  assert.match(publication, /Course package ready[\s\S]+Download \.imscc[\s\S]+import job reports \*\*Completed\*\*[\s\S]+reviewing \*\*Modules\*\*/i,
+    'local readiness and completed Canvas import must precede unpublished review');
   assert.match(demonstration, /review.+does not revise/is);
   assert.match(demonstration, /explicit faculty approval.+before.+revision/is);
-  assert.match(demonstration, /Canvas Publishing Packet/i);
-  assert.match(demonstration, /manual(?:ly)? (?:copy|paste|transfer)/i);
+  assert.match(demonstration, /Bergen Course Transfer Block/i);
+  assert.match(demonstration, /unpublished Canvas sandbox/i);
   assert.match(demonstration, /optional quiz\/QTI branch/i);
   assert.match(demonstration, /institution-provided packager link is unavailable.+manual Canvas entry/is);
   assert.match(demonstration, /Bergen compatibility is not approved/i);
@@ -319,7 +390,7 @@ test('troubleshooting and QTI handoff cover safe recovery, complete import steps
   ]) assert.match(troubleshooting, new RegExp(topic, 'i'));
 
   assert.match(qti, /assignment text.+manual copy/is);
-  assert.match(qti, /approved exams? or quizzes?.+Bergen Quiz Transfer Block/is);
+  assert.match(qti, /Bergen Quiz Transfer Block.+approved exam or quiz/is);
   assert.match(qti, /browser-only packager.+institution link.+available/is);
   for (const type of ['multiple choice', 'true/false', 'multiple answer', 'short answer', 'essay']) assert.match(qti, new RegExp(type, 'i'));
   assert.match(qti, /unsupported.+manual entry/is);
@@ -413,6 +484,62 @@ test('the Keep workflow guide keeps conflicts and write recovery entirely inside
   ]);
   assert.match(guide, /before every retry.+privacy.+selected course.+record class.+exact intended title/is);
   assert.match(guide, /confirmed creation failure.+may create once/is);
+});
+
+test('the v2 faculty guides provide one observable Keep-to-unpublished-Canvas journey while preserving QTI', async () => {
+  const requiredGuidePaths = [
+    'src/guides/command-reference.md',
+    'src/guides/faculty-quick-start.md',
+    'src/guides/privacy-checklist.md',
+    'src/guides/troubleshooting.md',
+    'src/guides/end-to-end-demonstration.md',
+    'src/guides/keep-memory-workflow.md',
+    'src/guides/canvas-course-handoff.md',
+    'src/guides/qti-canvas-handoff.md',
+  ];
+  const guides = new Map(await Promise.all(requiredGuidePaths.map(async (relativePath) => [
+    relativePath,
+    await readRequired(relativePath),
+  ])));
+  const combined = [...guides.values()].join('\n');
+  const commandReference = guides.get('src/guides/command-reference.md');
+  const keepGuide = guides.get('src/guides/keep-memory-workflow.md');
+  const courseHandoff = guides.get('src/guides/canvas-course-handoff.md');
+  const qtiHandoff = guides.get('src/guides/qti-canvas-handoff.md');
+
+  for (const alias of [...aliases, 'init', 'resume', 'memory', 'package course', 'package assessment']) {
+    assert.match(commandReference, new RegExp(`bergen:${alias.replace(' ', '\\s+')}(?:\\b|$)`, 'i'),
+      `command reference must expose bergen:${alias}`);
+  }
+  assert.match(commandReference, /seventeen workflows/i);
+  assert.match(combined, /natural-language request.+same workflow.+safeguards/is);
+  for (const label of [
+    'Memory action: Created',
+    'Keep note: <exact title>',
+    'Memory class: Temporary',
+    'Memory class: Durable',
+    'Approval: Automatic low-risk',
+    'Approval: Faculty approved',
+    'Verification:',
+  ]) assert.match(combined, new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  assert.match(keepGuide, /create.+retrieve.+compare.+report/is);
+  assert.match(keepGuide, /Retry memory write.+Continue without persistence/is);
+  assert.match(keepGuide, /recovery stays inside Gemini/i);
+
+  assert.match(courseHandoff, /Bergen Course Transfer Block/);
+  assert.match(courseHandoff, /Bergen Course Packager/);
+  assert.match(courseHandoff, /Course package ready/);
+  assert.match(courseHandoff, /Download \.imscc/);
+  assert.match(courseHandoff, /Settings.+Import Course Content.+Common Cartridge 1\.x Package/is);
+  assert.match(courseHandoff, /wait.+import job.+complete.+before.+review.+Modules/is);
+  assert.match(courseHandoff, /unpublished.+review.+publish/is);
+  assert.match(courseHandoff, /successful local package.+not.+Bergen Canvas compatibility/is);
+
+  assert.match(qtiHandoff, /assessment-only/i);
+  assert.match(qtiHandoff, /Bergen Quiz Transfer Block/);
+  assert.match(qtiHandoff, /QTI \.zip file/);
+  assert.match(qtiHandoff, /does not require.+whole-course.+\.imscc/is);
+  assert.doesNotMatch(combined, /automatically (?:import|publish)|Canvas API/i);
 });
 
 test('the Keep workflow guide aligns memory inspection, privacy precedence, and capability limits', async () => {

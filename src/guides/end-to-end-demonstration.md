@@ -1,6 +1,6 @@
 # Bergen Memory Bank End-to-End Demonstration
 
-This walkthrough uses only synthetic course material. It keeps one course, outcome, introduced-concept set, and rubric criteria aligned from lesson through the manual handoff.
+This walkthrough uses only synthetic course material. It keeps one course, outcome, introduced-concept set, and rubric criteria aligned from lesson through verified Keep memory, local whole-course packaging, and manual review in an unpublished Canvas sandbox.
 
 ## Demonstration contract
 
@@ -63,41 +63,46 @@ The rest of the assignment, the introduced concepts, and the criteria **Central 
 
 ## Step 7 — Record proposal
 
-**Faculty prompt:** `bergen:record Propose the approved COM-101 assignment decision for Course Memory.`
+**Faculty prompt:** `bergen:record Propose the approved COM-101 assignment decision as a durable memory revision.`
 
-**Record proposal summary:** Target **COM-101: Public Speaking Fundamentals — Course Memory**. Proposed durable decision: retain the aligned speech-outline pattern, four rubric criteria, and accessible submission choice.
+**Record proposal summary:** Target **COM-101: Public Speaking Fundamentals**. Proposed durable decision: retain the aligned speech-outline pattern, four rubric criteria, and accessible submission choice. The Gem displays the exact BMB note title, revision, complete content, and prior title before asking for approval.
 
-**Record-proposal faculty decision:** “I approve this record proposal for manual placement in the named COM-101 Course Memory.”
+**Record-proposal faculty decision:** “I approve this exact durable COM-101 record and revision.”
 
-After this separate approval, Bergen Memory Bank supplies the labeled block:
+After this separate approval, Bergen Memory Bank may create the immutable Keep note. It reports success only after exact-title retrieval and full-content comparison:
 
-**Copy-ready record text:**
+```text
+Memory action: Created
+Keep note: <exact BMB title>
+Memory class: Durable
+Approval: Faculty approved
+Verification: Retrieved exactly one exact-title note; required fields and complete content match.
+```
 
-> Approved assignment pattern: For the outcome “Construct a clear central claim supported by relevant evidence,” require a two-minute synthetic speech outline with one central claim, a stated audience, two credible and relevant evidence points, a relevance explanation for each, and an opening-claim-support-close sequence. Permit submission as text or as an accessible document. Use the criteria Central claim, Evidence relevance, Audience adaptation, and Organization.
+If any step fails, the safe proposal remains in the current Gemini conversation, `Memory action: Failed` is shown, and the only choices are `Retry memory write` or `Continue without persistence`. Google Docs remain an optional curated archive, not this daily memory step.
 
-The faculty member then performs a manual paste into the named Google Doc. Bergen Memory Bank does not save or synchronize the document.
+## Step 8 — Whole-course transfer approval
 
-## Step 8 — Canvas Publishing Packet
+After the synthetic COM-101 course contains reviewed modules, pages, assignments, discussions, rubrics, quizzes, and completion rules, enter `bergen:package course`.
 
-**Publication-handoff faculty decision:** “I approve Bergen Memory Bank to prepare this Canvas publishing handoff. I will review the packet before any manual Canvas action.”
+**Publication-handoff faculty decision:** “I approve Bergen Memory Bank to prepare this whole-course handoff. I will review the block before packaging or any Canvas action.”
 
-After this separate approval, Bergen Memory Bank prepares a **Canvas Publishing Packet**:
+After that separate approval, Bergen Memory Bank emits exactly one versioned **Bergen Course Transfer Block** from the current approved course. It defaults Canvas-facing content to unpublished and contains no placeholder, credential, student, or hidden-memory data.
 
-- **Destination:** COM-101: Public Speaking Fundamentals assignment area in Canvas.
-- **Outcome:** Construct a clear central claim supported by relevant evidence.
-- **Student-facing content:** The approved assignment directions.
-- **Rubric:** The approved four-criterion rubric.
-- **Settings to review:** points, due date, submission choice, availability, accessibility, and publication state.
-- **Faculty action:** Review the packet before taking any action in Canvas.
+## Step 9 — Local Course Packager
 
-The faculty member separately reviews the packet, manually transfers the approved text and settings into Canvas, saves the Canvas draft, reviews the saved result, and publishes only when ready.
+Open the Bergen Course Packager page, paste the block into **Bergen Course Transfer Block**, validate it, confirm that it contains no student data, and wait for `Course package ready`. Only then select `Download .imscc`. Validation or generation failure keeps download disabled and cannot expose an older package.
 
-Canvas is the final publishing destination. Bergen Memory Bank has not saved, synchronized, transferred, or published anything.
+## Step 10 — Unpublished Canvas sandbox
+
+In an authorized unpublished Canvas sandbox, select **Settings → Import Course Content**, choose **Common Cartridge 1.x Package**, select the local `.imscc`, and add the import to the queue. Wait until the import job reports **Completed** before reviewing **Modules**. Compare module and item order, pages, links, assignments, discussions, rubrics, assessments, completion rules, points, accessibility, and unpublished states with the approved course.
+
+Keep the course unpublished. A successful local package is not a successful Canvas import or proof of Bergen compatibility. Publication remains a later faculty decision.
 
 ## Optional quiz/QTI branch
 
-If the faculty member later turns the same synthetic evidence exercise into an exam or quiz, the Assignment workflow may prepare an approved text-only Bergen Quiz Transfer Block after review and separate handoff approval. When the institution-provided packager link is unavailable, use manual Canvas entry. Bergen compatibility is not approved. Do not place quiz content in a web address, and do not include student data.
+If the faculty member later wants only the synthetic quiz or exam, `bergen:package assessment` may prepare an approved text-only Bergen Quiz Transfer Block after review and separate handoff approval. This assessment-only QTI route does not require or create a whole-course `.imscc`. When the institution-provided packager link is unavailable, use manual Canvas entry. Bergen compatibility is not approved. Do not place quiz content in a web address, and do not include student data.
 
 ## Source note
 
-The Canvas and human-review boundaries were reviewed on 2026-08-04 against Bergen's [Canvas LMS page](https://bergen.edu/faculty-staff/citl/instructional-technology/lms/), [AI Acceptable Use Policy](https://bergen.edu/wp-content/uploads/Artificial-Intelligence-AI-Acceptable-Use-Policy.pdf), and the official [Canvas QTI import guide](https://community.instructure.com/en/kb/articles/660996-how-do-i-import-quizzes-from-qti-packages).
+The Google Keep, Common Cartridge, Canvas, QTI, privacy, and human-review boundaries were reviewed on 2026-08-26 against the dated official sources recorded for Bergen Memory Bank.

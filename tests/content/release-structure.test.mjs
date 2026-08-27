@@ -156,7 +156,7 @@ test('foundation fixtures are explicitly synthetic and contain no student-record
   assert.doesNotMatch(serializedFixtures, /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
 });
 
-test('v2 Phase 1 identifies the dated foundation and inventories later work without overstating readiness', async () => {
+test('v2 Phase 6 identifies repository readiness without overstating external acceptance', async () => {
   const version = await readText('src/release/version.md');
   const releaseContract = await readText('src/release/release-contract.md');
   const packageJson = await readJson('package.json');
@@ -172,27 +172,75 @@ test('v2 Phase 1 identifies the dated foundation and inventories later work with
     ['tests/fixtures/sample-course-transfer.json', { status: 'Ready', phase: 1 }],
     ['tests/keep/memory-contract.test.mjs', { status: 'Ready', phase: 1 }],
     ['tests/course/course-transfer.test.mjs', { status: 'Ready', phase: 1 }],
-    ['src/gem/bergen-memory-bank-instructions.md', { status: 'Pending', phase: 2 }],
-    ['src/guides/keep-memory-workflow.md', { status: 'Pending', phase: 3 }],
-    ['src/guides/canvas-course-handoff.md', { status: 'Pending', phase: 6 }],
-    ['apps/course-packager/Script.html', { status: 'Pending', phase: 5 }],
-    ['scripts/build-course-demo.mjs', { status: 'Pending', phase: 5 }],
-    ['tests/course/common-cartridge.test.mjs', { status: 'Pending', phase: 5 }],
-    ['tests/course/apps-script-bundle.test.mjs', { status: 'Pending', phase: 5 }],
-    ['tests/course/browser-smoke.mjs', { status: 'Pending', phase: 5 }],
+    ['src/gem/bergen-memory-bank-instructions.md', { status: 'Ready', phase: 2 }],
+    ['src/guides/keep-memory-workflow.md', { status: 'Ready', phase: 3 }],
+    ['src/guides/canvas-course-handoff.md', { status: 'Ready', phase: 6 }],
+    ['apps/course-packager/Script.html', { status: 'Ready', phase: 5 }],
+    ['scripts/build-course-demo.mjs', { status: 'Ready', phase: 5 }],
+    ['tests/course/common-cartridge.test.mjs', { status: 'Ready', phase: 5 }],
+    ['tests/course/apps-script-bundle.test.mjs', { status: 'Ready', phase: 5 }],
+    ['tests/course/browser-smoke.mjs', { status: 'Ready', phase: 5 }],
   ]);
 
   assert.match(version, /^# Bergen Memory Bank v2\.0 development$/m);
-  assert.match(version, /\*\*Release identifier\*\*: `Bergen Memory Bank v2\.0 Phase 1 foundation`/);
+  assert.match(version, /\*\*Release identifier\*\*: `Bergen Memory Bank v2\.0 Phase 6 repository candidate`/);
   assert.match(version, /\*\*Source review date\*\*: `2026-08-26`/);
   assert.match(version, /v1\.0 QTI Packager remains available/i);
-  assert.match(version, /Keep.*authorized live gate.*pending/i);
-  assert.match(version, /Common Cartridge.*unpublished Canvas sandbox.*pending/i);
-  assert.match(releaseContract, /69\/69/);
-  assert.match(releaseContract, /preserved v1\.0 checks.*v2 Phase 1 foundation checks/is);
-  assert.doesNotMatch(releaseContract, /all 54 completed Phase 1 through Phase 5 checks/i);
+  assert.match(version, /classic Gem and connected Google Keep acceptance gate is \*\*Pending\*\*/i);
+  assert.match(version, /unpublished Canvas sandbox acceptance gate is \*\*Pending\*\*/i);
+  assert.match(releaseContract, /aggregate repository gate/i);
+  assert.match(releaseContract, /Classic Gem and connected Google Keep\s*\|\s*Pending/i);
   assert.deepEqual(inventory, requiredV2Artifacts);
   assert.equal(packageJson.version, '2.0.0-dev.1');
   assert.match(packageJson.scripts.test, /tests\/keep\/memory-contract\.test\.mjs/);
   assert.match(packageJson.scripts.test, /tests\/course\/course-transfer\.test\.mjs/);
+});
+
+test('v2 Phase 6 release evidence distinguishes local readiness from pending authorized acceptance', async () => {
+  const [version, releaseContract, scenarioMatrix, validator] = await Promise.all([
+    readText('src/release/version.md'),
+    readText('src/release/release-contract.md'),
+    readText('src/testing/scenario-matrix.md'),
+    readText('scripts/validate-release.mjs'),
+  ]);
+  const v2Inventory = releaseContract.split('## Bergen Memory Bank v2 inventory')[1] ?? '';
+  const inventoryRows = [...v2Inventory.matchAll(/^\|\s*`([^`]+)`\s*\|\s*(Ready|Pending)\s*\|\s*(\d)\s*\|/gm)];
+  const releaseEvidence = releaseContract.split('## Phase 6 acceptance evidence')[1] ?? '';
+
+  assert.match(version, /Bergen Memory Bank v2\.0 Phase 6 repository candidate/i);
+  assert.match(version, /Phases 1 through 6 repository-verifiable work complete/i);
+  assert.match(version, /authorized classic Gem and connected Google Keep.+Pending/is);
+  assert.match(version, /authorized unpublished Canvas sandbox.+Pending/is);
+  assert.equal(inventoryRows.length, 13);
+  assert.ok(inventoryRows.every(([, , status]) => status === 'Ready'),
+    'all implemented v2 repository artifacts must be Ready');
+
+  assert.match(releaseEvidence, /Aggregate repository verification\s*\|\s*Ready/i);
+  assert.match(releaseEvidence, /Classic Gem and connected Google Keep\s*\|\s*Pending/i);
+  assert.match(releaseEvidence, /create.+exact-title retrieval.+full-content comparison.+report/is);
+  assert.match(releaseEvidence, /Unpublished Canvas sandbox\s*\|\s*Pending/i);
+  assert.match(releaseEvidence, /Common Cartridge 1\.x Package.+import job.+Completed.+Modules.+unpublished/is);
+  assert.doesNotMatch(releaseEvidence, /(?:Gem|Keep|Canvas)[^\n|]*\|\s*Ready/i,
+    'external services must not be marked Ready without authorized evidence');
+
+  assert.match(scenarioMatrix, /Verification purpose through Phase 6/i);
+  assert.match(scenarioMatrix, /Gemini.+Keep.+Course Packager.+unpublished Canvas sandbox/is);
+  for (const criterion of [
+    'AC-ENTRY-1',
+    'AC-HAPPY-1',
+    'AC-HAPPY-2',
+    'AC-HAPPY-3',
+    'AC-HAPPY-4',
+    'AC-HAPPY-5',
+    'AC-HAPPY-6',
+    'AC-HAPPY-7',
+    'AC-ERROR-1',
+    'AC-ERROR-2',
+    'AC-ERROR-3',
+    'AC-ERROR-4',
+    'AC-ASYNC-1',
+  ]) assert.match(scenarioMatrix, new RegExp(criterion));
+  assert.match(validator, /tests\/content\/guide-alignment\.test\.mjs/);
+  assert.match(validator, /tests\/course\/common-cartridge\.test\.mjs/);
+  assert.match(validator, /tests\/qti\/qti-packager\.test\.mjs/);
 });

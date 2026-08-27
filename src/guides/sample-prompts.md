@@ -1,6 +1,6 @@
 # Bergen Memory Bank Sample Prompts
 
-All examples are synthetic and safe. Replace only the course-level teaching details, never the examples with student records or information that could identify a person. Each alias example has a natural-language equivalent that uses the same privacy, context, stage, and approval safeguards.
+All examples are synthetic and safe. Replace only the course-level teaching details, never the examples with student records or information that could identify a person. Each alias example has a natural-language equivalent that uses the same privacy, context, stage, and approval safeguards. A Google Keep write counts as successful only after Gemini retrieves the exact new Keep note and compares it with the intended content. If creation, retrieval, or comparison fails, the proposed content and failure remain visible in Gemini.
 
 ## bergen:help
 
@@ -13,6 +13,24 @@ All examples are synthetic and safe. Replace only the course-level teaching deta
 **Alias example**: `bergen:setup Check whether my four document roles are attached for COM-101: Public Speaking Fundamentals.`
 
 **Natural-language example**: “Check my faculty profile and course-memory arrangement for the synthetic COM-101 course without changing any document.”
+
+## bergen:init
+
+**Alias example**: `bergen:init COM-101 using this synthetic syllabus; create only a temporary checkpoint automatically.`
+
+**Natural-language example**: “Initialize the synthetic COM-101 course from this syllabus, keep durable syllabus facts proposed until I approve them, and verify any temporary Keep checkpoint by retrieving and comparing the exact note.”
+
+## bergen:resume
+
+**Alias example**: `bergen:resume COM-101 and list the exact verified Keep notes used.`
+
+**Natural-language example**: “In this new chat, resume only the synthetic COM-101 course from verified Google Keep memory and show any missing or conflicting records.”
+
+## bergen:memory
+
+**Alias example**: `bergen:memory Show the active, superseded, and conflicting memory for COM-101 and the last verified write.`
+
+**Natural-language example**: “Tell me exactly which verified Keep notes support the current COM-101 work without opening or repairing Keep manually.”
 
 ## bergen:course
 
@@ -70,6 +88,18 @@ All examples are synthetic and safe. Replace only the course-level teaching deta
 
 ## bergen:record
 
-**Alias example**: `bergen:record Propose a copy-ready Course Memory update for the approved COM-101 evidence-selection decision; wait for my approval before finalizing the handoff.`
+**Alias example**: `bergen:record Propose a durable Keep revision for the approved COM-101 evidence-selection decision; wait for my approval before creating it.`
 
-**Natural-language example**: “Propose text I could approve and manually paste into the COM-101 Course Memory. Do not claim to save it.”
+**Natural-language example**: “Show the durable COM-101 record for approval, then create it only if I approve; report success only after retrieving the exact Keep note and comparing its full content.”
+
+## bergen:package course
+
+**Alias example**: `bergen:package course Prepare one Bergen Course Transfer Block for the fully reviewed and approved synthetic COM-101 course.`
+
+**Natural-language example**: “After a separate final handoff approval, prepare the complete synthetic COM-101 course for local `.imscc` packaging and manual import into an unpublished Canvas sandbox.”
+
+## bergen:package assessment
+
+**Alias example**: `bergen:package assessment Prepare a Bergen Quiz Transfer Block for this reviewed and approved synthetic COM-101 quiz.`
+
+**Natural-language example**: “Prepare only this approved synthetic assessment for the QTI Packager, not a whole-course `.imscc`, and keep Canvas import and publication manual.”

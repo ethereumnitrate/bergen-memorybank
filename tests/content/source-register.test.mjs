@@ -79,7 +79,8 @@ test('Apps Script claims capture the official sandbox, HTTPS, and navigation con
   assert.match(sourceRegister, /active content and requests must use HTTPS/i);
   assert.match(sourceRegister, /top-level navigation is restricted/i);
   assert.match(sourceRegister, /user-activated link or button/i);
-  assert.match(sourceRegister, /No Apps Script application was implemented in Phase 1/i);
+  assert.match(sourceRegister, /Both implemented packagers keep transformation in client-side browser code/i);
+  assert.match(sourceRegister, /Static serving and local generation do not establish an authorized live page/i);
 });
 
 test('v2 Keep claims are dated to current official sources and stop at observable connected-app evidence', async () => {
@@ -104,7 +105,7 @@ test('v2 Common Cartridge claims distinguish standards and repository structure 
   assert.match(sourceRegister, /draft-state settings are retained in course imports/i);
   assert.match(sourceRegister, /1EdTech.*packages and exchanges digital learning materials and assessments/i);
   assert.match(sourceRegister, /\.imscc/);
-  assert.match(sourceRegister, /Phase 1 schema and fixture are not a generated cartridge/i);
+  assert.match(sourceRegister, /Repository validation now establishes strict input semantics, deterministic Common Cartridge structure/i);
   assert.match(sourceRegister, /authorized import into an unpublished Bergen Canvas sandbox/i);
-  assert.match(sourceRegister, /does not establish compatibility, conformance, successful import, or publication/i);
+  assert.match(sourceRegister, /do not establish Bergen compatibility, successful import, interpretation, certification, or publication/i);
 });

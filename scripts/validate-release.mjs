@@ -82,6 +82,8 @@ async function validateBuild() {
   assert.equal(new Set(v1Inventory.map(({ artifact }) => artifact)).size, v1Inventory.length, 'V1.0 release inventory paths must be unique');
   assert.equal(v2Inventory.length, 13, 'Release inventory must contain exactly 13 v2 delta artifacts');
   assert.equal(new Set(v2Inventory.map(({ artifact }) => artifact)).size, v2Inventory.length, 'V2 release inventory paths must be unique');
+  assert.equal(v2Inventory.every(({ status }) => status === 'Ready'), true,
+    'Every implemented v2 repository artifact must be Ready at the Phase 6 repository gate');
 
   for (const { artifact, status } of v1Inventory) {
     const artifactExists = await exists(artifact);
@@ -97,6 +99,18 @@ async function validateBuild() {
   assert.match(version, /^# Bergen Memory Bank v2\.0 development$/m);
   assert.match(version, /2026-08-26/);
   assert.match(version, /Bergen Memory Bank v1\.0/);
+  assert.match(version, /Phase 6 repository candidate/i);
+  assert.match(version, /classic Gem and connected Google Keep acceptance gate is \*\*Pending\*\*/i);
+  assert.match(version, /unpublished Canvas sandbox acceptance gate is \*\*Pending\*\*/i);
+
+  const acceptanceEvidence = extractSection(
+    releaseContract,
+    '## Phase 6 acceptance evidence',
+    '## Release gates',
+  );
+  assert.match(acceptanceEvidence, /Aggregate repository verification\s*\|\s*Ready/i);
+  assert.match(acceptanceEvidence, /Classic Gem and connected Google Keep\s*\|\s*Pending/i);
+  assert.match(acceptanceEvidence, /Unpublished Canvas sandbox\s*\|\s*Pending/i);
 
   const sourceRegister = await readRepositoryFile('src/sources/authoritative-source-register.md');
   const v1DatedSourceRows = [...sourceRegister.matchAll(/^\|\s*\[[^\]]+\]\(https:\/\/[^)]+\)\s*\|\s*2026-08-04\s*\|\s*(?:Primary|Official)\s*\|/gm)];

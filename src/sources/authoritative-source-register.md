@@ -3,7 +3,7 @@
 **Latest platform source review date**: `2026-08-26`
 **Preserved v1.0 source review date**: `2026-08-04`
 
-This register maps preserved v1.0 policy and platform claims plus the v2 Phase 1 platform boundary to primary or official sources. Links and claims must be reviewed again when a dated policy or platform behavior changes. Summaries below are deliberately narrow; the linked source controls.
+This register maps preserved v1.0 policy and platform claims plus the v2 Google Keep, Common Cartridge, Canvas import, and hosting boundaries to primary or official sources. Links and claims must be reviewed again when a dated policy or platform behavior changes. Summaries below are deliberately narrow; the linked source controls.
 
 ## Source entries
 
@@ -63,10 +63,10 @@ Package origin, quiz engine, institution settings, and third-party variations st
 
 Instructure documents a faculty-controlled Canvas route that selects `Common Cartridge 1.x Package`, chooses a Common Cartridge ZIP or IMSCC file, adds the import to the queue, and observes the job. Canvas documents Queued, Running, Completed, Partially Completed, and Failed states. The Course Import Tool overview also states that draft-state settings are retained in course imports; the Bergen v2 contract nevertheless makes unpublished defaults explicit and requires faculty review.
 
-1EdTech describes Common Cartridge as a standard that packages and exchanges digital learning materials and assessments. Its v1.3 implementation material describes manifests, ordered organization and resource types, and the `.imscc` extension. Phase 1 schema and fixture are not a generated cartridge and do not claim 1EdTech certification.
+1EdTech describes Common Cartridge as a standard that packages and exchanges digital learning materials and assessments. Its v1.3 implementation material describes manifests, ordered organization and resource types, and the `.imscc` extension. The implemented local generator does not claim 1EdTech certification or Bergen-specific interpretation.
 
-Repository schema and reference checks establish only local input structure. An authorized import into an unpublished Bergen Canvas sandbox must complete before reviewers inspect the resulting course. Phase 1 does not establish compatibility, conformance, successful import, or publication, and nothing authorizes Canvas API access or autonomous publication.
+Repository validation now establishes strict input semantics, deterministic Common Cartridge structure, embedded QTI structure, local browser generation, and unpublished defaults. An authorized import into an unpublished Bergen Canvas sandbox must complete before reviewers inspect the resulting course. These local checks do not establish Bergen compatibility, successful import, interpretation, certification, or publication, and nothing authorizes Canvas API access or autonomous publication.
 
 ### Apps Script hosting boundary
 
-Apps Script HTML Service pages run in an iframe sandbox. Active content and requests must use HTTPS. Because top-level navigation is restricted, a redirect should be presented as a user-activated link or button. The implemented packager keeps quiz transformation in client-side browser code; its local source and network behavior are inspected in Phase 5, while live deployment and domain-access behavior remain manual checks. No Apps Script application was implemented in Phase 1.
+Apps Script HTML Service pages run in an iframe sandbox. Active content and requests must use HTTPS. Because top-level navigation is restricted, a redirect should be presented as a user-activated link or button. Both implemented packagers keep transformation in client-side browser code; their local source and network behavior are inspected in Phase 5, while live deployment and domain-access behavior remain manual checks. Static serving and local generation do not establish an authorized live page.

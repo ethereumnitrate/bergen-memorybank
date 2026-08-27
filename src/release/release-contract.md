@@ -1,12 +1,12 @@
 # Bergen Memory Bank Release Contract
 
-## Bergen Memory Bank v2 Phase 1 boundary
+## Bergen Memory Bank v2 Phase 6 repository boundary
 
-Bergen Memory Bank v2.0 is in development. Phase 1 establishes only the dated source boundary, the normative atomic Google Keep note contract, the machine-readable whole-course transfer contract, one complete synthetic CIS-277 fixture, and repository structure checks. It does not yet implement the v2 Gem commands, Keep retrieval or write behavior, immutable-chain selection, faculty guides, course-transfer validator, browser packager, Common Cartridge generator, or aggregate finalization.
+Bergen Memory Bank v2.0 is a repository candidate. Phases 1 through 6 locally verify the dated source boundary, atomic immutable Google Keep note contract, seventeen Gem workflows, course-scoped retrieval and conflict rules, complete course-transfer validator, deterministic browser-only Common Cartridge generator, aligned faculty guidance, preserved assessment-only QTI path, and aggregate validation. These artifacts define observable behavior; they do not execute or prove live Google or Canvas actions.
 
 The v2 design changes the v1 manual-only persistence boundary only for a connected Google Keep action that is observed and then verified by exact-title retrieval and full content comparison. Repository structure checks cannot satisfy that live gate. A creation, retrieval, comparison, authorization, or availability failure remains failed and unverified.
 
-The whole-course schema is strict input evidence for later work, not a generated Common Cartridge. Every Canvas-facing fixture object defaults to unpublished, protected or identifiable student information is prohibited, and authorized import into an unpublished Bergen Canvas sandbox remains required before any compatibility claim. Canvas publication remains a separate faculty decision.
+The whole-course schema and packager now create a locally verified deterministic Common Cartridge. Every Canvas-facing fixture object defaults to unpublished, protected or identifiable student information is prohibited, and authorized import into an unpublished Bergen Canvas sandbox remains required before any compatibility claim. Canvas publication remains a separate faculty decision.
 
 ## Preserved v1.0 release boundary
 
@@ -23,7 +23,7 @@ Phase 5 implements and locally verifies the optional QTI Packager as a Google Ap
 ## Status meanings
 
 - **Ready**: present and verified in a completed implementation phase.
-- **Pending**: for the preserved v1.0 inventory, required evidence that still needs an authorized manual action; for the v2 inventory, a planned v2 implementation or authorized external gate that Phase 1 has not completed. A v1 artifact may exist while its v2 extension remains Pending.
+- **Pending**: authorized manual or external evidence that has not been observed and recorded. Automated structure must never promote an external compatibility or persistence claim.
 
 ## Complete v1.0 artifact inventory
 
@@ -77,32 +77,42 @@ Phase 5 implements and locally verifies the optional QTI Packager as a Google Ap
 
 ## Bergen Memory Bank v2 inventory
 
-This delta inventory describes v2 readiness only. It does not downgrade the preserved v1.0 artifacts above. Phase 1 tests and contracts marked Ready validate foundation structure; later behavior remains Pending even where a v1 file at the same path already exists.
+This delta inventory describes v2 repository readiness only. It does not downgrade the preserved v1.0 artifacts above and does not turn local evidence into live-service evidence.
 
 | Artifact | Status | Phase | V2 responsibility |
 |---|---|---:|---|
 | `src/contracts/bergen-memory-v2.md` | Ready | 1 | Normative atomic Keep note, authority, revision, isolation, verification, conflict, privacy, and failure contract |
 | `src/contracts/bergen-course-transfer-v0.1.json` | Ready | 1 | Strict versioned whole-course transfer schema |
 | `tests/fixtures/sample-course-transfer.json` | Ready | 1 | Complete synthetic and de-identified CIS-277 transfer fixture |
-| `tests/keep/memory-contract.test.mjs` | Ready | 1 | Phase 1 memory-contract structure check; revision algorithms remain later work |
-| `tests/course/course-transfer.test.mjs` | Ready | 1 | Phase 1 schema, fixture, safety, and reference checks; the executable validator remains later work |
-| `src/gem/bergen-memory-bank-instructions.md` | Pending | 2 | V2 professor commands and observable connected Keep behavior |
-| `src/guides/keep-memory-workflow.md` | Pending | 3 | No-code faculty Keep workflow and recovery guidance |
-| `src/guides/canvas-course-handoff.md` | Pending | 6 | No-code whole-course packaging, sandbox review, and publication boundary |
-| `apps/course-packager/Script.html` | Pending | 5 | Browser-only validation and Common Cartridge generation |
-| `scripts/build-course-demo.mjs` | Pending | 5 | Deterministic local course-packager demonstration build |
-| `tests/course/common-cartridge.test.mjs` | Pending | 5 | Manifest, resource, embedded assessment, escaping, and determinism checks |
-| `tests/course/apps-script-bundle.test.mjs` | Pending | 5 | Static hosting and client-only privacy checks |
-| `tests/course/browser-smoke.mjs` | Pending | 5 | Desktop and mobile whole-course packaging journey checks |
+| `tests/keep/memory-contract.test.mjs` | Ready | 1 | Atomic fields, authority, immutable revision, isolation, retrieval, verification, conflict, retry, and recovery checks |
+| `tests/course/course-transfer.test.mjs` | Ready | 1 | Strict schema plus executable privacy-first and semantic validation checks |
+| `src/gem/bergen-memory-bank-instructions.md` | Ready | 2 | Seventeen professor workflows and observable connected Keep behavior contract |
+| `src/guides/keep-memory-workflow.md` | Ready | 3 | No-code faculty Keep workflow, verification, conflict, and recovery guidance |
+| `src/guides/canvas-course-handoff.md` | Ready | 6 | No-code whole-course packaging, sandbox review, and publication boundary |
+| `apps/course-packager/Script.html` | Ready | 5 | Browser-only validation and deterministic Common Cartridge generation |
+| `scripts/build-course-demo.mjs` | Ready | 5 | Deterministic local course-packager demonstration build |
+| `tests/course/common-cartridge.test.mjs` | Ready | 5 | Manifest, resource, embedded assessment, escaping, invalid-character, and determinism checks |
+| `tests/course/apps-script-bundle.test.mjs` | Ready | 5 | Static hosting, accessible shell, client-only privacy, and demo-freshness checks |
+| `tests/course/browser-smoke.mjs` | Ready | 5 | Desktop/mobile gating, completed generation, stale-byte, and download cleanup checks |
+
+## Phase 6 acceptance evidence
+
+| Gate | Status | Exact safe evidence required |
+|---|---|---|
+| Aggregate repository verification | Ready | Dependency-free aggregate tests, build, lint, deterministic course-demo regeneration, privacy checks, and preserved QTI regression checks pass locally. |
+| Classic Gem and connected Google Keep | Pending | In an authorized Bergen test account using synthetic content: invoke the typed and natural-language routes; observe create → exact-title retrieval → full-content comparison → report; verify automatic versus approved authority, immutable revisions, course-scoped new-chat resume, memory inspection, conflicts, and safe failure choices. Record only non-sensitive titles, expected-versus-observed outcomes, date, role, and result. |
+| Unpublished Canvas sandbox | Pending | In an authorized unpublished sandbox using the synthetic `.imscc`: choose Common Cartridge 1.x Package; record queued/running states; wait until the import job reports Completed; then review Modules, items, links, assignments, discussions, rubrics, assessments, completion rules, points, accessibility, and unpublished states. A partial or failed job does not pass. |
+
+Pending means no authorized external session or evidence was available locally. It does not mean failed, compatible, imported, or published.
 
 ## Release gates
 
-The local `npm run validate` command is the aggregate repository gate. Its authoritative result is 69/69 passing checks without third-party dependencies, combining the preserved v1.0 checks with the v2 Phase 1 foundation checks.
+The local `npm run validate` command is the aggregate repository gate. It runs every completed content, memory, transfer, Common Cartridge, browser, template, guide, and preserved QTI check without third-party dependencies.
 
 Automated structure checks and local browser checks may establish artifact integrity. They cannot establish compatibility with Bergen's Canvas configuration. Version 1.0 QTI compatibility remains unapproved until an authorized Bergen faculty or support user imports the synthetic package into an unpublished Bergen Canvas test course, verifies the five supported item types and settings without student data, and records the result.
 
 ## Deliberately not verified by the local build
 
-The content suites verify static instructions, templates, and faculty-guide contracts; they cannot execute or inspect live Gemini responses. Phase 3 produced four Google Docs-ready DOCX files but did not create live Drive documents because a Drive connection was unavailable. Automated OOXML, privacy, accessibility, and source-parity checks passed, but visual rendering was unavailable because the bundled document runtime did not include the required office renderer; that visual QA limitation remains recorded.
+The content suites verify static instructions, templates, faculty-guide contracts, local browser behavior, and deterministic packages; they cannot execute or inspect live Gemini responses. Phase 3 produced four Google Docs-ready DOCX files but did not create live Drive documents because a Drive connection was unavailable. Automated OOXML, privacy, accessibility, and source-parity checks passed, but visual rendering was unavailable because the bundled document runtime did not include the required office renderer; that visual QA limitation remains recorded.
 
-The local build does not test hidden context, live tenant access, automatic Google Docs editing, Canvas publication, real student records, a deployed Apps Script page, Bergen-domain access controls, or Canvas import compatibility. Automated checks establish browser behavior, QTI structure, and deterministic artifacts only. The authorized manual unpublished-course import remains the QTI compatibility release gate.
+The local build does not test hidden context, live tenant access, connected Keep actions, automatic Google Docs editing, Canvas publication, real student records, a live Apps Script page, Bergen-domain access controls, or Canvas import compatibility. Automated checks establish instruction, validation, browser, Common Cartridge, QTI, and deterministic-artifact behavior only. Authorized classic-Gem/Keep and unpublished-Canvas acceptance remain Pending manual release gates.

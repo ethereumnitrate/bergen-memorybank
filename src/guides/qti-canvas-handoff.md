@@ -1,11 +1,12 @@
 # Bergen Memory Bank QTI-to-Canvas Handoff Guide
 
-The core path is always available: assignment text uses manual copy into Canvas after review and separate faculty approval. QTI is an optional handoff for approved exams or quizzes, never a requirement for lesson or assignment work.
+This is the assessment-only path for an approved exam or quiz. It produces a local QTI ZIP and does not require or generate a whole-course `.imscc`. Assignment text can still use manual copy into Canvas after review and separate faculty approval.
 
 ## Choose the handoff
 
 - Regular assignment text uses manual copy through a reviewed Canvas Publishing Packet.
-- Approved exams or quizzes may use a **Bergen Quiz Transfer Block**.
+- `bergen:package assessment` may emit a **Bergen Quiz Transfer Block** for an approved exam or quiz.
+- `bergen:package course` uses the separate Bergen Course Transfer Block and whole-course `.imscc` guide.
 - Use the browser-only packager only when an institution link is available.
 - The institution-provided packager link is not currently available, so use manual Canvas entry. Use the same fallback when an item is unsupported, validation fails, or import is uncertain.
 
@@ -50,8 +51,8 @@ If import fails or anything looks different from the approved quiz, stop. Keep t
 
 ## Current availability boundary
 
-The institution-provided packager link is not currently available, so use manual Canvas entry. Use with Bergen Canvas has not been approved. This guide defines the faculty-controlled handoff and fallback; it does not claim that the packager is currently available or approved for Bergen Canvas.
+Use the institution-provided assessment packager only when it is available to your authorized account; otherwise use manual Canvas entry. Use with Bergen Canvas has not been approved. This guide defines the faculty-controlled handoff and fallback; local QTI checks do not establish a live page, import result, compatibility, or publication.
 
 ## Source note
 
-Canvas import statements were reviewed on 2026-08-04 against the official [Canvas QTI import guide](https://community.instructure.com/en/kb/articles/660996-how-do-i-import-quizzes-from-qti-packages). The guide documents QTI import routes, but it does not establish Bergen-specific compatibility. Bergen's Canvas role was reviewed on the [Bergen Canvas LMS page](https://bergen.edu/faculty-staff/citl/instructional-technology/lms/).
+Canvas import statements were reviewed on 2026-08-26 against the dated official QTI and Canvas sources recorded for Bergen Memory Bank. Those sources document the import route but do not establish Bergen-specific compatibility.
