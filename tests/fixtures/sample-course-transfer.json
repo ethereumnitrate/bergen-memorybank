@@ -129,7 +129,7 @@
       "title": "What Counts as Evidence?",
       "prompt": "Compare a structural repository check with an observed external action. Explain why one cannot substitute for the other.",
       "graded": true,
-      "pointsPossible": 10,
+      "pointsPossible": 20,
       "rubricRef": "rubric-workflow-map",
       "published": false
     }

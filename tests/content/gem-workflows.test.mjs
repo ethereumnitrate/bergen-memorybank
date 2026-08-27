@@ -37,6 +37,52 @@ async function readScenarios() {
   return JSON.parse(source);
 }
 
+async function readCourseTransferSchema() {
+  const source = await readFile(repositoryFile('src/contracts/bergen-course-transfer-v0.1.json'), 'utf8');
+  return JSON.parse(source);
+}
+
+function inferSchemaType(schema) {
+  if (schema.type) return schema.type;
+  if (Object.hasOwn(schema, 'const')) return typeof schema.const;
+  if (schema.enum?.length > 0 && schema.enum.every((value) => typeof value === typeof schema.enum[0])) {
+    return typeof schema.enum[0];
+  }
+  return undefined;
+}
+
+function schemaSignature(schema, required) {
+  const parts = [`required=${required}`];
+  const type = inferSchemaType(schema);
+  if (type) parts.push(`type=${type}`);
+  if (Object.hasOwn(schema, 'const')) parts.push(`const=${JSON.stringify(schema.const)}`);
+  if (schema.enum) parts.push(`enum=${schema.enum.map((value) => JSON.stringify(value)).join(',')}`);
+  for (const key of ['pattern', 'minLength', 'maxLength', 'minimum', 'maximum', 'minItems', 'maxItems', 'uniqueItems']) {
+    if (Object.hasOwn(schema, key)) parts.push(`${key}=${schema[key]}`);
+  }
+  if (schema.additionalProperties === false) parts.push('additionalProperties=false');
+  if (schema.required) parts.push(`requiredProperties=${schema.required.join(',')}`);
+  return parts.join('; ');
+}
+
+function collectCourseTransferSchemaSurface(schema) {
+  const surface = new Map();
+  const resolve = (node) => node.$ref
+    ? schema.$defs[node.$ref.slice('#/$defs/'.length)]
+    : node;
+  const visit = (unresolvedNode, path, required) => {
+    const node = resolve(unresolvedNode);
+    surface.set(path, schemaSignature(node, required));
+    const requiredProperties = new Set(node.required ?? []);
+    for (const [property, child] of Object.entries(node.properties ?? {})) {
+      visit(child, `${path}.${property}`, requiredProperties.has(property));
+    }
+    if (node.items) visit(node.items, `${path}[]`, true);
+  };
+  visit(schema, '$', true);
+  return surface;
+}
+
 function assertContainsAll(source, requiredText, contractName) {
   for (const text of requiredText) {
     assert.ok(source.includes(text), `${contractName} must include: ${text}`);
@@ -309,6 +355,116 @@ test('whole-course and assessment-only package routes remain approved, manual, a
   assert.match(instructions, /assessment-only.*does not require or generate.*\.imscc/is);
 });
 
+test('syllabus-to-course workflows accumulate one complete current approved course', async () => {
+  const instructions = await readInstructions();
+
+  assert.match(instructions, /## Current approved course/);
+  assert.match(instructions, /supplied syllabus.*only source of course-specific facts/is);
+  assert.match(instructions, /metadata.*outcomes.*ordered modules and items.*pages.*assignments.*discussions.*rubrics.*quizzes.*exams.*completion rules/is);
+  assert.match(instructions, /`bergen:course`.*accumulate.*current approved course/is);
+  assert.match(instructions, /`bergen:lesson`.*pages/is);
+  assert.match(instructions, /`bergen:assignment`.*assignments.*discussions.*quizzes.*exams/is);
+  assert.match(instructions, /`bergen:rubric`.*rubrics/is);
+  assert.match(instructions, /accessibility and alignment review.*whole-course review/is);
+  assert.match(instructions, /never fill a missing fact with a placeholder, sample, or hidden-memory value/i);
+});
+
+test('course packaging emits exactly one 0.1 JSON block only after separate final-review and package approvals', async () => {
+  const instructions = await readInstructions();
+  const fixture = await readScenarios();
+  const aliasScenario = fixture.scenarios.find(({ id }) => id === 'alias-package-course');
+  const approvedScenario = fixture.scenarios.find(({ id }) => id === 'natural-language-package-course');
+
+  assert.match(instructions, /emit no Bergen Course Transfer Block before final-review approval/i);
+  assert.match(instructions, /final-review approval does not grant package approval/i);
+  assert.match(instructions, /package approval does not retroactively approve the course design/i);
+  assert.match(instructions, /exactly one fenced JSON object/i);
+  assert.match(instructions, /"format": "bergen-course-transfer"/);
+  assert.match(instructions, /"version": "0\.1"/);
+  assert.match(instructions, /do not emit a Bergen Course Transfer Block from any other workflow/i);
+  assert.deepEqual(aliasScenario.expectedCourseTransfer, {
+    emitsBlock: false,
+    requiresFinalReviewApproval: true,
+    requiresPackageApproval: true,
+  });
+  assert.deepEqual(approvedScenario.expectedCourseTransfer, {
+    emitsBlock: true,
+    blockCount: 1,
+    format: 'bergen-course-transfer',
+    version: '0.1',
+    inputDerived: true,
+    canvasFacingPublished: false,
+  });
+  assert.match(instructions, /QTI assessment-only route.*five supported item types/i);
+});
+
+test('Gem embeds a complete normative v0.1 field map and semantic rule map', async () => {
+  const instructions = await readInstructions();
+  const schema = await readCourseTransferSchema();
+  const sectionMatch = instructions.match(/## Normative Bergen Course Transfer Block v0\.1([\s\S]*?)(?=\n## )/);
+
+  assert.ok(sectionMatch, 'Gem instructions must contain the normative v0.1 contract section');
+  const section = sectionMatch[1];
+  const fieldRows = new Map([...section.matchAll(/^\| `([^`]+)` \| `([^`]*)` \|$/gm)]
+    .map((match) => [match[1], match[2]]));
+  assert.deepEqual([...fieldRows.entries()], [...collectCourseTransferSchemaSurface(schema).entries()]);
+
+  const semanticRuleIds = [...section.matchAll(/^\| `(rule\.[^`]+)` \|/gm)].map((match) => match[1]);
+  assert.deepEqual(semanticRuleIds, [
+    'rule.identity.unique',
+    'rule.order.modules',
+    'rule.order.module-items',
+    'rule.placement.complete',
+    'rule.rubric.relationships',
+    'rule.rubric.points',
+    'rule.assessment.multiple-choice',
+    'rule.assessment.multiple-answer',
+    'rule.assessment.true-false',
+    'rule.assessment.short-answer',
+    'rule.assessment.essay',
+    'rule.assessment.points',
+    'rule.completion.relationships',
+    'rule.completion.minimum-score',
+    'rule.reference.contains',
+    'rule.reference.uses-rubric',
+    'rule.reference.requires',
+    'rule.reference.links-to',
+    'rule.metadata.coherence',
+    'rule.approval.separate',
+    'rule.privacy.short-circuit',
+    'rule.privacy.input-derived',
+    'rule.canvas.unpublished',
+    'rule.content.plain-text',
+    'rule.scoring.precision',
+    'rule.output.single-block',
+    'rule.qti.assessment-only',
+  ]);
+});
+
+test('verified active course records may restore approved facts while conflicts stop work and naming stays canonical', async () => {
+  const instructions = await readInstructions();
+
+  assert.match(instructions, /verified active `Course fact` and `Course outcome` records may restore approved course facts/i);
+  assert.match(instructions, /unresolved or conflicting syllabus facts stop course-dependent work/i);
+  assert.match(instructions, /current approved course/i);
+  assert.match(instructions, /QTI assessment-only route/i);
+  assert.doesNotMatch(instructions, /course-design ledger/i);
+});
+
+test('Gem normative discussion relationships and Phase 4 naming match the validator contract', async () => {
+  const instructions = await readInstructions();
+
+  assert.match(
+    instructions,
+    /A uses-rubric reference runs from an assignment or discussion to its exact rubricRef target\./,
+  );
+  assert.match(instructions, /ungraded discussions have zero points/i);
+  assert.doesNotMatch(instructions, new RegExp(['current approved course', 'design'].join(' '), 'i'));
+  assert.doesNotMatch(instructions, new RegExp(['five-item', 'QTI transfer route'].join(' '), 'i'));
+  assert.match(instructions, /current approved course/i);
+  assert.match(instructions, /QTI assessment-only route/i);
+});
+
 test('initialization uses the supplied syllabus but auto-saves only a meaningful temporary checkpoint', async () => {
   const instructions = await readInstructions();
 
@@ -428,13 +584,17 @@ test('visible-chat estimate is conservative, qualified, and avoids false precisi
   assert.match(instructions, /if a defensible estimate cannot be produced from visible content, say so instead of fabricating one/i);
 });
 
-test('synthetic scenario fixture maps Phase 2 workflows to observable response contracts', async () => {
+test('synthetic scenario fixture maps inherited workflows and Phase 4 transfer behavior to observable response contracts', async () => {
   const instructions = await readInstructions();
   const fixture = await readScenarios();
 
   assert.equal(fixture.metadata.dataClassification, 'synthetic/de-identified');
   assert.equal(fixture.metadata.containsRealStudentData, false);
-  assert.equal(fixture.metadata.phase, 'phase-2');
+  assert.equal(fixture.metadata.phase, 'phase-4');
+  assert.deepEqual(fixture.metadata.coverage, {
+    inherited: ['phase-2 workflow routing', 'phase-3 memory behavior'],
+    current: ['phase-4 course transfer'],
+  });
   assert.equal(fixture.scenarios.length, 37);
   assert.equal(new Set(fixture.scenarios.map(({ id }) => id)).size, 37);
 
@@ -469,7 +629,7 @@ test('synthetic scenario fixture maps Phase 2 workflows to observable response c
     'write-failure-unavailable',
     'resume-conflict',
     'memory-report',
-  ], 'Phase 2 scenario IDs');
+  ], 'Phase 4 regression scenario IDs');
 
   for (const scenario of fixture.scenarios) {
     assert.ok(scenario.expectedHeader.startsWith('Bergen Memory Bank Â· '));

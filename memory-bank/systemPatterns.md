@@ -73,7 +73,8 @@ The developer lane verifies repository artifacts but is not part of faculty inst
 - **Release Contract**: Defines the v1.0 scope, safeguard boundary, exact artifact inventory, phase ownership, and Ready/Pending state in `src/release/release-contract.md`.
 - **Authoritative Source Register**: Holds dated official-source pointers and narrow claim mappings in `src/sources/authoritative-source-register.md`; Memory Bank documents reference this register rather than duplicate its source details.
 - **Scenario Matrix and Fixtures**: Define observable Gem, template, faculty-guide, packager, and manual compatibility contracts while supplying synthetic or de-identified workflow and quiz inputs.
-- **Validation Harness and Tests**: Use dependency-free Node.js `.mjs` files to check release structure, inventory state, source discipline, fixture safety, Gem workflows, template ownership, generated OOXML, faculty-guide alignment, QTI XML/ZIP structure, Apps Script privacy boundaries, and desktop/mobile presentation journeys.
+- **Bergen Course Transfer Block Validator**: Applies the repository-owned v0.1 schema and semantic contract to raw JSON text or parsed values. It privacy-short-circuits before substantive validation, returns only sanitized deterministic errors on failure, and returns a cloned complete value only when every check passes.
+- **Validation Harness and Tests**: Use dependency-free Node.js `.mjs` files to check release structure, inventory state, source discipline, fixture safety, Gem workflows, complete Bergen Course Transfer Block validation, template ownership, generated OOXML, faculty-guide alignment, QTI XML/ZIP structure, Apps Script privacy boundaries, and desktop/mobile presentation journeys.
 - **QTI Packager**: Optional static Apps Script companion that validates an approved text-only transfer block and creates a local QTI 1.2 ZIP in the browser. It has no quiz-content server call, database, account, telemetry, Canvas connection, or automatic publication authority.
 
 ## Conversational Routing Pattern
@@ -179,26 +180,29 @@ Every Keep write must be observable as `create → retrieve the exact title → 
 
 ### Versioned Whole-Course Transfer Boundary
 
-- `src/contracts/bergen-course-transfer-v0.1.json` defines a strict, versioned input contract for approved course-design content, with a complete synthetic/de-identified fixture at `tests/fixtures/sample-course-transfer.json`.
-- Course, module, page, assignment, discussion, rubric, quiz, and exam objects default to unpublished; submissions, grades, individual feedback, accommodations, identifying records, credentials, and raw student work remain excluded.
-- The schema and fixture establish local structure only. Phase 1 includes no executable validator, browser packager, generated Common Cartridge or `.imscc` file, Canvas API access, import automation, compatibility evidence, or publication authority.
-- Later compatibility requires an authorized import into an unpublished Bergen Canvas sandbox followed by faculty review; publication remains a separate faculty decision.
+- `src/contracts/bergen-course-transfer-v0.1.json` and `src/contracts/bergen-course-transfer-validator.mjs` define and enforce one strict, versioned contract for approved course-design content. The CIS-277 and ENG-102 fixtures prove the same contract against two distinct synthetic/de-identified courses.
+- Validation is all-or-nothing. Raw-text and parsed-value privacy checks run before schema or semantic processing and return one sanitized no-echo error; accepted output is returned only after strict schema, identity, type, order, placement, relationship, completion, assessment, scoring, approval, current approved course, unpublished-default, and plain-text checks all pass.
+- Error reporting is deterministic by code point and conservative by design. Semantic traversal tolerates malformed or null-bearing input, decimal scoring is normalized before comparison, and bounded entity decoding fails closed when active HTML, XML, CSS, executable-URL, or embedded-object markup could be concealed.
+- The Gem embeds the complete v0.1 field and semantic-rule maps, accumulates syllabus-driven artifacts into the current approved course, requires separate final-review and package approvals, and emits exactly one JSON Bergen Course Transfer Block only through the course-package route. The QTI assessment-only route remains separate.
+- Phase 4 validates the Bergen Course Transfer Block but does not add a browser course packager, generated Common Cartridge or `.imscc` file, Canvas API access, import automation, compatibility evidence, or publication authority. Those packaging concerns belong to Phase 5.
+- Live behavior still requires an authorized Gemini/Keep check, and later course-package compatibility requires an authorized import into an unpublished Canvas sandbox followed by faculty review. Publication remains a separate faculty decision.
 
 These patterns reinforce the existing Privacy by Design, Canvas Is the Student-Record System, Human Approval at Consequential Steps, Transparent Capability Boundaries, Minimum Necessary Context, and Source-Dated Claims principles. They do not require a new or contradictory guiding principle.
 
 ## Release Validation Pattern
 
-The v2 validation lane now covers the Phase 1 foundation, Phase 2 Gem behavior, and Phase 3 memory contract and faculty guidance. The aggregate command reports 98/98 passing checks, but this evidence is limited to repository contracts, fixtures, and existing local implementation behavior; it does not establish live Keep access, successful persistence, Common Cartridge generation, Canvas compatibility, or publication.
+The v2 validation lane now covers the Phase 1 foundation, Phase 2 Gem behavior, Phase 3 memory contract and faculty guidance, and the Phase 4 Bergen Course Transfer Block validator and syllabus-to-course workflow contract. The aggregate command reports 122/122 passing checks, but this evidence is limited to repository contracts, fixtures, and existing local implementation behavior; it does not establish live Keep access, successful persistence, Common Cartridge generation, Canvas compatibility, or publication.
 
 - Repository validation uses Node.js ECMAScript modules (`.mjs`) and built-in modules only. `package.json` intentionally has no `dependencies` or `devDependencies`.
 - `scripts/validate-release.mjs` provides build and lint modes and composes them with the focused tests in aggregate mode.
 - `tests/content/release-structure.test.mjs` maps the release contract, version stamp, package scripts, artifact existence, and fixture safety rules to executable checks.
 - `tests/content/source-register.test.mjs` maps the authoritative source register to dated-source completeness and bounded policy, Gemini, Canvas, QTI, and Apps Script claims.
-- `tests/content/gem-workflows.test.mjs` maps the complete Gem instruction source and its 18 synthetic scenarios to routing, context, stage, approval, privacy, prerequisite, handoff, and capability-boundary checks.
+- `tests/content/gem-workflows.test.mjs` maps the complete Gem instruction source and its 37 synthetic/de-identified scenarios to routing, context, stage, approval, privacy, prerequisite, current approved course accumulation, complete v0.1 field and rule coverage, single-block handoff, and capability-boundary checks.
+- `tests/course/course-transfer.test.mjs` supplies 21 focused validator checks for both synthetic courses, strict schema enforcement, privacy short-circuiting, sanitized errors, reference and scoring semantics, deterministic ordering, null-safe failure, unpublished and approval gates, and plain-text-only content.
 - `tests/content/template-contracts.test.mjs` maps the five template sources and four generated DOCX files to the ownership, snapshot, privacy, explicit-selection, prerequisite, manual-record, and OOXML contracts.
 - `tests/keep/memory-contract.test.mjs` maps the normative v2 Keep contract to atomic schemas, authority, immutable chains, course isolation, deterministic effective heads, verification, conflict quarantine, and probe-first retry semantics.
 - `tests/content/guide-alignment.test.mjs` maps all ten faculty guides to nontechnical language, exact installation, routing parity, observable response fields, privacy recovery, context estimates, presentation timing, synthetic alignment, approval ordering, bounded handoffs, the optional-QTI boundary, and the dedicated no-code Keep workflow.
-- The three QTI suites map the production Apps Script bundle, QTI core, generated artifacts, and self-contained page to twelve browser-only privacy, validation, XML, ZIP, accessibility, and desktop/mobile journey checks.
+- The three QTI suites map the production Apps Script bundle, QTI core, generated artifacts, and self-contained page to 21 browser-only privacy, validation, XML, ZIP, accessibility, and desktop/mobile regression checks.
 - `scripts/build-google-docs.mjs` is a separately invocable deterministic authoring step. It resolves bundled tooling through explicit environment variables or compatible cache discovery, then sanitizes, privacy-scrubs, and normalizes each generated DOCX.
 - The human-readable `src/testing/scenario-matrix.md` records verified Gem, template, guide, and packager behaviors and keeps the authorized manual Canvas compatibility gate distinct.
 - Automated v1 Phase 3 release evidence includes title-sanitizer, accessibility, OOXML, `google_docs_default`, privacy, and deterministic-package checks for all four DOCX files. Render/PNG visual QA remains `DONE_WITH_CONCERNS` when LibreOffice/`soffice` is unavailable and must not be represented as a visual pass.
@@ -207,13 +211,13 @@ The v2 validation lane now covers the Phase 1 foundation, Phase 2 Gem behavior, 
 
 - Fixtures must declare the `synthetic/de-identified` data classification and state that they contain no real student data.
 - Fixtures must not contain names, email addresses, student IDs, individual grades, accommodations, disability or health information, disciplinary records, credentials, identifying filenames, or raw student work.
-- Workflow scenarios are Phase 2 content-contract evidence. The sample quiz remains a seed for later packaging tests, and its metadata must not imply that the QTI application or Canvas compatibility is complete.
+- Workflow scenarios preserve Phase 2–3 behavior and add Phase 4 course-transfer evidence. Both course-transfer fixtures and the sample quiz remain synthetic contract inputs; their metadata must not imply that a whole-course packager, `.imscc` output, or Canvas compatibility is complete.
 
 ## Testing Patterns
 
 ### Organization
 
-- Keep source-to-test ownership explicit: the release contract and fixtures map to the release-structure suite, dated claims map to the source-register suite, the v2 memory contract maps to the Keep memory-contract suite, Gem behavior maps to the Gem-workflow suite, template sources plus generated DOCX files map to the template-contract suite, and all faculty guides—including the Keep workflow guide—map to the guide-alignment suite.
+- Keep source-to-test ownership explicit: the release contract and fixtures map to the release-structure suite, dated claims map to the source-register suite, the v2 memory contract maps to the Keep memory-contract suite, the Bergen Course Transfer Block schema, validator, and two course fixtures map to the course-transfer suite, Gem behavior maps to the Gem-workflow suite, template sources plus generated DOCX files map to the template-contract suite, and all faculty guides—including the Keep workflow guide—map to the guide-alignment suite.
 - Use scenario-based acceptance checks organized by workflow and cross-cutting safeguard.
 - Maintain at least one happy-path scenario for every command and representative natural-language equivalent.
 - Add focused scenarios for privacy rejection and recovery, unknown commands, concepts not yet introduced, review-before-revise, record proposals, and manual Canvas publication.
@@ -238,6 +242,13 @@ C4 architecture documentation has not been generated. The implemented topology i
 <!-- AUTO-MANAGED: c4-architecture-end -->
 
 ## Recent Architecture Changes
+
+### 2026-08-27 - Implemented the all-or-nothing Bergen Course Transfer Block validator
+
+- **What Changed**: Added a repository-local v0.1 validator with privacy-first short-circuiting, strict schema and semantic enforcement, deterministic sanitized errors, stable decimal scoring, fail-closed plain-text checks, a second synthetic course fixture, and a complete Gem field/rule and current approved course workflow contract.
+- **Reason**: Make the whole-course handoff complete and deterministic before introducing browser packaging or any external Canvas acceptance claim.
+- **Trade-offs**: The repository can prove two distinct approved course structures and reject malformed, unsafe, unapproved, or unpublished input, but it still cannot claim `.imscc` generation, Common Cartridge compatibility, Canvas import, or publication. Live Gemini/Keep and unpublished Canvas sandbox gates remain external.
+- **Affected Components**: Bergen Course Transfer Block schema and validator, CIS-277 and ENG-102 fixtures, Gem instructions, course-transfer and Gem-workflow suites, and aggregate validation evidence.
 
 ### 2026-08-26 - Completed the v2 immutable Keep memory architecture
 

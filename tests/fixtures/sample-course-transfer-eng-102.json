@@ -1,0 +1,164 @@
+{
+  "format": "bergen-course-transfer",
+  "version": "0.1",
+  "metadata": {
+    "courseCode": "ENG-102",
+    "courseTitle": "Critical Reading and Composition",
+    "termLabel": "Synthetic Spring Term",
+    "locale": "en-US",
+    "sourceSummary": "A de-identified course design derived from a synthetic composition syllabus for transfer-contract verification.",
+    "dataClassification": "synthetic/de-identified",
+    "containsRealStudentData": false,
+    "finalReviewApproved": true,
+    "packageApproved": true
+  },
+  "privacy": {
+    "inputDerived": true,
+    "containsProtectedInformation": false,
+    "containsIdentifiableStudentInformation": false,
+    "containsCredentials": false,
+    "containsRawStudentWork": false,
+    "canvasStudentRecordsExcluded": true
+  },
+  "course": {
+    "code": "ENG-102",
+    "title": "Critical Reading and Composition",
+    "description": "A synthetic course in evidence-based reading, argument, revision, and reflective composition.",
+    "credits": 3,
+    "published": false
+  },
+  "modules": [
+    {
+      "id": "module-rhetorical-reading",
+      "position": 1,
+      "title": "Rhetorical Reading",
+      "overview": "Analyze purpose, audience, evidence, and rhetorical choices in public texts.",
+      "published": false,
+      "items": [
+        { "position": 1, "type": "page", "ref": "page-rhetorical-situation" },
+        { "position": 2, "type": "discussion", "ref": "discussion-evidence-choices" },
+        { "position": 3, "type": "quiz", "ref": "quiz-rhetorical-reading" }
+      ],
+      "completionRuleRefs": [
+        "completion-rhetorical-page",
+        "completion-rhetorical-quiz"
+      ]
+    },
+    {
+      "id": "module-revision-portfolio",
+      "position": 2,
+      "title": "Argument and Revision",
+      "overview": "Develop an evidence-based argument, revise it for readers, and explain consequential choices.",
+      "published": false,
+      "items": [
+        { "position": 1, "type": "assignment", "ref": "assignment-argument-draft" },
+        { "position": 2, "type": "exam", "ref": "exam-revision-reflection" }
+      ],
+      "completionRuleRefs": [
+        "completion-argument-draft",
+        "completion-revision-reflection"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "id": "page-rhetorical-situation",
+      "title": "Reading the Rhetorical Situation",
+      "body": "Readers examine a text's purpose, audience, context, claims, and evidence before judging how its choices work together.",
+      "published": false
+    }
+  ],
+  "assignments": [
+    {
+      "id": "assignment-argument-draft",
+      "title": "Evidence-Based Argument Draft",
+      "instructions": "Develop a focused claim for a public audience, integrate course-provided sources, and explain how each source supports the reasoning.",
+      "pointsPossible": 30,
+      "submissionType": "online_text_entry",
+      "rubricRef": "rubric-argument-draft",
+      "published": false
+    }
+  ],
+  "discussions": [
+    {
+      "id": "discussion-evidence-choices",
+      "title": "Evidence and Audience",
+      "prompt": "Compare two de-identified public passages and explain which evidence would be more persuasive for a stated audience.",
+      "graded": true,
+      "pointsPossible": 10,
+      "rubricRef": "rubric-evidence-discussion",
+      "published": false
+    }
+  ],
+  "rubrics": [
+    {
+      "id": "rubric-argument-draft",
+      "title": "Argument Draft Rubric",
+      "criteria": [
+        { "id": "criterion-focused-claim", "description": "The draft presents a focused, arguable claim for its audience.", "points": 15 },
+        { "id": "criterion-source-reasoning", "description": "The draft connects source evidence to the writer's reasoning.", "points": 15 }
+      ],
+      "published": false
+    },
+    {
+      "id": "rubric-evidence-discussion",
+      "title": "Evidence Discussion Rubric",
+      "criteria": [
+        { "id": "criterion-comparison", "description": "The response compares the passages using specific rhetorical evidence.", "points": 5 },
+        { "id": "criterion-audience", "description": "The response explains the relevance of the stated audience.", "points": 5 }
+      ],
+      "published": false
+    }
+  ],
+  "quizzes": [
+    {
+      "id": "quiz-rhetorical-reading",
+      "title": "Rhetorical Reading Check",
+      "instructions": "Identify the choices that support an audience-centered reading.",
+      "pointsPossible": 6,
+      "questions": [
+        {
+          "id": "question-rhetorical-evidence",
+          "type": "multiple-answer",
+          "prompt": "Which details help establish a rhetorical situation?",
+          "points": 6,
+          "choices": ["Purpose", "Audience", "Font file name", "Context"],
+          "correctChoiceIndexes": [0, 1, 3]
+        }
+      ],
+      "published": false
+    }
+  ],
+  "exams": [
+    {
+      "id": "exam-revision-reflection",
+      "title": "Revision Reflection",
+      "instructions": "Explain a substantial revision choice and connect it to audience, purpose, and evidence.",
+      "pointsPossible": 20,
+      "questions": [
+        {
+          "id": "question-revision-choice",
+          "type": "essay",
+          "prompt": "Explain one revision that materially improved the argument for its intended audience.",
+          "points": 20
+        }
+      ],
+      "published": false
+    }
+  ],
+  "completionRules": [
+    { "id": "completion-rhetorical-page", "moduleRef": "module-rhetorical-reading", "itemRef": "page-rhetorical-situation", "requirement": "view" },
+    { "id": "completion-rhetorical-quiz", "moduleRef": "module-rhetorical-reading", "itemRef": "quiz-rhetorical-reading", "requirement": "score_at_least", "minimumScore": 4 },
+    { "id": "completion-argument-draft", "moduleRef": "module-revision-portfolio", "itemRef": "assignment-argument-draft", "requirement": "submit" },
+    { "id": "completion-revision-reflection", "moduleRef": "module-revision-portfolio", "itemRef": "exam-revision-reflection", "requirement": "submit" }
+  ],
+  "references": [
+    { "from": "module-rhetorical-reading", "to": "completion-rhetorical-page", "relation": "requires" },
+    { "from": "module-rhetorical-reading", "to": "completion-rhetorical-quiz", "relation": "requires" },
+    { "from": "module-revision-portfolio", "to": "completion-argument-draft", "relation": "requires" },
+    { "from": "module-revision-portfolio", "to": "completion-revision-reflection", "relation": "requires" },
+    { "from": "assignment-argument-draft", "to": "rubric-argument-draft", "relation": "uses-rubric" },
+    { "from": "discussion-evidence-choices", "to": "rubric-evidence-discussion", "relation": "uses-rubric" },
+    { "from": "page-rhetorical-situation", "to": "assignment-argument-draft", "relation": "links-to" }
+  ]
+}

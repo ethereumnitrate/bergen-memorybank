@@ -144,6 +144,7 @@
     "modules": {
       "type": "array",
       "minItems": 1,
+      "maxItems": 100,
       "items": {
         "$ref": "#/$defs/module"
       }
@@ -151,6 +152,7 @@
     "pages": {
       "type": "array",
       "minItems": 1,
+      "maxItems": 1000,
       "items": {
         "$ref": "#/$defs/page"
       }
@@ -158,6 +160,7 @@
     "assignments": {
       "type": "array",
       "minItems": 1,
+      "maxItems": 500,
       "items": {
         "$ref": "#/$defs/assignment"
       }
@@ -165,6 +168,7 @@
     "discussions": {
       "type": "array",
       "minItems": 1,
+      "maxItems": 500,
       "items": {
         "$ref": "#/$defs/discussion"
       }
@@ -172,6 +176,7 @@
     "rubrics": {
       "type": "array",
       "minItems": 1,
+      "maxItems": 500,
       "items": {
         "$ref": "#/$defs/rubric"
       }
@@ -179,6 +184,7 @@
     "quizzes": {
       "type": "array",
       "minItems": 1,
+      "maxItems": 250,
       "items": {
         "$ref": "#/$defs/assessment"
       }
@@ -186,6 +192,7 @@
     "exams": {
       "type": "array",
       "minItems": 1,
+      "maxItems": 250,
       "items": {
         "$ref": "#/$defs/assessment"
       }
@@ -193,6 +200,7 @@
     "completionRules": {
       "type": "array",
       "minItems": 1,
+      "maxItems": 2000,
       "items": {
         "$ref": "#/$defs/completionRule"
       }
@@ -200,6 +208,7 @@
     "references": {
       "type": "array",
       "minItems": 1,
+      "maxItems": 5000,
       "items": {
         "$ref": "#/$defs/reference"
       }
@@ -237,7 +246,8 @@
         },
         "position": {
           "type": "integer",
-          "minimum": 1
+          "minimum": 1,
+          "maximum": 10000
         },
         "title": {
           "$ref": "#/$defs/nonEmptyText"
@@ -251,6 +261,7 @@
         "items": {
           "type": "array",
           "minItems": 1,
+          "maxItems": 100,
           "items": {
             "type": "object",
             "additionalProperties": false,
@@ -262,7 +273,8 @@
             "properties": {
               "position": {
                 "type": "integer",
-                "minimum": 1
+                "minimum": 1,
+                "maximum": 10000
               },
               "type": {
                 "enum": [
@@ -282,6 +294,7 @@
         "completionRuleRefs": {
           "type": "array",
           "minItems": 1,
+          "maxItems": 100,
           "uniqueItems": true,
           "items": {
             "$ref": "#/$defs/identifier"
@@ -337,7 +350,8 @@
         },
         "pointsPossible": {
           "type": "number",
-          "minimum": 0
+          "minimum": 0,
+          "maximum": 100000
         },
         "submissionType": {
           "enum": [
@@ -381,7 +395,8 @@
         },
         "pointsPossible": {
           "type": "number",
-          "minimum": 0
+          "minimum": 0,
+          "maximum": 100000
         },
         "rubricRef": {
           "$ref": "#/$defs/identifier"
@@ -410,6 +425,7 @@
         "criteria": {
           "type": "array",
           "minItems": 1,
+          "maxItems": 100,
           "items": {
             "type": "object",
             "additionalProperties": false,
@@ -427,7 +443,8 @@
               },
               "points": {
                 "type": "number",
-                "minimum": 0
+                "minimum": 0,
+                "maximum": 100000
               }
             }
           }
@@ -460,11 +477,13 @@
         },
         "pointsPossible": {
           "type": "number",
-          "minimum": 0
+          "minimum": 0,
+          "maximum": 100000
         },
         "questions": {
           "type": "array",
           "minItems": 1,
+          "maxItems": 200,
           "items": {
             "type": "object",
             "additionalProperties": false,
@@ -492,17 +511,20 @@
               },
               "points": {
                 "type": "number",
-                "minimum": 0
+                "minimum": 0,
+                "maximum": 100000
               },
               "choices": {
                 "type": "array",
                 "minItems": 2,
+                "maxItems": 50,
                 "items": {
                   "$ref": "#/$defs/nonEmptyText"
                 }
               },
               "correctChoiceIndexes": {
                 "type": "array",
+                "maxItems": 50,
                 "uniqueItems": true,
                 "items": {
                   "type": "integer",
@@ -512,6 +534,7 @@
               "acceptedAnswers": {
                 "type": "array",
                 "minItems": 1,
+                "maxItems": 50,
                 "items": {
                   "$ref": "#/$defs/nonEmptyText"
                 }
@@ -552,7 +575,8 @@
         },
         "minimumScore": {
           "type": "number",
-          "minimum": 0
+          "minimum": 0,
+          "maximum": 100000
         }
       }
     },

@@ -316,7 +316,7 @@ Yes. Extend `src/guides/command-reference.md`, `src/guides/faculty-quick-start.m
 - [x] Phase 1: Establish v2 source, release, schema, fixture, and dated-platform contracts.
 - [x] Phase 2: Implement professor commands and Google Keep read/write behavior in the Gem instruction and scenario contracts.
 - [x] Phase 3: Implement immutable memory revision, retrieval, verification, conflict, checkpoint, and recovery contracts plus faculty guidance.
-- [ ] Phase 4: Implement the complete Bergen Course Transfer Block validator and syllabus-to-course workflow contract.
+- [x] Phase 4: Implement the complete Bergen Course Transfer Block validator and syllabus-to-course workflow contract.
 - [ ] Phase 5: Implement the browser-only Bergen Course Packager, Common Cartridge/QTI generation, Apps Script bundle, demo, and focused tests.
 - [ ] Phase 6: Align all guides and release artifacts, run aggregate verification, and complete authorized synthetic Gemini/Keep and unpublished Canvas sandbox acceptance gates.
 
@@ -347,6 +347,15 @@ Yes. Extend `src/guides/command-reference.md`, `src/guides/faculty-quick-start.m
 - **Delivered**: Immutable course-scoped revision and body contracts, exact `Supersedes` chains, deterministic effective-head retrieval, malformed/cross-course conflict quarantine, low-risk checkpoints, scoped durable approvals, exact-note verification, idempotent recovery, and aligned no-code faculty guidance.
 - **External Gates**: Authorized live classic-Gem and connected Keep create/retrieve/compare, new-conversation resume, memory inspection, and safely reproducible failure behavior remain unclaimed manual release gates.
 
+### Phase 4 Result
+
+- **Completed**: 2026-08-27
+- **Test Results**: 122/122 tests passing; 56/56 focused course-transfer and Gem workflow checks; 21/21 preserved QTI regression checks; build and lint passing.
+- **Code Review**: APPROVED on iteration 3 after two test-first correction cycles resolved null safety, privacy/credential detection, plain-text markup hardening, decimal scoring, complete Gem contract alignment, discussion relationships, and canonical naming.
+- **Security Review**: PASS; sanitized privacy short-circuits, fail-closed HTML/XML/entity handling, all-or-nothing validation, zero third-party dependencies, and no network, storage, API, telemetry, credentials, or protected data introduced.
+- **Delivered**: Dependency-free versioned Bergen Course Transfer Block parser/validator, strict schema and semantic/reference checks, complete current-approved-course Gem field contract and approval workflow, a second materially different synthetic course fixture, and deterministic course/error coverage while preserving the QTI assessment-only route.
+- **External Gates**: Live classic-Gem behavior, connected Google Keep evidence, `.imscc` generation, Bergen Canvas Common Cartridge compatibility, import, and publication remain unclaimed; browser/App Script/Common Cartridge packaging belongs to Phase 5.
+
 ## Creative Phases
 
 - [x] Architecture design → approved 2026-08-26
@@ -366,44 +375,50 @@ Yes. Extend `src/guides/command-reference.md`, `src/guides/faculty-quick-start.m
 ## Build Execution State
 
 **Build Status**: IDLE
-**Current Build**: Phase 3: Implement immutable memory revision, retrieval, verification, conflict, checkpoint, and recovery contracts plus faculty guidance. (bergen-memory-bank-v2)
-**Build Started**: 2026-08-26T21:16:00Z
-**Last Completed**: Phase 3: Implement immutable memory revision, retrieval, verification, conflict, checkpoint, and recovery contracts plus faculty guidance.
-**Phase Number**: 3 of 6
+**Current Build**: Phase 4: Implement the complete Bergen Course Transfer Block validator and syllabus-to-course workflow contract. (bergen-memory-bank-v2)
+**Build Started**: 2026-08-27T01:30:32Z
+**Last Completed**: Phase 4: Implement the complete Bergen Course Transfer Block validator and syllabus-to-course workflow contract.
+**Phase Number**: 4 of 6
 **Is Multi-Phase**: YES
 
 ### Current Build Step
 **Step**: Step 11 - Phase Git Completion
 **Status**: COMPLETE
-**Started**: 2026-08-27T00:10:00Z
-**Completed**: 2026-08-27T00:11:00Z
-**Output**: Phase 3 artifacts passed the deterministic commit guard and were committed and pushed to feature/bergen-memory-bank-v2.
+**Started**: 2026-08-27T03:13:29Z
+**Completed**: 2026-08-27T03:13:29Z
+**Output**: Phase 4 handoff checkpoint finalized; deterministic commit guard and remote push are verified in the build command return.
 
 ### Completed Steps
-- Step 0.5 Git Setup: COMPLETE (2026-08-26T21:16:00Z) - Existing feature worktree verified at repository root on feature/bergen-memory-bank-v2.
-- Step 0.6 Phase Gate: COMPLETE (2026-08-26T21:16:00Z) - Taxonomy clean; six-phase plan populated; approved creative design document present.
-- Step 1 Read Task Context: COMPLETE (2026-08-26T21:16:00Z) - Phase 3 of 6 selected.
-- Step 2 Load Complexity Context: COMPLETE (2026-08-26T21:16:00Z) - Level 4 implementation rules loaded.
-- Step 3 TDD Agent: COMPLETE (2026-08-26T23:49:00Z) - RED confirmed 8 failures against the Phase 2 baseline; 23/23 focused checks passed after implementation.
-- Step 5 Create Test Batches: COMPLETE (2026-08-26T23:50:00Z) - Two disjoint focused batches created.
-- Step 6 Execute Test Batches: COMPLETE (2026-08-26T23:53:00Z) - Memory contract 11/11 and guide alignment 12/12 passed; review-fix rerun passed 14/14 and 12/12.
-- Step 7 Integration Verification: COMPLETE (2026-08-27T00:02:00Z) - 98/98 tests, build, lint, 8/8 Phase 3 MUST portions, and 18/18 contract/guide checks passed.
-- Step 8 Code Review: COMPLETE (2026-08-27T00:06:00Z) - APPROVED after one TDD correction cycle; security and dependency audits passed with no upgrades.
-- Step 9 Documentation: COMPLETE (2026-08-27T00:08:00Z) - systemPatterns.md and techContext.md aligned to the verified v2 Keep-memory boundary.
-- Step 10 Update Memory Bank: COMPLETE (2026-08-27T00:10:00Z) - Phase 3 result and execution evidence recorded.
-- Step 11 Phase Git Completion: COMPLETE (2026-08-27T00:11:00Z) - Deterministic commit guard passed; phase commit pushed to feature/bergen-memory-bank-v2.
+- Step 0.5 Git Setup: COMPLETE (2026-08-27T01:30:32Z) - Existing feature worktree verified at repository root on feature/bergen-memory-bank-v2; live local and remote tips matched.
+- Step 0.6 Phase Gate: COMPLETE (2026-08-27T01:30:32Z) - Taxonomy clean; six-phase plan populated; approved Level 4 creative design document present.
+- Step 1 Read Task Context: COMPLETE (2026-08-27T01:30:32Z) - Phase 4 of 6 selected as the first incomplete phase.
+- Step 2 Load Complexity Context: COMPLETE (2026-08-27T01:30:32Z) - Level 4 implementation rules loaded.
+- Step 3 TDD Agent: COMPLETE (2026-08-27T01:54:39Z) - RED 10 failures; GREEN 42/42 focused checks; 8 production/fixture/test artifacts landed.
+- Step 5 Create Test Batches: COMPLETE (2026-08-27T01:55:03Z) - Two disjoint batches, one parallel execution group, 42 focused checks.
+- Step 6 Execute Test Batches: COMPLETE (2026-08-27T01:58:39Z) - Two batches, 42/42 focused checks, zero fixes, lint PASS.
+- Step 7 Integration Verification: COMPLETE (2026-08-27T03:02:00Z) - Final 122/122 tests, 56/56 focused checks, 21/21 QTI regression, build/lint/diff, all Phase 4 MUST portions, and adversarial security/privacy probes PASS after correction cycles.
+- Step 8 Code Reviewer: COMPLETE (2026-08-27T03:06:09Z) - APPROVED on iteration 3 after two TDD correction cycles; security/dependency audits PASS; final verifier 122/122 and 56/56 focused PASS.
+- Step 9 Documentation Agent: COMPLETE (2026-08-27T03:11:54Z) - systemPatterns.md and techContext.md updated; no inline comments, diagrams, README, or guides required.
+- Step 10 Update Memory Bank: COMPLETE (2026-08-27T03:12:14Z) - Phase 4 marked complete and result/evidence recorded.
+- Step 11 Phase Git Completion: COMPLETE (2026-08-27T03:13:29Z) - Phase 4 handoff checkpoint finalized for deterministic commit guard and push.
 
 ### Sub-Agents
-- TDD Agent: COMPLETE - Initial RED 8 failing; GREEN 23/23 focused.
-- Batch Test Agents: COMPLETE - Two batches, 23/23 initial and 26/26 after review fixes.
-- Integration Verifier: COMPLETE - 98/98 tests; build/lint and automated acceptance PASS.
-- Code Reviewer: COMPLETE - APPROVED on iteration 2; zero blocking or recommended findings.
-- Documentation Agent: COMPLETE - systemPatterns.md and techContext.md updated; no README or separate diagram required.
+- TDD Agent: COMPLETE - RED 10 failing; GREEN 42/42 focused; aggregate 108/108, build, lint, and 21/21 preserved QTI checks passed.
+- Batch Test Agent (Course Transfer Validator): COMPLETE - 10/10 passed, lint PASS, one iteration, zero fixes.
+- Batch Test Agent (Gem Syllabus-to-Course Workflow): COMPLETE - 32/32 passed, lint PASS, one iteration, zero fixes.
+- Integration Verifier: COMPLETE - PASS on recovery iteration 1; 110/110 tests, build/lint/diff checks, 44/44 Phase 4 focused, and 21/21 QTI regression.
+- TDD Recovery Agent: COMPLETE - RED 2 privacy failures; GREEN 44/44 focused after sanitized raw/parsed protected-information short-circuit.
+- Code Reviewer: COMPLETE - APPROVED on iteration 3; all null-safety, privacy/credential, markup, decimal, Gem-contract, relationship, and naming findings resolved.
+- TDD Review Corrections: COMPLETE - Correction cycle 1 RED 10 → GREEN 52/52; unsafe-markup recovery RED 1 → GREEN 53/53; correction cycle 2 RED 2 → GREEN 56/56.
+- Final Integration Verifier: COMPLETE - 122/122 full, 56/56 focused, 21/21 QTI, build/lint/diff, acceptance, and adversarial security probes PASS.
+- Documentation Agent: COMPLETE - systemPatterns.md and techContext.md aligned; no new terms or additional docs required.
 
 ### Test Batch Results
-- Phase 3 memory contract: 14/14 passing, one iteration, zero batch fixes.
-- Faculty guide alignment: 12/12 passing, one iteration, zero batch fixes.
-- Total focused: 26/26 passing.
+- Batch 1 Course Transfer Validator: 10/10 passing, one iteration, zero fixes.
+- Batch 2 Gem Syllabus-to-Course Workflow: 32/32 passing, one iteration, zero fixes.
+- Privacy recovery rerun: Course Transfer Validator 12/12; Gem workflow 32/32.
+- Final review-correction rerun: Course Transfer Validator 21/21; Gem workflow 35/35.
+- Total focused after review: 56/56 passing.
 
 
 ### Guard & Recovery Log
@@ -411,5 +426,5 @@ Yes. Extend `src/guides/command-reference.md`, `src/guides/faculty-quick-start.m
 
 ### Resumption Notes
 **Can Resume**: NO
-**Resume From**: Phase 4 - first incomplete phase
-**Notes**: Phase 3 is complete and pushed. The next invocation must start Phase 4 and must not reopen Phase 3 unless a review finding requires remediation.
+**Resume From**: Phase 5 - first incomplete phase
+**Notes**: Phase 4 is complete. The next invocation must start Phase 5 and must not reopen Phase 4 unless a review finding requires remediation.

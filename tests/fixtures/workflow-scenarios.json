@@ -2,8 +2,17 @@
   "metadata": {
     "dataClassification": "synthetic/de-identified",
     "containsRealStudentData": false,
-    "phase": "phase-2",
-    "contractStatus": "Ready for Phase 2 content-contract verification"
+    "phase": "phase-4",
+    "contractStatus": "Ready for Phase 4 course-transfer contract verification",
+    "coverage": {
+      "inherited": [
+        "phase-2 workflow routing",
+        "phase-3 memory behavior"
+      ],
+      "current": [
+        "phase-4 course transfer"
+      ]
+    }
   },
   "scenarios": [
     {
@@ -296,7 +305,12 @@
       "expectedSafeguards": [
         "separate package approval",
         "unpublished Canvas defaults"
-      ]
+      ],
+      "expectedCourseTransfer": {
+        "emitsBlock": false,
+        "requiresFinalReviewApproval": true,
+        "requiresPackageApproval": true
+      }
     },
     {
       "id": "alias-package-assessment",
@@ -361,11 +375,19 @@
       "expectedSafeguards": [
         "natural-language parity",
         "one versioned course transfer block"
-      ]
+      ],
+      "expectedCourseTransfer": {
+        "emitsBlock": true,
+        "blockCount": 1,
+        "format": "bergen-course-transfer",
+        "version": "0.1",
+        "inputDerived": true,
+        "canvasFacingPublished": false
+      }
     },
     {
       "id": "natural-language-package-assessment",
-      "input": "Prepare the assessment-only QTI transfer for my approved synthetic quiz.",
+      "input": "Prepare the QTI assessment-only transfer for my approved synthetic quiz.",
       "expectedWorkflow": "Package Assessment",
       "expectedHeader": "Bergen Memory Bank Â· Package Assessment",
       "expectedContext": "Reviewed and approved synthetic assessment only",
