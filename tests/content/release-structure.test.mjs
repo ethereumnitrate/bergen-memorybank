@@ -83,9 +83,10 @@ test('repository scripts provide dependency-free test, build, lint, and aggregat
   const packageJson = await readJson('package.json');
 
   assert.deepEqual(packageJson.scripts, {
-    test: 'node --test tests/content/release-structure.test.mjs tests/content/source-register.test.mjs tests/keep/memory-contract.test.mjs tests/course/course-transfer.test.mjs tests/content/gem-workflows.test.mjs tests/content/template-contracts.test.mjs tests/content/guide-alignment.test.mjs tests/qti/qti-packager.test.mjs tests/qti/apps-script-bundle.test.mjs tests/qti/browser-smoke.mjs',
+    test: 'node --test tests/content/release-structure.test.mjs tests/content/source-register.test.mjs tests/keep/memory-contract.test.mjs tests/course/course-transfer.test.mjs tests/course/common-cartridge.test.mjs tests/course/apps-script-bundle.test.mjs tests/course/browser-smoke.mjs tests/content/gem-workflows.test.mjs tests/content/template-contracts.test.mjs tests/content/guide-alignment.test.mjs tests/qti/qti-packager.test.mjs tests/qti/apps-script-bundle.test.mjs tests/qti/browser-smoke.mjs',
     'build:google-docs': 'node scripts/build-google-docs.mjs',
     'build:qti-demo': 'node scripts/build-qti-demo.mjs',
+    'build:course-demo': 'node scripts/build-course-demo.mjs',
     build: 'node scripts/validate-release.mjs --mode build',
     lint: 'node scripts/validate-release.mjs --mode lint',
     validate: 'node scripts/validate-release.mjs --mode all',

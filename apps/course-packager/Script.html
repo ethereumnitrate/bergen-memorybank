@@ -1,0 +1,1899 @@
+<script>
+/* BERGEN_COURSE_CORE_START */
+const BergenCoursePackager = (() => {
+  'use strict';
+
+/* BERGEN_COURSE_VALIDATOR_START */
+  const courseTransferSchema = Object.freeze({
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://bergen.edu/bergen-memory-bank/contracts/bergen-course-transfer-v0.1.schema.json",
+    "title": "Bergen Course Transfer Contract v0.1",
+    "description": "Strict whole-course input contract for later local packaging. It permits approved course-design content only, defaults every Canvas-facing object to unpublished, and rejects protected or identifiable student information before substantive processing.",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "format",
+      "version",
+      "metadata",
+      "privacy",
+      "course",
+      "modules",
+      "pages",
+      "assignments",
+      "discussions",
+      "rubrics",
+      "quizzes",
+      "exams",
+      "completionRules",
+      "references"
+    ],
+    "properties": {
+      "format": {
+        "const": "bergen-course-transfer"
+      },
+      "version": {
+        "const": "0.1"
+      },
+      "metadata": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "courseCode",
+          "courseTitle",
+          "termLabel",
+          "locale",
+          "sourceSummary",
+          "dataClassification",
+          "containsRealStudentData",
+          "finalReviewApproved",
+          "packageApproved"
+        ],
+        "properties": {
+          "courseCode": {
+            "$ref": "#/$defs/courseCode"
+          },
+          "courseTitle": {
+            "$ref": "#/$defs/nonEmptyText"
+          },
+          "termLabel": {
+            "$ref": "#/$defs/nonEmptyText"
+          },
+          "locale": {
+            "type": "string",
+            "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$"
+          },
+          "sourceSummary": {
+            "$ref": "#/$defs/nonEmptyText"
+          },
+          "dataClassification": {
+            "enum": [
+              "synthetic/de-identified",
+              "Public",
+              "Internal"
+            ]
+          },
+          "containsRealStudentData": {
+            "const": false
+          },
+          "finalReviewApproved": {
+            "const": true
+          },
+          "packageApproved": {
+            "const": true
+          }
+        }
+      },
+      "privacy": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "inputDerived",
+          "containsProtectedInformation",
+          "containsIdentifiableStudentInformation",
+          "containsCredentials",
+          "containsRawStudentWork",
+          "canvasStudentRecordsExcluded"
+        ],
+        "properties": {
+          "inputDerived": {
+            "const": true,
+            "description": "All values must be derived from the currently approved course design, not placeholders or hidden memory."
+          },
+          "containsProtectedInformation": {
+            "const": false
+          },
+          "containsIdentifiableStudentInformation": {
+            "const": false
+          },
+          "containsCredentials": {
+            "const": false
+          },
+          "containsRawStudentWork": {
+            "const": false
+          },
+          "canvasStudentRecordsExcluded": {
+            "const": true,
+            "description": "Submissions, grades, individual feedback, accommodations, and identifying records remain in Canvas."
+          }
+        }
+      },
+      "course": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code",
+          "title",
+          "description",
+          "credits",
+          "published"
+        ],
+        "properties": {
+          "code": {
+            "$ref": "#/$defs/courseCode"
+          },
+          "title": {
+            "$ref": "#/$defs/nonEmptyText"
+          },
+          "description": {
+            "$ref": "#/$defs/nonEmptyText"
+          },
+          "credits": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 12
+          },
+          "published": {
+            "const": false
+          }
+        }
+      },
+      "modules": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 100,
+        "items": {
+          "$ref": "#/$defs/module"
+        }
+      },
+      "pages": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 1000,
+        "items": {
+          "$ref": "#/$defs/page"
+        }
+      },
+      "assignments": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 500,
+        "items": {
+          "$ref": "#/$defs/assignment"
+        }
+      },
+      "discussions": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 500,
+        "items": {
+          "$ref": "#/$defs/discussion"
+        }
+      },
+      "rubrics": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 500,
+        "items": {
+          "$ref": "#/$defs/rubric"
+        }
+      },
+      "quizzes": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 250,
+        "items": {
+          "$ref": "#/$defs/assessment"
+        }
+      },
+      "exams": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 250,
+        "items": {
+          "$ref": "#/$defs/assessment"
+        }
+      },
+      "completionRules": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 2000,
+        "items": {
+          "$ref": "#/$defs/completionRule"
+        }
+      },
+      "references": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 5000,
+        "items": {
+          "$ref": "#/$defs/reference"
+        }
+      }
+    },
+    "$defs": {
+      "identifier": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]{2,63}$"
+      },
+      "courseCode": {
+        "type": "string",
+        "pattern": "^[A-Z]{2,6}-[0-9]{3}[A-Z]?$"
+      },
+      "nonEmptyText": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 20000
+      },
+      "module": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "position",
+          "title",
+          "overview",
+          "published",
+          "items",
+          "completionRuleRefs"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/identifier"
+          },
+          "position": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10000
+          },
+          "title": {
+            "$ref": "#/$defs/nonEmptyText"
+          },
+          "overview": {
+            "$ref": "#/$defs/nonEmptyText"
+          },
+          "published": {
+            "const": false
+          },
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 100,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "position",
+                "type",
+                "ref"
+              ],
+              "properties": {
+                "position": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 10000
+                },
+                "type": {
+                  "enum": [
+                    "page",
+                    "assignment",
+                    "discussion",
+                    "quiz",
+                    "exam"
+                  ]
+                },
+                "ref": {
+                  "$ref": "#/$defs/identifier"
+                }
+              }
+            }
+          },
+          "completionRuleRefs": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 100,
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/$defs/identifier"
+            }
+          }
+        }
+      },
+      "page": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "body",
+          "published"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/identifier"
+          },
+          "title": {
+            "$ref": "#/$defs/nonEmptyText"
+          },
+          "body": {
+            "$ref": "#/$defs/nonEmptyText"
+          },
+          "published": {
+            "const": false
+          }
+        }
+      },
+      "assignment": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "instructions",
+          "pointsPossible",
+          "submissionType",
+          "rubricRef",
+          "published"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/identifier"
+          },
+          "title": {
+            "$ref": "#/$defs/nonEmptyText"
+          },
+          "instructions": {
+            "$ref": "#/$defs/nonEmptyText"
+          },
+          "pointsPossible": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100000
+          },
+          "submissionType": {
+            "enum": [
+              "online_text_entry",
+              "online_upload",
+              "no_submission"
+            ]
+          },
+          "rubricRef": {
+            "$ref": "#/$defs/identifier"
+          },
+          "published": {
+            "const": false
+          }
+        }
+      },
+      "discussion": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "prompt",
+          "graded",
+          "pointsPossible",
+          "rubricRef",
+          "published"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/identifier"
+          },
+          "title": {
+            "$ref": "#/$defs/nonEmptyText"
+          },
+          "prompt": {
+            "$ref": "#/$defs/nonEmptyText"
+          },
+          "graded": {
+            "type": "boolean"
+          },
+          "pointsPossible": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100000
+          },
+          "rubricRef": {
+            "$ref": "#/$defs/identifier"
+          },
+          "published": {
+            "const": false
+          }
+        }
+      },
+      "rubric": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "criteria",
+          "published"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/identifier"
+          },
+          "title": {
+            "$ref": "#/$defs/nonEmptyText"
+          },
+          "criteria": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 100,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "description",
+                "points"
+              ],
+              "properties": {
+                "id": {
+                  "$ref": "#/$defs/identifier"
+                },
+                "description": {
+                  "$ref": "#/$defs/nonEmptyText"
+                },
+                "points": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100000
+                }
+              }
+            }
+          },
+          "published": {
+            "const": false
+          }
+        }
+      },
+      "assessment": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "instructions",
+          "pointsPossible",
+          "questions",
+          "published"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/identifier"
+          },
+          "title": {
+            "$ref": "#/$defs/nonEmptyText"
+          },
+          "instructions": {
+            "$ref": "#/$defs/nonEmptyText"
+          },
+          "pointsPossible": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100000
+          },
+          "questions": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 200,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "type",
+                "prompt",
+                "points"
+              ],
+              "properties": {
+                "id": {
+                  "$ref": "#/$defs/identifier"
+                },
+                "type": {
+                  "enum": [
+                    "multiple-choice",
+                    "multiple-answer",
+                    "true-false",
+                    "short-answer",
+                    "essay"
+                  ]
+                },
+                "prompt": {
+                  "$ref": "#/$defs/nonEmptyText"
+                },
+                "points": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100000
+                },
+                "choices": {
+                  "type": "array",
+                  "minItems": 2,
+                  "maxItems": 50,
+                  "items": {
+                    "$ref": "#/$defs/nonEmptyText"
+                  }
+                },
+                "correctChoiceIndexes": {
+                  "type": "array",
+                  "maxItems": 50,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                },
+                "acceptedAnswers": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 50,
+                  "items": {
+                    "$ref": "#/$defs/nonEmptyText"
+                  }
+                }
+              }
+            }
+          },
+          "published": {
+            "const": false
+          }
+        }
+      },
+      "completionRule": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "moduleRef",
+          "itemRef",
+          "requirement"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/identifier"
+          },
+          "moduleRef": {
+            "$ref": "#/$defs/identifier"
+          },
+          "itemRef": {
+            "$ref": "#/$defs/identifier"
+          },
+          "requirement": {
+            "enum": [
+              "view",
+              "submit",
+              "score_at_least"
+            ]
+          },
+          "minimumScore": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100000
+          }
+        }
+      },
+      "reference": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "from",
+          "to",
+          "relation"
+        ],
+        "properties": {
+          "from": {
+            "$ref": "#/$defs/identifier"
+          },
+          "to": {
+            "$ref": "#/$defs/identifier"
+          },
+          "relation": {
+            "enum": [
+              "contains",
+              "uses-rubric",
+              "requires",
+              "links-to"
+            ]
+          }
+        }
+      }
+    }
+  });
+
+  const PRIVACY_ERROR = Object.freeze({
+    path: '$',
+    code: 'protected_information',
+    message: 'Protected or identifiable student information is not accepted. Keep student records in Canvas and retry with de-identified course-design content.',
+  });
+
+  const COLLECTION_TYPES = Object.freeze({
+    modules: 'module',
+    pages: 'page',
+    assignments: 'assignment',
+    discussions: 'discussion',
+    rubrics: 'rubric',
+    quizzes: 'quiz',
+    exams: 'exam',
+    completionRules: 'completion-rule',
+  });
+
+  const MODULE_ITEM_TYPES = Object.freeze({
+    pages: 'page',
+    assignments: 'assignment',
+    discussions: 'discussion',
+    quizzes: 'quiz',
+    exams: 'exam',
+  });
+
+  const CONTENT_TYPES = new Set(Object.values(MODULE_ITEM_TYPES));
+  const SCORE_SCALE = 1_000_000;
+  const MAX_MARKUP_ENTITY_DECODE_PASSES = 4;
+  const PLACEHOLDER_PATTERN = /(?:<\s*(?:TODO|TBD|INSERT|PLACEHOLDER)[^>]*>|\b(?:TODO|TBD|lorem ipsum|placeholder content|sample content|hidden[- ]memory)\b)/i;
+  const PROTECTED_TEXT_PATTERNS = Object.freeze([
+    /\b(?:student|bergen)[- _]?(?:id|number)\s*(?::|-|is|=)?\s*\d{6,10}\b/i,
+    /\b(?:student|learner|pupil)(?:\s+(?:full\s+)?name)?\s*(?::|-|is)\s*[A-Z][A-Za-z'’\-]+(?:\s+[A-Z][A-Za-z'’\-]+){1,3}\b/i,
+    /\b(?:student|learner|pupil)\s+(?:named|called)\s+[A-Z][A-Za-z'’\-]+(?:\s+[A-Z][A-Za-z'’\-]+){1,3}\b/i,
+    /\b(?:student|learner|pupil)(?:\s+email)?\s*(?::|-|is)\s*[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i,
+    /\b(?:the|this|that|one)\s+student(?:'s)?\b.{0,120}\b(?:accommodation|disability|diabetes|diagnos(?:is|ed)|medical condition|health condition)\b/is,
+    /\b(?:accommodation|disability|diabetes|diagnos(?:is|ed)|medical condition|health condition)\b.{0,120}\b(?:the|this|that|one)\s+student\b/is,
+    /\bstudent(?:'s)?\s+(?:individual\s+)?(?:grade|score|feedback|accommodation|disability|diagnosis|health information|medical information)\b/i,
+    /\b(?:the|this|that|one)\s+student\b.{0,120}\b(?:earned|received|has)\b.{0,80}\b(?:grade|score|feedback)\b/is,
+    /\bindividual\s+(?:student\s+)?(?:grade|score|feedback)\b/i,
+    /\b(?:api[- _]?key|password|passphrase|client[- _]?secret|access[- _]?token|refresh[- _]?token)\s*(?::|-|is|=)\s*[^\s,;]{8,}/i,
+    /\bbearer\s+[A-Za-z0-9._~+\/-]{12,}\b/i,
+  ]);
+  const PROTECTED_NORMALIZED_KEYS = new Set([
+    'studentname',
+    'studentid',
+    'studentnumber',
+    'studentemail',
+    'individualgrade',
+    'individualscore',
+    'individualfeedback',
+    'accommodation',
+    'disability',
+    'healthrecord',
+    'disciplinaryrecord',
+    'rawstudentwork',
+    'password',
+    'passphrase',
+    'accesstoken',
+    'refreshtoken',
+    'apikey',
+    'clientsecret',
+    'secret',
+    'credential',
+  ]);
+  const SAFE_PRIVACY_INDICATORS = new Set([
+    'containsRealStudentData',
+    'containsProtectedInformation',
+    'containsIdentifiableStudentInformation',
+    'containsCredentials',
+    'containsRawStudentWork',
+    'canvasStudentRecordsExcluded',
+  ]);
+
+  function propertyPath(path, property) {
+    return /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(property)
+      ? `${path}.${property}`
+      : `${path}[${JSON.stringify(property)}]`;
+  }
+
+  function addError(errors, path, code, message) {
+    errors.push({ path, code, message });
+  }
+
+  function sortAndDedupeErrors(errors) {
+    const unique = new Map();
+    for (const error of errors) {
+      unique.set(`${error.path}\u0000${error.code}\u0000${error.message}`, error);
+    }
+    return [...unique.values()].sort((left, right) => compareCodePoints(
+      `${left.path}\u0000${left.code}\u0000${left.message}`,
+      `${right.path}\u0000${right.code}\u0000${right.message}`,
+    ));
+  }
+
+  function compareCodePoints(left, right) {
+    const leftCodePoints = [...left];
+    const rightCodePoints = [...right];
+    const length = Math.min(leftCodePoints.length, rightCodePoints.length);
+    for (let index = 0; index < length; index += 1) {
+      const difference = leftCodePoints[index].codePointAt(0) - rightCodePoints[index].codePointAt(0);
+      if (difference !== 0) return difference;
+    }
+    return leftCodePoints.length - rightCodePoints.length;
+  }
+
+  function specialCode(path, fallback) {
+    if (path === '$.format') return 'unsupported_format';
+    if (path === '$.version') return 'unsupported_version';
+    if (path === '$.metadata.finalReviewApproved') return 'final_review_approval_required';
+    if (path === '$.metadata.packageApproved') return 'package_approval_required';
+    if (path === '$.privacy.inputDerived') return 'input_derived_required';
+    if (path.endsWith('.published')) return 'must_be_unpublished';
+    return fallback;
+  }
+
+  function messageFor(code) {
+    const messages = {
+      additional_property: 'This property is not allowed by the Bergen Course Transfer Block contract.',
+      const: 'This value does not match the required contract value.',
+      enum: 'This value is not one of the supported contract values.',
+      final_review_approval_required: 'Whole-course final-review approval is required before transfer generation.',
+      input_derived_required: 'Course transfer content must come from the current approved course.',
+      integer: 'This value must be an integer.',
+      max_items: 'This array exceeds the contract limit.',
+      maximum: 'This number exceeds the contract maximum.',
+      max_length: 'This text exceeds the contract limit.',
+      min_items: 'This array does not contain enough items.',
+      minimum: 'This number is below the contract minimum.',
+      min_length: 'This text is empty.',
+      must_be_unpublished: 'Every Canvas-facing entity must remain unpublished for faculty sandbox review.',
+      package_approval_required: 'Separate package approval is required before transfer generation.',
+      pattern: 'This value does not match the required contract pattern.',
+      required: 'This required property is missing.',
+      type: 'This value has the wrong JSON type.',
+      unique_items: 'This array contains duplicate values.',
+      unsupported_format: 'Only the bergen-course-transfer format is supported.',
+      unsupported_version: 'Only Bergen Course Transfer Block version 0.1 is supported.',
+    };
+    return messages[code] ?? 'This value violates the Bergen Course Transfer Block contract.';
+  }
+
+  function resolveSchemaReference(reference) {
+    const prefix = '#/$defs/';
+    if (!reference.startsWith(prefix)) return null;
+    return courseTransferSchema.$defs[reference.slice(prefix.length)] ?? null;
+  }
+
+  function matchesType(value, type) {
+    if (type === 'object') return value !== null && typeof value === 'object' && !Array.isArray(value);
+    if (type === 'array') return Array.isArray(value);
+    if (type === 'string') return typeof value === 'string';
+    if (type === 'integer') return Number.isInteger(value);
+    if (type === 'number') return typeof value === 'number' && Number.isFinite(value);
+    if (type === 'boolean') return typeof value === 'boolean';
+    return true;
+  }
+
+  function validateSchema(schema, value, path, errors) {
+    if (schema.$ref) {
+      const resolved = resolveSchemaReference(schema.$ref);
+      if (!resolved) {
+        addError(errors, path, 'invalid_contract_reference', 'The repository-owned contract contains an unresolved schema reference.');
+        return;
+      }
+      validateSchema(resolved, value, path, errors);
+      return;
+    }
+
+    if (schema.type && !matchesType(value, schema.type)) {
+      const code = schema.type === 'integer' && typeof value === 'number' ? 'integer' : 'type';
+      addError(errors, path, code, messageFor(code));
+      return;
+    }
+
+    if (Object.hasOwn(schema, 'const') && !Object.is(value, schema.const)) {
+      const code = specialCode(path, 'const');
+      addError(errors, path, code, messageFor(code));
+    }
+    if (schema.enum && !schema.enum.some((candidate) => Object.is(candidate, value))) {
+      addError(errors, path, 'enum', messageFor('enum'));
+    }
+
+    if (typeof value === 'string') {
+      if (schema.minLength !== undefined && value.length < schema.minLength) {
+        addError(errors, path, 'min_length', messageFor('min_length'));
+      }
+      if (schema.maxLength !== undefined && value.length > schema.maxLength) {
+        addError(errors, path, 'max_length', messageFor('max_length'));
+      }
+      if (schema.pattern && !(new RegExp(schema.pattern).test(value))) {
+        addError(errors, path, 'pattern', messageFor('pattern'));
+      }
+    }
+
+    if (typeof value === 'number' && Number.isFinite(value)) {
+      if (schema.minimum !== undefined && value < schema.minimum) {
+        addError(errors, path, 'minimum', messageFor('minimum'));
+      }
+      if (schema.maximum !== undefined && value > schema.maximum) {
+        addError(errors, path, 'maximum', messageFor('maximum'));
+      }
+    }
+
+    if (Array.isArray(value)) {
+      if (schema.minItems !== undefined && value.length < schema.minItems) {
+        addError(errors, path, 'min_items', messageFor('min_items'));
+      }
+      if (schema.maxItems !== undefined && value.length > schema.maxItems) {
+        addError(errors, path, 'max_items', messageFor('max_items'));
+      }
+      if (schema.uniqueItems) {
+        const serialized = value.map((item) => JSON.stringify(item));
+        if (new Set(serialized).size !== serialized.length) {
+          addError(errors, path, 'unique_items', messageFor('unique_items'));
+        }
+      }
+      if (schema.items) {
+        value.forEach((item, index) => validateSchema(schema.items, item, `${path}[${index}]`, errors));
+      }
+    }
+
+    if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+      const properties = schema.properties ?? {};
+      for (const required of schema.required ?? []) {
+        if (!Object.hasOwn(value, required)) {
+          const requiredPath = propertyPath(path, required);
+          const code = specialCode(requiredPath, 'required');
+          addError(errors, requiredPath, code, messageFor(code));
+        }
+      }
+      if (schema.additionalProperties === false) {
+        for (const property of Object.keys(value)) {
+          if (!Object.hasOwn(properties, property)) {
+            addError(errors, propertyPath(path, property), 'additional_property', messageFor('additional_property'));
+          }
+        }
+      }
+      for (const [property, propertySchema] of Object.entries(properties)) {
+        if (Object.hasOwn(value, property)) {
+          validateSchema(propertySchema, value[property], propertyPath(path, property), errors);
+        }
+      }
+    }
+  }
+
+  function rawInputHasProtectedInformation(source) {
+    return textHasProtectedInformation(source)
+      || /"(?:student[-_ ]?(?:name|id|number|email)|individual[-_ ]?(?:grade|score|feedback)|accommodation|disability|health[-_ ]?record|disciplinary[-_ ]?record|raw[-_ ]?student[-_ ]?work|password|passphrase|access[-_ ]?token|refresh[-_ ]?token|api[-_ ]?key|client[-_ ]?secret|secret|credential)"\s*:/i.test(source)
+      || /"(?:containsRealStudentData|containsProtectedInformation|containsIdentifiableStudentInformation|containsCredentials|containsRawStudentWork)"\s*:\s*true\b/i.test(source);
+  }
+
+  function textHasProtectedInformation(value) {
+    return PROTECTED_TEXT_PATTERNS.some((pattern) => pattern.test(value));
+  }
+
+  function keyHasProtectedInformation(key) {
+    if (SAFE_PRIVACY_INDICATORS.has(key)) return false;
+    return PROTECTED_NORMALIZED_KEYS.has(key.replace(/[^A-Za-z0-9]/g, '').toLowerCase());
+  }
+
+  function objectHasProtectedInformation(value) {
+    if (value === null || typeof value !== 'object') return false;
+    if (value.metadata?.containsRealStudentData === true
+      || value.privacy?.containsProtectedInformation === true
+      || value.privacy?.containsIdentifiableStudentInformation === true
+      || value.privacy?.containsCredentials === true
+      || value.privacy?.containsRawStudentWork === true) {
+      return true;
+    }
+
+    const seen = new WeakSet();
+    const inspect = (candidate) => {
+      if (typeof candidate === 'string') return textHasProtectedInformation(candidate);
+      if (candidate === null || typeof candidate !== 'object') return false;
+      if (seen.has(candidate)) return false;
+      seen.add(candidate);
+      for (const [key, nested] of Object.entries(candidate)) {
+        if (keyHasProtectedInformation(key)) return true;
+        if (inspect(nested)) return true;
+      }
+      return false;
+    };
+    return inspect(value);
+  }
+
+  function walkStrings(value, path, visitor) {
+    if (typeof value === 'string') {
+      visitor(value, path);
+      return;
+    }
+    if (Array.isArray(value)) {
+      value.forEach((item, index) => walkStrings(item, `${path}[${index}]`, visitor));
+      return;
+    }
+    if (value !== null && typeof value === 'object') {
+      for (const [property, nested] of Object.entries(value)) {
+        walkStrings(nested, propertyPath(path, property), visitor);
+      }
+    }
+  }
+
+  function decodeMarkupEntitiesOnce(value) {
+    return value
+      .replace(/&#x([0-9a-f]+);?/gi, (match, hex) => {
+        const codePoint = Number.parseInt(hex, 16);
+        return Number.isInteger(codePoint) && codePoint <= 0x10ffff ? String.fromCodePoint(codePoint) : match;
+      })
+      .replace(/&#([0-9]+);?/g, (match, decimal) => {
+        const codePoint = Number.parseInt(decimal, 10);
+        return Number.isInteger(codePoint) && codePoint <= 0x10ffff ? String.fromCodePoint(codePoint) : match;
+      })
+      .replace(/&lt;/gi, '<')
+      .replace(/&gt;/gi, '>')
+      .replace(/&colon;/gi, ':')
+      .replace(/&tab;/gi, '\t')
+      .replace(/&newline;/gi, '\n')
+      .replace(/&amp;/gi, '&');
+  }
+
+  function decodeMarkupEntities(value) {
+    let decoded = value;
+    for (let pass = 0; pass < MAX_MARKUP_ENTITY_DECODE_PASSES; pass += 1) {
+      const next = decodeMarkupEntitiesOnce(decoded);
+      if (next === decoded) return { decoded, decodeDepthExceeded: false };
+      decoded = next;
+    }
+    return {
+      decoded,
+      decodeDepthExceeded: decodeMarkupEntitiesOnce(decoded) !== decoded,
+    };
+  }
+
+  function hasUnsafeMarkup(value) {
+    const { decoded, decodeDepthExceeded } = decodeMarkupEntities(value);
+    return decodeDepthExceeded
+      || /<\/?[A-Za-z][A-Za-z0-9:_-]*/.test(decoded)
+      || /(?:<\?\s*[A-Za-z]|<\s*!\s*(?:--|\[CDATA\[|DOCTYPE\b|ENTITY\b|ELEMENT\b|ATTLIST\b|NOTATION\b)|@import\b|\bexpression\s*\(|\burl\s*\(|\b(?:javascript|vbscript)\s*:|\bdata\s*:\s*text\/html|\u0000)/i.test(decoded);
+  }
+
+  function normalizedScore(value) {
+    return Math.round(value * SCORE_SCALE);
+  }
+
+  function scoresEqual(left, right) {
+    return normalizedScore(left) === normalizedScore(right);
+  }
+
+  function scoreGreaterThan(left, right) {
+    return normalizedScore(left) > normalizedScore(right);
+  }
+
+  function registerIdentifiers(course, errors) {
+    const entities = new Map();
+    const register = (id, type, path, value) => {
+      if (typeof id !== 'string') return;
+      if (entities.has(id)) {
+        addError(errors, path, 'duplicate_identifier', 'Identifiers must be unique across the complete course transfer block.');
+        return;
+      }
+      entities.set(id, { type, path, value });
+    };
+
+    for (const [collection, type] of Object.entries(COLLECTION_TYPES)) {
+      if (!Array.isArray(course[collection])) continue;
+      course[collection].forEach((entity, index) => {
+        if (entity && typeof entity === 'object') {
+          register(entity.id, type, `$.${collection}[${index}].id`, entity);
+        }
+      });
+    }
+    if (Array.isArray(course.rubrics)) {
+      course.rubrics.forEach((rubric, rubricIndex) => {
+        if (!Array.isArray(rubric?.criteria)) return;
+        rubric.criteria.forEach((criterion, criterionIndex) => register(
+          criterion?.id,
+          'rubric-criterion',
+          `$.rubrics[${rubricIndex}].criteria[${criterionIndex}].id`,
+          criterion,
+        ));
+      });
+    }
+    for (const collection of ['quizzes', 'exams']) {
+      if (!Array.isArray(course[collection])) continue;
+      course[collection].forEach((assessment, assessmentIndex) => {
+        if (!Array.isArray(assessment?.questions)) return;
+        assessment.questions.forEach((question, questionIndex) => register(
+          question?.id,
+          'assessment-question',
+          `$.${collection}[${assessmentIndex}].questions[${questionIndex}].id`,
+          question,
+        ));
+      });
+    }
+    return entities;
+  }
+
+  function validateOrderingAndPlacement(course, entities, errors) {
+    if (!Array.isArray(course.modules)) return;
+    if (!course.modules.every((module, index) => module?.position === index + 1)) {
+      addError(errors, '$.modules', 'position_sequence', 'Module positions must be unique, ordered, and contiguous from 1.');
+    }
+
+    const placements = new Map();
+    course.modules.forEach((module, moduleIndex) => {
+      if (!Array.isArray(module?.items)) return;
+      const itemsPath = `$.modules[${moduleIndex}].items`;
+      if (!module.items.every((item, index) => item?.position === index + 1)) {
+        addError(errors, itemsPath, 'position_sequence', 'Module item positions must be unique, ordered, and contiguous from 1.');
+      }
+      module.items.forEach((item, itemIndex) => {
+        if (!item || typeof item !== 'object' || typeof item.ref !== 'string') return;
+        const refPath = `${itemsPath}[${itemIndex}].ref`;
+        if (placements.has(item.ref)) {
+          addError(errors, refPath, 'duplicate_module_item_ref', 'Each Canvas content item must appear in exactly one module position.');
+        } else {
+          placements.set(item.ref, { moduleId: module.id, path: refPath });
+        }
+        const target = entities.get(item.ref);
+        if (!target) {
+          addError(errors, refPath, 'unresolved_reference', 'This module item reference does not resolve to course content.');
+        } else if (target.type !== item.type) {
+          addError(errors, `${itemsPath}[${itemIndex}].type`, 'reference_type_mismatch', 'The declared module item type must match the referenced content type.');
+        }
+      });
+    });
+
+    for (const [collection, type] of Object.entries(MODULE_ITEM_TYPES)) {
+      if (!Array.isArray(course[collection])) continue;
+      course[collection].forEach((item, index) => {
+        if (typeof item?.id === 'string' && !placements.has(item.id)) {
+          addError(errors, `$.${collection}[${index}].id`, 'unplaced_content', `Every ${type} must appear in exactly one ordered module.`);
+        }
+      });
+    }
+  }
+
+  function sumPoints(criteria) {
+    if (!Array.isArray(criteria) || !criteria.every((criterion) => (
+      criterion !== null && typeof criterion === 'object'
+        && typeof criterion.points === 'number' && Number.isFinite(criterion.points)
+    ))) {
+      return null;
+    }
+    return criteria.reduce((total, criterion) => total + criterion.points, 0);
+  }
+
+  function validateRubricRelationships(course, entities, referenceKeys, errors) {
+    const validateRubric = (item, path, requirePointMatch) => {
+      if (!item || typeof item !== 'object' || typeof item.rubricRef !== 'string') return;
+      const rubric = entities.get(item.rubricRef);
+      if (!rubric || rubric.type !== 'rubric') {
+        addError(errors, `${path}.rubricRef`, 'unresolved_reference', 'The rubric reference must resolve to a rubric in this course.');
+      } else if (requirePointMatch) {
+        const rubricPoints = sumPoints(rubric.value.criteria);
+        if (rubricPoints !== null && typeof item.pointsPossible === 'number' && !scoresEqual(rubricPoints, item.pointsPossible)) {
+          addError(errors, `${path}.pointsPossible`, 'rubric_points_mismatch', 'Points possible must equal the sum of the referenced rubric criteria.');
+        }
+      }
+      if (!referenceKeys.has(`${item.id}\u0000${item.rubricRef}\u0000uses-rubric`)) {
+        addError(errors, `${path}.rubricRef`, 'missing_relationship', 'Each rubricRef must have a matching uses-rubric relationship.');
+      }
+    };
+
+    if (Array.isArray(course.assignments)) {
+      course.assignments.forEach((item, index) => validateRubric(item, `$.assignments[${index}]`, true));
+    }
+    if (Array.isArray(course.discussions)) {
+      course.discussions.forEach((item, index) => {
+        validateRubric(item, `$.discussions[${index}]`, item?.graded === true);
+        if (item?.graded === false && item.pointsPossible !== 0) {
+          addError(errors, `$.discussions[${index}].pointsPossible`, 'ungraded_points', 'An ungraded discussion must have zero points possible.');
+        }
+      });
+    }
+  }
+
+  function requireQuestionField(question, path, field, errors) {
+    if (!Array.isArray(question?.[field]) || question[field].length === 0) {
+      addError(errors, `${path}.${field}`, 'required_question_field', `Question type ${question?.type ?? 'unknown'} requires ${field}.`);
+      return false;
+    }
+    return true;
+  }
+
+  function forbidQuestionField(question, path, field, errors) {
+    if (Object.hasOwn(question ?? {}, field)) {
+      addError(errors, `${path}.${field}`, 'forbidden_question_field', `Question type ${question?.type ?? 'unknown'} does not permit ${field}.`);
+    }
+  }
+
+  function validateAssessments(course, errors) {
+    for (const collection of ['quizzes', 'exams']) {
+      if (!Array.isArray(course[collection])) continue;
+      course[collection].forEach((assessment, assessmentIndex) => {
+        const assessmentPath = `$.${collection}[${assessmentIndex}]`;
+        if (!Array.isArray(assessment?.questions)) return;
+        const questionPoints = assessment.questions.every((question) => (
+          question !== null && typeof question === 'object'
+            && typeof question.points === 'number' && Number.isFinite(question.points)
+        ))
+          ? assessment.questions.reduce((total, question) => total + question.points, 0)
+          : null;
+        if (questionPoints !== null && typeof assessment.pointsPossible === 'number'
+          && !scoresEqual(assessment.pointsPossible, questionPoints)) {
+          addError(errors, `${assessmentPath}.pointsPossible`, 'question_points_mismatch', 'Assessment points possible must equal the sum of question points.');
+        }
+        assessment.questions.forEach((question, questionIndex) => {
+          const questionPath = `${assessmentPath}.questions[${questionIndex}]`;
+          const choiceType = ['multiple-choice', 'multiple-answer', 'true-false'].includes(question?.type);
+          if (choiceType) {
+            const hasChoices = requireQuestionField(question, questionPath, 'choices', errors);
+            const hasIndexes = requireQuestionField(question, questionPath, 'correctChoiceIndexes', errors);
+            forbidQuestionField(question, questionPath, 'acceptedAnswers', errors);
+            if (hasChoices && new Set(question.choices).size !== question.choices.length) {
+              addError(errors, `${questionPath}.choices`, 'duplicate_choice', 'Assessment choices must be unique.');
+            }
+            if (hasChoices && hasIndexes) {
+              question.correctChoiceIndexes.forEach((choiceIndex, index) => {
+                if (Number.isInteger(choiceIndex) && choiceIndex >= question.choices.length) {
+                  addError(errors, `${questionPath}.correctChoiceIndexes[${index}]`, 'choice_index_out_of_range', 'Correct answer indexes must resolve to an available choice.');
+                }
+              });
+            }
+            if (question.type === 'multiple-choice' && hasIndexes && question.correctChoiceIndexes.length !== 1) {
+              addError(errors, `${questionPath}.correctChoiceIndexes`, 'answer_count', 'A multiple-choice question requires exactly one correct choice.');
+            }
+            if (question.type === 'multiple-answer' && hasIndexes && question.correctChoiceIndexes.length < 2) {
+              addError(errors, `${questionPath}.correctChoiceIndexes`, 'answer_count', 'A multiple-answer question requires at least two correct choices.');
+            }
+            if (question.type === 'true-false' && hasChoices
+              && (question.choices.length !== 2 || question.choices[0] !== 'True' || question.choices[1] !== 'False')) {
+              addError(errors, `${questionPath}.choices`, 'true_false_choices', 'A true-false question must use choices in the order True, False.');
+            }
+            if (question.type === 'true-false' && hasIndexes && question.correctChoiceIndexes.length !== 1) {
+              addError(errors, `${questionPath}.correctChoiceIndexes`, 'answer_count', 'A true-false question requires exactly one correct choice.');
+            }
+          } else if (question?.type === 'short-answer') {
+            requireQuestionField(question, questionPath, 'acceptedAnswers', errors);
+            forbidQuestionField(question, questionPath, 'choices', errors);
+            forbidQuestionField(question, questionPath, 'correctChoiceIndexes', errors);
+          } else if (question?.type === 'essay') {
+            forbidQuestionField(question, questionPath, 'choices', errors);
+            forbidQuestionField(question, questionPath, 'correctChoiceIndexes', errors);
+            forbidQuestionField(question, questionPath, 'acceptedAnswers', errors);
+          }
+        });
+      });
+    }
+  }
+
+  function validateReferences(course, entities, errors) {
+    const referenceKeys = new Set();
+    if (!Array.isArray(course.references)) return referenceKeys;
+    course.references.forEach((reference, index) => {
+      if (!reference || typeof reference !== 'object') return;
+      const path = `$.references[${index}]`;
+      const key = `${reference.from}\u0000${reference.to}\u0000${reference.relation}`;
+      if (referenceKeys.has(key)) {
+        addError(errors, path, 'duplicate_relationship', 'Relationships must be unique.');
+      }
+      referenceKeys.add(key);
+      const from = entities.get(reference.from);
+      const to = entities.get(reference.to);
+      if (!from) addError(errors, `${path}.from`, 'unresolved_reference', 'The relationship source does not resolve.');
+      if (!to) addError(errors, `${path}.to`, 'unresolved_reference', 'The relationship target does not resolve.');
+      if (!from || !to) return;
+
+      let matches = false;
+      if (reference.relation === 'contains') {
+        matches = from.type === 'module' && CONTENT_TYPES.has(to.type)
+          && from.value.items?.some((item) => item?.ref === reference.to);
+      } else if (reference.relation === 'uses-rubric') {
+        matches = ['assignment', 'discussion'].includes(from.type) && to.type === 'rubric'
+          && from.value.rubricRef === reference.to;
+      } else if (reference.relation === 'requires') {
+        matches = from.type === 'module' && to.type === 'completion-rule'
+          && to.value.moduleRef === reference.from
+          && from.value.completionRuleRefs?.includes(reference.to);
+      } else if (reference.relation === 'links-to') {
+        matches = CONTENT_TYPES.has(from.type) && CONTENT_TYPES.has(to.type);
+      }
+      if (!matches) {
+        addError(errors, path, 'relationship_type_mismatch', 'The relationship endpoints do not match the declared relationship type.');
+      }
+    });
+    return referenceKeys;
+  }
+
+  function validateCompletionRules(course, entities, referenceKeys, errors) {
+    const modules = new Map(Array.isArray(course.modules)
+      ? course.modules.filter((module) => (
+        module !== null && typeof module === 'object' && typeof module.id === 'string'
+      )).map((module) => [module.id, module])
+      : []);
+    if (Array.isArray(course.completionRules)) {
+      course.completionRules.forEach((rule, index) => {
+        if (!rule || typeof rule !== 'object') return;
+        const path = `$.completionRules[${index}]`;
+        const module = modules.get(rule.moduleRef);
+        if (!module) {
+          addError(errors, `${path}.moduleRef`, 'unresolved_reference', 'The completion rule moduleRef does not resolve.');
+        }
+        const item = entities.get(rule.itemRef);
+        if (!item || !CONTENT_TYPES.has(item.type)) {
+          addError(errors, `${path}.itemRef`, 'unresolved_reference', 'The completion rule itemRef does not resolve to module content.');
+        } else if (module && !module.items?.some((moduleItem) => moduleItem?.ref === rule.itemRef)) {
+          addError(errors, `${path}.itemRef`, 'completion_item_not_in_module', 'The completion-rule item must belong to its referenced module.');
+        }
+        if (rule.requirement === 'score_at_least') {
+          if (typeof rule.minimumScore !== 'number' || !Number.isFinite(rule.minimumScore)) {
+            addError(errors, `${path}.minimumScore`, 'minimum_score_required', 'score_at_least requires a numeric minimumScore.');
+          } else if (item && typeof item.value.pointsPossible === 'number'
+            && scoreGreaterThan(rule.minimumScore, item.value.pointsPossible)) {
+            addError(errors, `${path}.minimumScore`, 'minimum_score_exceeds_points', 'minimumScore cannot exceed the referenced item points possible.');
+          }
+        } else if (Object.hasOwn(rule, 'minimumScore')) {
+          addError(errors, `${path}.minimumScore`, 'unexpected_minimum_score', 'minimumScore is allowed only for score_at_least.');
+        }
+        if (rule.requirement === 'submit' && item && !['assignment', 'discussion', 'quiz', 'exam'].includes(item.type)) {
+          addError(errors, `${path}.requirement`, 'requirement_type_mismatch', 'submit applies only to submittable course items.');
+        }
+        if (rule.requirement === 'score_at_least' && item && !['assignment', 'discussion', 'quiz', 'exam'].includes(item.type)) {
+          addError(errors, `${path}.requirement`, 'requirement_type_mismatch', 'score_at_least applies only to scored course items.');
+        }
+        if (module && !module.completionRuleRefs?.includes(rule.id)) {
+          addError(errors, `${path}.moduleRef`, 'missing_module_completion_ref', 'The referenced module must list this completion rule.');
+        }
+        if (module && !referenceKeys.has(`${rule.moduleRef}\u0000${rule.id}\u0000requires`)) {
+          addError(errors, `${path}.moduleRef`, 'missing_relationship', 'Each completion rule must have a matching module requires relationship.');
+        }
+      });
+    }
+    if (Array.isArray(course.modules)) {
+      course.modules.forEach((module, moduleIndex) => {
+        if (!Array.isArray(module?.completionRuleRefs)) return;
+        module.completionRuleRefs.forEach((ref, refIndex) => {
+          const rule = entities.get(ref);
+          const path = `$.modules[${moduleIndex}].completionRuleRefs[${refIndex}]`;
+          if (!rule || rule.type !== 'completion-rule') {
+            addError(errors, path, 'unresolved_reference', 'The module completion-rule reference does not resolve.');
+          } else if (rule.value.moduleRef !== module.id) {
+            addError(errors, path, 'completion_module_mismatch', 'The completion rule must reference the module that lists it.');
+          }
+        });
+      });
+    }
+  }
+
+  function validateSemantics(course, errors) {
+    walkStrings(course, '$', (value, path) => {
+      if (value.length > 0 && value.trim().length === 0) {
+        addError(errors, path, 'blank_text', 'Text values must contain non-whitespace content.');
+      }
+      if (PLACEHOLDER_PATTERN.test(value)) {
+        addError(errors, path, 'placeholder_content', 'Placeholder, sample, and hidden-memory content are not allowed.');
+      }
+      if (hasUnsafeMarkup(value)) {
+        addError(errors, path, 'unsafe_markup', 'Bergen Course Transfer Block content must be plain text without HTML, XML, CSS, executable URLs, or embedded objects.');
+      }
+    });
+
+    if (course?.metadata?.courseCode !== undefined && course?.course?.code !== undefined
+      && course.metadata.courseCode !== course.course.code) {
+      addError(errors, '$.metadata.courseCode', 'course_mismatch', 'metadata.courseCode must match course.code.');
+    }
+    if (course?.metadata?.courseTitle !== undefined && course?.course?.title !== undefined
+      && course.metadata.courseTitle !== course.course.title) {
+      addError(errors, '$.metadata.courseTitle', 'course_mismatch', 'metadata.courseTitle must match course.title.');
+    }
+
+    const entities = registerIdentifiers(course, errors);
+    validateOrderingAndPlacement(course, entities, errors);
+    const referenceKeys = validateReferences(course, entities, errors);
+    validateRubricRelationships(course, entities, referenceKeys, errors);
+    validateAssessments(course, errors);
+    validateCompletionRules(course, entities, referenceKeys, errors);
+  }
+
+  class BergenCourseTransferValidationError extends Error {
+    constructor(errors) {
+      super(`Bergen Course Transfer Block validation failed with ${errors.length} correction${errors.length === 1 ? '' : 's'}.`);
+      this.name = 'BergenCourseTransferValidationError';
+      this.code = 'BERGEN_COURSE_TRANSFER_INVALID';
+      this.errors = errors;
+    }
+  }
+
+  function validateBergenCourseTransfer(input) {
+    if (typeof input === 'string' && rawInputHasProtectedInformation(input)) {
+      return { ok: false, errors: [{ ...PRIVACY_ERROR }] };
+    }
+    if (typeof input !== 'string' && objectHasProtectedInformation(input)) {
+      return { ok: false, errors: [{ ...PRIVACY_ERROR }] };
+    }
+
+    let value = input;
+    if (typeof input === 'string') {
+      let candidate = input.trim();
+      const fenced = candidate.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);
+      if (fenced) candidate = fenced[1];
+      try {
+        value = JSON.parse(candidate);
+      } catch {
+        return {
+          ok: false,
+          errors: [{ path: '$', code: 'invalid_json', message: 'Enter one complete JSON Bergen Course Transfer Block.' }],
+        };
+      }
+      if (objectHasProtectedInformation(value)) {
+        return { ok: false, errors: [{ ...PRIVACY_ERROR }] };
+      }
+    }
+
+    try {
+      JSON.stringify(value);
+    } catch {
+      return {
+        ok: false,
+        errors: [{ path: '$', code: 'invalid_json_value', message: 'The transfer value must be finite, acyclic, JSON-compatible data.' }],
+      };
+    }
+
+    const errors = [];
+    validateSchema(courseTransferSchema, value, '$', errors);
+    if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+      validateSemantics(value, errors);
+    }
+    const deterministicErrors = sortAndDedupeErrors(errors);
+    if (deterministicErrors.length > 0) return { ok: false, errors: deterministicErrors };
+    return { ok: true, value: structuredClone(value) };
+  }
+
+  function parseBergenCourseTransferBlock(input) {
+    const result = validateBergenCourseTransfer(input);
+    if (!result.ok) throw new BergenCourseTransferValidationError(result.errors);
+    return result.value;
+  }
+/* BERGEN_COURSE_VALIDATOR_END */
+
+
+  const encoder = new TextEncoder();
+  const qtiQuestionTypes = Object.freeze({
+    'multiple-choice': 'multiple_choice_question',
+    'multiple-answer': 'multiple_answers_question',
+    'true-false': 'true_false_question',
+    'short-answer': 'short_answer_question',
+    essay: 'essay_question',
+  });
+  const supportedQuestionTypes = Object.freeze([
+    'multiple-choice',
+    'multiple-answer',
+    'true-false',
+    'short-answer',
+    'essay',
+  ]);
+
+  class CoursePackageError extends Error {
+    constructor(errors) {
+      const protectedRefusal = errors.some(({ code }) => code === 'protected_information');
+      const message = protectedRefusal
+        ? 'Protected or identifiable student information is not accepted. Canvas is the only student-record system. Retry with de-identified course-design content.'
+        : `The course cannot be packaged. ${errors.map((error) => error.message).join(' ')}`;
+      super(message);
+      this.name = 'CoursePackageError';
+      this.code = 'BERGEN_COURSE_PACKAGE_INVALID';
+      this.errors = errors;
+    }
+  }
+
+  function isXml10CodePoint(codePoint) {
+    return codePoint === 0x09
+      || codePoint === 0x0a
+      || codePoint === 0x0d
+      || (codePoint >= 0x20 && codePoint <= 0xd7ff)
+      || (codePoint >= 0xe000 && codePoint <= 0xfffd)
+      || (codePoint >= 0x10000 && codePoint <= 0x10ffff);
+  }
+
+  function hasInvalidXml10Character(value) {
+    for (let index = 0; index < value.length; index += 1) {
+      const codePoint = value.codePointAt(index);
+      if (!isXml10CodePoint(codePoint)) return true;
+      if (codePoint > 0xffff) index += 1;
+    }
+    return false;
+  }
+
+  function validateTransfer(input) {
+    const validation = validateBergenCourseTransfer(input);
+    if (!validation.ok) return validation;
+    const errors = [];
+    walkStrings(validation.value, '$', (value, path) => {
+      if (hasInvalidXml10Character(value)) {
+        addError(
+          errors,
+          path,
+          'invalid_xml_character',
+          'XML 1.0 cannot represent one or more control characters. Remove unsupported control characters and validate again.',
+        );
+      }
+    });
+    const deterministicErrors = sortAndDedupeErrors(errors);
+    return deterministicErrors.length > 0 ? { ok: false, errors: deterministicErrors } : validation;
+  }
+
+  function escapeXml(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&apos;');
+  }
+
+  function escapeHtml(value) {
+    return escapeXml(value);
+  }
+
+  function identifier(value) {
+    return String(value).toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '') || 'course';
+  }
+
+  function formatNumber(value) {
+    return Number.isInteger(value) ? String(value) : String(Number(value.toFixed(6)));
+  }
+
+  function resourcePath(type, reference) {
+    const paths = {
+      page: `web_resources/pages/${reference}.html`,
+      assignment: `web_resources/assignments/${reference}.html`,
+      discussion: `discussions/${reference}/discussion.xml`,
+      quiz: `assessments/${reference}/assessment.xml`,
+      exam: `assessments/${reference}/assessment.xml`,
+    };
+    return paths[type];
+  }
+
+  function indent(value, spaces) {
+    const prefix = ' '.repeat(spaces);
+    return value.split('\n').map((line) => `${prefix}${line}`).join('\n');
+  }
+
+  function metadataField(label, entry) {
+    return `<qtimetadatafield><fieldlabel>${escapeXml(label)}</fieldlabel><fieldentry>${escapeXml(entry)}</fieldentry></qtimetadatafield>`;
+  }
+
+  function buildChoiceResponse(question) {
+    const labels = question.choices.map((choice, index) => (
+      `<response_label ident="answer-${index + 1}"><material><mattext texttype="text/plain">${escapeXml(choice)}</mattext></material></response_label>`
+    )).join('');
+    return `<response_lid ident="response" rcardinality="${question.type === 'multiple-answer' ? 'Multiple' : 'Single'}"><render_choice>${labels}</render_choice></response_lid>`;
+  }
+
+  function buildTextResponse(question) {
+    const attributes = question.type === 'essay' ? ' rows="8" columns="80"' : ' fibtype="String"';
+    return `<response_str ident="response" rcardinality="Single"><render_fib${attributes}/></response_str>`;
+  }
+
+  function buildResponseProcessing(question) {
+    if (question.type === 'essay') return '<resprocessing><outcomes><decvar vartype="Decimal" minvalue="0" maxvalue="100"/></outcomes></resprocessing>';
+    let condition;
+    if (question.type === 'multiple-answer') {
+      const correctIndexes = new Set(question.correctChoiceIndexes);
+      const clauses = question.choices.map((_choice, index) => {
+        const comparison = `<varequal case="Yes" respident="response">answer-${index + 1}</varequal>`;
+        return correctIndexes.has(index) ? comparison : `<not>${comparison}</not>`;
+      });
+      condition = `<and>${clauses.join('')}</and>`;
+    } else if (question.type === 'short-answer') {
+      const comparisons = question.acceptedAnswers.map((answer) => (
+        `<varequal case="No" respident="response">${escapeXml(answer)}</varequal>`
+      ));
+      condition = comparisons.length === 1 ? comparisons[0] : `<or>${comparisons.join('')}</or>`;
+    } else {
+      const answer = `answer-${question.correctChoiceIndexes[0] + 1}`;
+      condition = `<varequal case="Yes" respident="response">${answer}</varequal>`;
+    }
+    return `<resprocessing><outcomes><decvar vartype="Decimal" minvalue="0" maxvalue="100"/></outcomes><respcondition continue="No"><conditionvar>${condition}</conditionvar><setvar action="Set" varname="SCORE">100</setvar></respcondition></resprocessing>`;
+  }
+
+  function buildQtiItem(question) {
+    const itemId = identifier(question.id);
+    const response = ['multiple-choice', 'multiple-answer', 'true-false'].includes(question.type)
+      ? buildChoiceResponse(question)
+      : buildTextResponse(question);
+    return `<item ident="${escapeXml(itemId)}" title="${escapeXml(question.prompt)}">
+  <itemmetadata><qtimetadata>
+    ${metadataField('question_type', qtiQuestionTypes[question.type])}
+    ${metadataField('points_possible', formatNumber(question.points))}
+    ${metadataField('assessment_question_identifierref', itemId)}
+  </qtimetadata></itemmetadata>
+  <presentation><material><mattext texttype="text/plain">${escapeXml(question.prompt)}</mattext></material>${response}</presentation>
+  ${buildResponseProcessing(question)}
+</item>`;
+  }
+
+  function buildAssessment(assessment) {
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<questestinterop xmlns="http://www.imsglobal.org/xsd/ims_qtiasiv1p2">
+  <assessment ident="${escapeXml(identifier(assessment.id))}" title="${escapeXml(assessment.title)}">
+    <qtimetadata>${metadataField('points_possible', formatNumber(assessment.pointsPossible))}${metadataField('published', 'false')}${metadataField('qmd_description', assessment.instructions)}</qtimetadata>
+    <presentation_material><material><mattext texttype="text/plain">${escapeXml(assessment.instructions)}</mattext></material></presentation_material>
+    <section ident="root_section">${assessment.questions.map(buildQtiItem).join('')}</section>
+  </assessment>
+</questestinterop>`;
+  }
+
+  function buildWebContentPage(course, title, content) {
+    return `<!doctype html><html lang="${escapeHtml(course.metadata.locale)}"><head><meta charset="utf-8"><meta name="bergen-published" content="false"><title>${escapeHtml(title)}</title></head><body><main>${content}</main></body></html>`;
+  }
+
+  function buildCourseSettings(course) {
+    const content = `<h1>${escapeHtml(course.course.title)}</h1><p>${escapeHtml(course.course.description)}</p><dl><dt>Course code</dt><dd data-course-code="${escapeHtml(course.course.code)}">${escapeHtml(course.course.code)}</dd><dt>Credits</dt><dd>${formatNumber(course.course.credits)}</dd><dt>Source term</dt><dd>${escapeHtml(course.metadata.termLabel)}</dd><dt>Publication state</dt><dd>Unpublished</dd></dl>`;
+    return buildWebContentPage(course, `${course.course.title} Course Overview`, content);
+  }
+
+  function buildModules(course) {
+    const completionRules = new Map(course.completionRules.map((rule) => [rule.id, rule]));
+    const modules = course.modules.map((module) => {
+      const items = module.items.map((item) => (
+        `<li data-position="${item.position}" data-type="${escapeHtml(item.type)}" data-ref="${escapeHtml(item.ref)}">${escapeHtml(item.ref)}</li>`
+      )).join('');
+      const rules = module.completionRuleRefs.map((ruleRef) => completionRules.get(ruleRef)).map((rule) => {
+        const minimum = rule.minimumScore === undefined ? '' : ` data-minimum-score="${formatNumber(rule.minimumScore)}"`;
+        return `<li data-completion-rule-id="${escapeHtml(rule.id)}" data-module-ref="${escapeHtml(rule.moduleRef)}" data-item-ref="${escapeHtml(rule.itemRef)}" data-requirement="${escapeHtml(rule.requirement)}"${minimum}>${escapeHtml(rule.requirement)}</li>`;
+      }).join('');
+      return `<section data-module-id="${escapeHtml(module.id)}" data-published="false" data-position="${module.position}"><h2>${escapeHtml(module.title)}</h2><p>${escapeHtml(module.overview)}</p><h3>Ordered items</h3><ol>${items}</ol><h3>Completion rules</h3><ul>${rules}</ul></section>`;
+    }).join('');
+    return buildWebContentPage(course, `${course.course.title} Modules`, `<h1>Modules</h1>${modules}`);
+  }
+
+  function buildRubrics(course) {
+    const rubrics = course.rubrics.map((rubric) => {
+      const criteria = rubric.criteria.map((criterion) => (
+        `<li data-criterion-id="${escapeHtml(criterion.id)}" data-points="${formatNumber(criterion.points)}">${escapeHtml(criterion.description)}</li>`
+      )).join('');
+      return `<section data-rubric-id="${escapeHtml(rubric.id)}" data-published="false"><h2>${escapeHtml(rubric.title)}</h2><ul>${criteria}</ul></section>`;
+    }).join('');
+    return buildWebContentPage(course, `${course.course.title} Rubrics`, `<h1>Rubrics</h1>${rubrics}`);
+  }
+
+  function buildRelationships(course) {
+    const relationships = course.references.map((reference) => (
+      `<li data-relation="${escapeHtml(reference.relation)}" data-from="${escapeHtml(reference.from)}" data-to="${escapeHtml(reference.to)}">${escapeHtml(reference.from)} ${escapeHtml(reference.relation)} ${escapeHtml(reference.to)}</li>`
+    )).join('');
+    return buildWebContentPage(course, `${course.course.title} Internal Relationships`, `<h1>Internal relationships</h1><ul>${relationships}</ul>`);
+  }
+
+  function buildPage(course, page) {
+    const pages = new Map(course.pages.map((candidate) => [candidate.id, candidate]));
+    const links = course.references.filter((reference) => (
+      reference.relation === 'links-to' && reference.from === page.id && pages.has(reference.to)
+    )).map((reference) => {
+      const target = pages.get(reference.to);
+      return `<li><a href="${escapeHtml(`${target.id}.html`)}">${escapeHtml(target.title)}</a></li>`;
+    });
+    const related = links.length ? `<nav aria-label="Related course pages"><h2>Related course pages</h2><ul>${links.join('')}</ul></nav>` : '';
+    return `<!doctype html><html lang="${escapeHtml(course.metadata.locale)}"><head><meta charset="utf-8"><meta name="bergen-published" content="false"><title>${escapeHtml(page.title)}</title></head><body><main><h1>${escapeHtml(page.title)}</h1><p>${escapeHtml(page.body)}</p>${related}</main></body></html>`;
+  }
+
+  function buildAssignment(course, assignment) {
+    const content = `<article data-assignment-id="${escapeHtml(assignment.id)}" data-published="false" data-points-possible="${formatNumber(assignment.pointsPossible)}" data-submission-type="${escapeHtml(assignment.submissionType)}" data-rubric-ref="${escapeHtml(assignment.rubricRef)}"><h1>${escapeHtml(assignment.title)}</h1><p>${escapeHtml(assignment.instructions)}</p><dl><dt>Points possible</dt><dd>${formatNumber(assignment.pointsPossible)}</dd><dt>Submission type</dt><dd>${escapeHtml(assignment.submissionType)}</dd><dt>Rubric reference</dt><dd>${escapeHtml(assignment.rubricRef)}</dd><dt>Publication state</dt><dd>Unpublished</dd></dl></article>`;
+    return buildWebContentPage(course, assignment.title, content);
+  }
+
+  function buildDiscussion(discussion) {
+    return `<?xml version="1.0" encoding="UTF-8"?><topic xmlns="/xsd/imsccv1p3/imsdt_v1p3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="/xsd/imsccv1p3/imsdt_v1p3 /profile/cc/ccv1p3/ccv1p3_imsdt_v1p3.xsd"><title>${escapeXml(discussion.title)}</title><text texttype="text/plain">${escapeXml(discussion.prompt)}</text></topic>`;
+  }
+
+  function buildDiscussionDetails(course, discussion) {
+    const content = `<article data-discussion-id="${escapeHtml(discussion.id)}" data-published="false" data-graded="${discussion.graded}" data-points-possible="${formatNumber(discussion.pointsPossible)}" data-rubric-ref="${escapeHtml(discussion.rubricRef)}"><h1>${escapeHtml(discussion.title)}</h1><dl><dt>Graded</dt><dd>${discussion.graded}</dd><dt>Points possible</dt><dd>${formatNumber(discussion.pointsPossible)}</dd><dt>Rubric reference</dt><dd>${escapeHtml(discussion.rubricRef)}</dd><dt>Publication state</dt><dd>Unpublished</dd></dl></article>`;
+    return buildWebContentPage(course, `${discussion.title} Details`, content);
+  }
+
+  function buildManifestResource(resource) {
+    // Common Cartridge 1.3 launchable web content owns href; learning-application resources expose files and dependencies without a launch URL.
+    const href = resource.launchable ? ` href="${escapeXml(resource.name)}"` : '';
+    const intendedUse = resource.intendedUse ? ` intendeduse="${escapeXml(resource.intendedUse)}"` : '';
+    const dependencies = (resource.dependencies || []).map((dependency) => (
+      `<dependency identifierref="resource-${escapeXml(dependency)}"/>`
+    )).join('');
+    return `<resource identifier="resource-${escapeXml(resource.id)}" type="${escapeXml(resource.resourceType)}"${intendedUse}${href}><file href="${escapeXml(resource.name)}"/>${dependencies}</resource>`;
+  }
+
+  function buildManifest(course, files) {
+    const entityTitles = new Map([
+      ...course.pages,
+      ...course.assignments,
+      ...course.discussions,
+      ...course.quizzes,
+      ...course.exams,
+    ].map((entity) => [entity.id, entity.title]));
+    const organizations = course.modules.map((module) => (
+      `<item identifier="org-${escapeXml(module.id)}"><title>${escapeXml(module.title)}</title>${module.items.map((item) => (
+        `<item identifier="org-${escapeXml(module.id)}-${escapeXml(item.ref)}" identifierref="resource-${escapeXml(item.ref)}"><title>${escapeXml(entityTitles.get(item.ref))}</title></item>`
+      )).join('')}</item>`
+    )).join('');
+    const resources = files.map(buildManifestResource).join('');
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<manifest xmlns="http://www.imsglobal.org/xsd/imsccv1p3/imscp_v1p1" xmlns:lom="http://ltsc.ieee.org/xsd/imsccv1p3/LOM/resource" identifier="course-${escapeXml(identifier(course.course.code))}">
+  <metadata><schema>IMS Common Cartridge</schema><schemaversion>1.3.0</schemaversion></metadata>
+  <organizations default="course-organization"><organization identifier="course-organization" structure="rooted-hierarchy"><title>${escapeXml(course.course.title)}</title>${organizations}</organization></organizations>
+  <resources>${resources}</resources>
+</manifest>`;
+  }
+
+  function buildFiles(course) {
+    const payload = [
+      { id: 'course-settings', name: 'web_resources/course/course-overview.html', data: buildCourseSettings(course), resourceType: 'webcontent', launchable: true },
+      { id: 'module-settings', name: 'web_resources/course/modules.html', data: buildModules(course), resourceType: 'webcontent', launchable: true },
+      { id: 'rubric-settings', name: 'web_resources/course/rubrics.html', data: buildRubrics(course), resourceType: 'webcontent', launchable: true },
+      { id: 'relationship-settings', name: 'web_resources/course/relationships.html', data: buildRelationships(course), resourceType: 'webcontent', launchable: true },
+      ...course.pages.map((page) => ({
+        id: page.id,
+        name: resourcePath('page', page.id),
+        data: buildPage(course, page),
+        resourceType: 'webcontent',
+        launchable: true,
+      })),
+      ...course.assignments.map((assignment) => ({
+        id: assignment.id,
+        name: resourcePath('assignment', assignment.id),
+        data: buildAssignment(course, assignment),
+        resourceType: 'webcontent',
+        intendedUse: 'assignment',
+        launchable: true,
+      })),
+      ...course.discussions.flatMap((discussion) => [
+        {
+          id: discussion.id,
+          name: resourcePath('discussion', discussion.id),
+          data: buildDiscussion(discussion),
+          resourceType: 'imsdt_xmlv1p3',
+          launchable: false,
+          dependencies: [`${discussion.id}-associated-content`],
+        },
+        {
+          id: `${discussion.id}-associated-content`,
+          name: `discussions/${discussion.id}/details.html`,
+          data: buildDiscussionDetails(course, discussion),
+          resourceType: 'associatedcontent/imscc_xmlv1p3/learning-application-resource',
+          launchable: false,
+        },
+      ]),
+      ...[...course.quizzes, ...course.exams].map((assessment) => ({
+        id: assessment.id,
+        name: resourcePath('quiz', assessment.id),
+        data: buildAssessment(assessment),
+        resourceType: 'imsqti_xmlv1p2/imscc_xmlv1p3/assessment',
+        launchable: false,
+      })),
+    ];
+    return [{ name: 'imsmanifest.xml', data: buildManifest(course, payload) }, ...payload.map(({ name, data }) => ({ name, data }))];
+  }
+
+  function crc32(bytes) {
+    let crc = 0xffffffff;
+    for (const byte of bytes) {
+      crc ^= byte;
+      for (let bit = 0; bit < 8; bit += 1) crc = crc & 1 ? 0xedb88320 ^ (crc >>> 1) : crc >>> 1;
+    }
+    return (crc ^ 0xffffffff) >>> 0;
+  }
+
+  function setUint16(bytes, offset, value) {
+    new DataView(bytes.buffer, bytes.byteOffset).setUint16(offset, value, true);
+  }
+
+  function setUint32(bytes, offset, value) {
+    new DataView(bytes.buffer, bytes.byteOffset).setUint32(offset, value, true);
+  }
+
+  function concatenate(chunks) {
+    const result = new Uint8Array(chunks.reduce((total, chunk) => total + chunk.length, 0));
+    let offset = 0;
+    for (const chunk of chunks) {
+      result.set(chunk, offset);
+      offset += chunk.length;
+    }
+    return result;
+  }
+
+  function createStoredZip(entries) {
+    // Stored entries omit compression and timestamps so identical approved input produces byte-stable output in every supported browser.
+    const normalized = entries.map(({ name, data }) => {
+      const nameBytes = encoder.encode(name);
+      const dataBytes = typeof data === 'string' ? encoder.encode(data) : data;
+      return { nameBytes, dataBytes, crc: crc32(dataBytes) };
+    });
+    const localChunks = [];
+    const centralChunks = [];
+    let localOffset = 0;
+    for (const entry of normalized) {
+      const localHeader = new Uint8Array(30);
+      setUint32(localHeader, 0, 0x04034b50);
+      setUint16(localHeader, 4, 20);
+      setUint16(localHeader, 6, 0x0800);
+      setUint16(localHeader, 8, 0);
+      setUint32(localHeader, 14, entry.crc);
+      setUint32(localHeader, 18, entry.dataBytes.length);
+      setUint32(localHeader, 22, entry.dataBytes.length);
+      setUint16(localHeader, 26, entry.nameBytes.length);
+      localChunks.push(localHeader, entry.nameBytes, entry.dataBytes);
+
+      const centralHeader = new Uint8Array(46);
+      setUint32(centralHeader, 0, 0x02014b50);
+      setUint16(centralHeader, 4, 20);
+      setUint16(centralHeader, 6, 20);
+      setUint16(centralHeader, 8, 0x0800);
+      setUint16(centralHeader, 10, 0);
+      setUint32(centralHeader, 16, entry.crc);
+      setUint32(centralHeader, 20, entry.dataBytes.length);
+      setUint32(centralHeader, 24, entry.dataBytes.length);
+      setUint16(centralHeader, 28, entry.nameBytes.length);
+      setUint32(centralHeader, 42, localOffset);
+      centralChunks.push(centralHeader, entry.nameBytes);
+      localOffset += localHeader.length + entry.nameBytes.length + entry.dataBytes.length;
+    }
+    const localData = concatenate(localChunks);
+    const centralData = concatenate(centralChunks);
+    const end = new Uint8Array(22);
+    setUint32(end, 0, 0x06054b50);
+    setUint16(end, 8, normalized.length);
+    setUint16(end, 10, normalized.length);
+    setUint32(end, 12, centralData.length);
+    setUint32(end, 16, localData.length);
+    return concatenate([localData, centralData, end]);
+  }
+
+  function summarizeCourse(course) {
+    return {
+      courseCode: course.course.code,
+      title: course.course.title,
+      moduleCount: course.modules.length,
+      itemCount: course.modules.reduce((count, module) => count + module.items.length, 0),
+    };
+  }
+
+  function buildCoursePackage(input) {
+    const validation = validateTransfer(input);
+    if (!validation.ok) throw new CoursePackageError(validation.errors);
+    const files = buildFiles(validation.value);
+    return {
+      fileName: `${identifier(validation.value.course.code)}-course.imscc`,
+      files,
+      bytes: createStoredZip(files),
+      summary: summarizeCourse(validation.value),
+    };
+  }
+
+  return Object.freeze({
+    validateTransfer,
+    buildCoursePackage,
+    summarizeCourse,
+    escapeXml,
+    supportedQuestionTypes: Object.freeze([...supportedQuestionTypes]),
+  });
+})();
+/* BERGEN_COURSE_CORE_END */
+
+const BergenCoursePackagerApp = (() => {
+  'use strict';
+
+  function init(doc, browser) {
+    if (!doc.querySelector('[data-bergen-course-app]')) return;
+    const elements = {
+      transfer: doc.querySelector('#transfer-block'),
+      check: doc.querySelector('#check-course'),
+      download: doc.querySelector('#download-imscc'),
+      privacy: doc.querySelector('#privacy-confirmation'),
+      results: doc.querySelector('#results'),
+      summary: doc.querySelector('#course-summary'),
+      messages: doc.querySelector('#validation-messages'),
+      status: doc.querySelector('#status'),
+    };
+    let checkedTransfer = null;
+    let checkedPackage = null;
+    elements.download.textContent = 'Download .imscc';
+    elements.download.disabled = true;
+
+    function resetApproval() {
+      checkedTransfer = null;
+      checkedPackage = null;
+      elements.privacy.checked = false;
+      elements.download.disabled = true;
+    }
+
+    function renderErrors(errors) {
+      elements.messages.textContent = errors.map((error) => `${error.path}: ${error.message}`).join(' ');
+      elements.status.textContent = errors.map((error) => error.message).join(' ');
+    }
+
+    elements.transfer.addEventListener('input', () => {
+      resetApproval();
+      elements.results.hidden = true;
+      elements.summary.textContent = '';
+      elements.messages.textContent = '';
+      elements.status.textContent = 'Course input changed. Validate the complete approved block again.';
+    });
+
+    elements.check.addEventListener('click', () => {
+      resetApproval();
+      const validation = BergenCoursePackager.validateTransfer(elements.transfer.value);
+      elements.results.hidden = false;
+      if (!validation.ok) {
+        const privacyRefused = validation.errors.some(({ code }) => code === 'protected_information');
+        const unsafeMarkupRefused = validation.errors.some(({ code }) => code === 'unsafe_markup');
+        if (privacyRefused) {
+          elements.transfer.value = '';
+          elements.status.textContent = 'Protected or identifiable student information is not accepted. Canvas is the only student-record system. Retry with de-identified course-design content.';
+          elements.messages.textContent = elements.status.textContent;
+        } else {
+          if (unsafeMarkupRefused) elements.transfer.value = '';
+          renderErrors(validation.errors);
+        }
+        return;
+      }
+      checkedTransfer = validation.value;
+      const summary = BergenCoursePackager.summarizeCourse(checkedTransfer);
+      elements.summary.textContent = `${summary.courseCode}: ${summary.title}. ${summary.moduleCount} modules and ${summary.itemCount} ordered module items are ready for local packaging.`;
+      elements.messages.textContent = 'Confirm the privacy statement, then download locally. Import only into an authorized unpublished Canvas sandbox. A local package is not proof of Bergen Canvas compatibility.';
+      elements.status.textContent = 'Course validated. Confirm that no student-identifying or protected information is present.';
+    });
+
+    elements.privacy.addEventListener('change', () => {
+      checkedPackage = null;
+      elements.download.disabled = true;
+      if (!checkedTransfer || !elements.privacy.checked) {
+        elements.status.textContent = 'Privacy confirmation is required before packaging.';
+        return;
+      }
+      try {
+        // Readiness is observable completion: build every byte now, then let download reuse this exact package without regeneration.
+        checkedPackage = BergenCoursePackager.buildCoursePackage(checkedTransfer);
+        elements.download.disabled = false;
+        elements.status.textContent = 'Course package ready';
+      } catch {
+        checkedPackage = null;
+        elements.messages.textContent = 'Local course-package generation failed. No file was created. Validate the approved block and try again.';
+        elements.status.textContent = 'Course package generation failed. Download remains unavailable.';
+      }
+    });
+
+    elements.download.addEventListener('click', () => {
+      if (!checkedTransfer || !checkedPackage || !elements.privacy.checked) return;
+      const result = checkedPackage;
+      let link = null;
+      let objectUrl = null;
+      try {
+        const blob = new Blob([result.bytes], { type: 'application/vnd.ims.imsccv1p3' });
+        objectUrl = browser.URL.createObjectURL(blob);
+        link = doc.createElement('a');
+        link.href = objectUrl;
+        link.download = result.fileName;
+        doc.body.append(link);
+        link.click();
+        elements.status.textContent = 'Course package ready';
+      } catch {
+        elements.status.textContent = 'The local download could not start. The package remains available in this browser session; try Download .imscc again.';
+      } finally {
+        let cleanupFailed = false;
+        try {
+          if (link) link.remove();
+        } catch {
+          cleanupFailed = true;
+        }
+        try {
+          if (objectUrl) browser.URL.revokeObjectURL(objectUrl);
+        } catch {
+          cleanupFailed = true;
+        }
+        if (cleanupFailed) {
+          elements.status.textContent = 'Temporary browser download cleanup could not be confirmed. Close this tab before packaging another course.';
+        }
+      }
+    });
+  }
+
+  return Object.freeze({ init });
+})();
+
+BergenCoursePackagerApp.init(document, globalThis);
+</script>

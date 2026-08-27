@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bergen Course Packager</title>
+    <?!= include('Styles'); ?>
+  </head>
+  <body data-bergen-course-app>
+    <header class="site-header">
+      <div class="page-width">
+        <p class="eyebrow">Bergen Memory Bank</p>
+        <h1>Bergen Course Packager</h1>
+        <p class="subtitle">Create one local Common Cartridge from an approved course-design handoff.</p>
+      </div>
+    </header>
+
+    <main class="page-width">
+      <section class="privacy-banner" aria-labelledby="privacy-title">
+        <span class="privacy-mark" aria-hidden="true">✓</span>
+        <div>
+          <h2 id="privacy-title">Your course design stays in this browser</h2>
+          <p>This page does not upload, save, or send course content. Do not paste student submissions, names, IDs, grades, feedback, accommodations, health information, credentials, or identifying details.</p>
+        </div>
+      </section>
+
+      <ol class="steps" aria-label="Course packaging steps">
+        <li><span>1</span> Paste course</li>
+        <li><span>2</span> Check course</li>
+        <li><span>3</span> Download package</li>
+      </ol>
+
+      <section class="card" aria-labelledby="paste-heading">
+        <p class="step-label">Step 1</p>
+        <h2 id="paste-heading">Paste the approved course handoff</h2>
+        <p class="helper">Use the complete versioned block from the current approved course. The packager does not contain a sample course and does not replace faculty review.</p>
+        <label for="transfer-block">Bergen Course Transfer Block</label>
+        <textarea id="transfer-block" rows="18" spellcheck="false" placeholder="Paste the complete JSON transfer block here"></textarea>
+        <button class="button primary" id="check-course" type="button">Validate course</button>
+      </section>
+
+      <section class="card" id="results" aria-labelledby="results-heading" hidden>
+        <p class="step-label">Step 2</p>
+        <h2 id="results-heading">Course check</h2>
+        <p id="course-summary"></p>
+        <p id="validation-messages"></p>
+
+        <label class="confirmation" for="privacy-confirmation">
+          <input id="privacy-confirmation" type="checkbox">
+          <span>I confirm that this course contains no student-identifying or protected information.</span>
+        </label>
+
+        <div class="download-panel">
+          <div>
+            <p class="step-label">Step 3</p>
+            <h2>Download the unpublished course package</h2>
+            <p>Import the file manually into an authorized unpublished Canvas sandbox. Review every module, item, setting, link, and assessment before any publication decision.</p>
+          </div>
+          <button class="button primary" id="download-imscc" type="button" disabled>Download .imscc</button>
+        </div>
+      </section>
+
+      <aside class="support-note">
+        <strong>Compatibility boundary:</strong> A local package is not proof of Bergen Canvas compatibility. Import, review, and publication remain manual faculty actions in Canvas.
+      </aside>
+
+      <p id="status" class="status" role="status" aria-live="polite">Paste an approved Bergen Course Transfer Block to begin.</p>
+    </main>
+    <?!= include('Script'); ?>
+  </body>
+</html>
