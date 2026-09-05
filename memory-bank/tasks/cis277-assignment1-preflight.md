@@ -1,13 +1,13 @@
 ---
 slug: cis277-assignment1-preflight
 feature: cis277-assignment1-preflight
-status: PLANNING_COMPLETE
+status: IN_PROGRESS
 ---
 
 # cis277-assignment1-preflight: Simple student preflight for Assignment 1
 
 **Complexity**: Level 3
-**Status**: PLANNING_COMPLETE
+**Status**: IN_PROGRESS
 **Roadmap**: cis277-assignment1-preflight
 **Branch**: codex/cis277-assignment1-preflight
 **Worktree**: ../ala-worktrees/bergen-memorybank/cis277-assignment1-preflight
@@ -200,14 +200,14 @@ Specification is concrete: proceed to implementation planning using `memory-bank
 
 ### New Source Files (pin path + extension)
 
-- [ ] `packages/cis277-assignment1-preflight/validate.py` - instructor ASSIGNMENT settings, reusable runner, usage, structure/source screening, compiler commands, temporary builds, bounded execution, summary and exit codes.
-- [ ] `packages/cis277-assignment1-preflight/tests/public_tests.cpp` - independent contract assertions and public behavioral checks.
+- [x] `packages/cis277-assignment1-preflight/validate.py` - instructor ASSIGNMENT settings, reusable runner, usage, structure/source screening, compiler commands, temporary builds, bounded execution, summary and exit codes.
+- [x] `packages/cis277-assignment1-preflight/tests/public_tests.cpp` - independent contract assertions and public behavioral checks.
 - [ ] `packages/cis277-assignment1-preflight/.github/workflows/validate.yml` - Linux push/pull-request job invoking `python3 validate.py`.
-- [ ] `tests/preflight/test_validator.py` - maintainer regression cases and embedded synthetic fixture sources; not distributed to students.
+- [x] `tests/preflight/test_validator.py` - maintainer regression cases and embedded synthetic fixture sources; not distributed to students.
 
 ### Phases
 
-- [ ] Phase 1: Implement and verify the reusable Python runner with the single ASSIGNMENT dictionary, plus Assignment 1's C++ public tests. Keep the script procedural and dependency-free. Read source lists, compiler flags, requirements, restrictions, and review notes from settings; keep class-specific assertions in C++. Compile the demo using the published `-std=c++17 -Wall -Wextra -pedantic` flags without `-Werror`; build the independent harness separately. Run both normally and with ASan when supported. Probe sanitizer support with a harmless program so a student's sanitizer build failure is not mislabeled as unsupported tooling. Show concise labels, expected/actual results where useful, original compiler/sanitizer diagnostics on failure, and a rerun instruction. Verify reuse and malformed-settings behavior in the maintainer suite.
+- [x] Phase 1: Implement and verify the reusable Python runner with the single ASSIGNMENT dictionary, plus Assignment 1's C++ public tests. Keep the script procedural and dependency-free. Read source lists, compiler flags, requirements, restrictions, and review notes from settings; keep class-specific assertions in C++. Compile the demo using the published `-std=c++17 -Wall -Wextra -pedantic` flags without `-Werror`; build the independent harness separately. Run both normally and with ASan when supported. Probe sanitizer support with a harmless program so a student's sanitizer build failure is not mislabeled as unsupported tooling. Show concise labels, expected/actual results where useful, original compiler/sanitizer diagnostics on failure, and a rerun instruction. Verify reuse and malformed-settings behavior in the maintainer suite.
 - [ ] Phase 2: Add the generic Assignment Preflight workflow and finish student handoff verification. Use a fixed supported Ubuntu runner, a pinned checkout action verified at build time, `contents: read`, no secrets or retained checkout credentials, no self-hosted runner, no artifact upload, and a 5-minute job timeout. Students receive exactly three prepared files with the original five required submission files untouched. Provide brief copy/run instructions in the handoff response and embedded help; students do not edit settings or need Codex. Verify documented CLI/CI behavior and record limitations. Keep the workflow unchanged for the synthetic second assignment.
 
 ## Creative Phases
@@ -222,10 +222,10 @@ See `memory-bank/creative/cis277-assignment1-preflight-design.md` for decisions 
 ## Execution State
 
 **Build Status**: IDLE
-**Current Phase**: BUILD
-**Last Completed**: Approved reuse clarification, updated specification, taxonomy/concrete-spec checks, and independent review
+**Current Phase**: Phase 1 of 2 complete - runner and public tests
+**Last Completed**: Phase 1 implementation, regression verification, independent code/security review, and embedded documentation review (2026-09-05)
 **Can Resume**: NO
-**Current Step**: Planning complete; ready for Phase 1
+**Current Step**: Phase boundary; ready for Phase 2 workflow and student handoff
 **Plan Backend**: Codex native agent - usable; source default adapted by codex-adapter.md
 **Brainstorm Critique**: Codex native agent - usable; reuse clarification approved, no substantive findings
 **Taxonomy**: CLEAN - T-001 through T-008; 12 canonical acceptance criteria
@@ -246,6 +246,31 @@ See `memory-bank/creative/cis277-assignment1-preflight-design.md` for decisions 
 - Planning quality checks passed; no implementation or hosted workflow execution is claimed.
 - User clarified standalone local usage, settings-based reuse for future assignments, and instructor preparation from pasted assignment text; requested spec update before build.
 - Spec Writer updated the contract and independent reviewer approved the reuse clarification. Taxonomy and diff checks passed; two build phases remain pending.
+- User invoked `/ala:build cis277-assignment1-preflight` on 2026-09-05, authorizing Phase 1 implementation and the build workflow's phase commit/push. Earlier planning-only restrictions describe the prior handoff.
+- Reused the clean `codex/cis277-assignment1-preflight` worktree; fetched origin and confirmed `origin/main` was already an ancestor. Original checkout and unrelated user files were preserved.
+- TDD: 12 regression tests failed before implementation; all 12 then passed on Linux. A C++ digit-separator screening regression was separately observed failing and fixed before final review.
+- Independent verification passed the complete companion suite plus final scanner regression, Python compilation/syntax checks, and whitespace checks. Independent code/security review approved the final files; documentation review required no changes.
+
+### Phase 1 Verification Evidence
+
+**Date**: 2026-09-05
+**Result**: PHASE_COMPLETE (1 of 2); overall task remains IN_PROGRESS.
+**Source/test mapping**: `tests/preflight/test_validator.py` exercises both `validate.py` and `tests/public_tests.cpp` through temporary synthetic submissions. One companion test batch; no shared faculty-kit implementation changed.
+
+- **RED**: 12 failures before the validator/harness existed.
+- **Initial GREEN**: 12/12 tests on Ubuntu 24.04, Python 3.12.3, GNU g++ 13.3.0; 27.298 seconds. Tests include valid dynamic-array/linked Stack fixtures, interfaces, pool defects, real ASan overflow/leak failures, README/source checks, unavailable prerequisites, execution timeout, malformed settings, and settings/harness reuse for a second assignment.
+- **Additional RED to GREEN**: A valid C++ digit separator (`1'000`) could hide a later prohibited token. The added scanner variant failed before numeric tokenization was fixed, then passed (one focused test).
+- **Independent Linux verification**: `python3 -B -m unittest discover -s tests/preflight -p 'test_*.py'` in an ephemeral Ubuntu container: 12 tests passed, no skips, 28.393 seconds. The final scanner test additionally passed after the isolated tokenization edit (1 test, 0.076 seconds).
+- **Independent Windows verification**: `python -B -m unittest discover -s tests/preflight -p 'test_*.py'`: successful run of 12 tests in 0.724 seconds, with 10 compiler-dependent subcases explicitly skipped because Windows has no GNU-compatible compiler on PATH. Final scanner test passed separately (0.051 seconds). These skips are not evidence of Windows C++ or sanitizer support.
+- **Build/syntax**: Both Python files compiled using Python's `compile` without bytecode artifacts; `ast.parse(..., feature_version=(3, 9))` passed. Python 3.9 runtime execution itself was not exercised. The Linux suite built and ran real C++17 demo and independent harness fixtures normally and with ASan.
+- **Lint**: `python -B -m tabnanny` for both Python files, focused trailing-whitespace checks for all three new files, and `git diff --check` passed. No separate Python linter/type checker is configured. The unrelated faculty-kit Node release inventory/tests do not apply to this companion, per this task's Test Strategy.
+- **Review**: Independent native Codex code review APPROVED; no blocking findings. Code security and dependency review passed; Python standard library and C++ standard library only, no added third-party runtime packages, upgrades, telemetry, AI, or network clients.
+- **Documentation**: Embedded help and configured review notes cover prerequisites, run/fix/rerun, local checks, cleanup, exit codes, and limits. Core `techContext.md`, `systemPatterns.md`, and faculty-kit artifacts remain unchanged as required by the approved scope.
+- **Technical reference**: Reviewed [AddressSanitizer documentation](https://clang.llvm.org/docs/AddressSanitizer.html) on 2026-09-05 for compile/link instrumentation, fatal diagnostics, and platform-dependent leak support. Linux sanitizer execution and deliberate defects were verified locally, not inferred from documentation.
+
+**Remaining Phase 2 work**: Supply `.github/workflows/validate.yml`, verify current checkout pin/runner and least-privilege settings, finish the complete three-file copy/run/fix/rerun handoff, and record hosted-CI limitations. The embedded Actions route describes the final package; no hosted Actions execution or complete three-file distribution is claimed in Phase 1.
+
+**Next likely**: `/ala:build cis277-assignment1-preflight`
 
 ## Plan Critique
 
