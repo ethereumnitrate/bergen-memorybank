@@ -10,7 +10,9 @@ status: COMPLETE
 **Status**: COMPLETE
 **Archived**: memory-bank/archive/cis277-assignment1-preflight-archive.md
 **Completed**: 2026-09-05
-**Latest Commit**: 1ff4a182673c221a6da4e5bba42adfe3809e7fda (verified reflection tip before archive; archive commits follow in Git history)
+**Latest Commit**: 9662117 (archive commit; this PR-link bookkeeping commit follows in Git history)
+**PR Created**: YES
+**PR URL**: https://github.com/ethereumnitrate/bergen-memorybank/pull/1
 **Reflection**: memory-bank/reflection/cis277-assignment1-preflight-reflection.md
 **Roadmap**: cis277-assignment1-preflight
 **Branch**: codex/cis277-assignment1-preflight
@@ -231,7 +233,7 @@ See `memory-bank/creative/cis277-assignment1-preflight-design.md` for decisions 
 **Current Phase**: COMPLETE
 **Last Completed**: Task archive and consolidation of four evidence-backed lessons (2026-09-05)
 **Can Resume**: NO
-**Current Step**: Archive complete; submit the existing branch for review to main
+**Current Step**: Archive complete; PR #1 open for review to main
 **Plan Backend**: Codex native agent - usable; source default adapted by codex-adapter.md
 **Brainstorm Critique**: Codex native agent - usable; reuse clarification approved, no substantive findings
 **Taxonomy**: CLEAN - T-001 through T-008; 12 canonical acceptance criteria
