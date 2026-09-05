@@ -1,13 +1,13 @@
 ---
 slug: cis277-assignment1-preflight
 feature: cis277-assignment1-preflight
-status: IN_PROGRESS
+status: BUILD_COMPLETE
 ---
 
 # cis277-assignment1-preflight: Simple student preflight for Assignment 1
 
 **Complexity**: Level 3
-**Status**: IN_PROGRESS
+**Status**: BUILD_COMPLETE
 **Roadmap**: cis277-assignment1-preflight
 **Branch**: codex/cis277-assignment1-preflight
 **Worktree**: ../ala-worktrees/bergen-memorybank/cis277-assignment1-preflight
@@ -202,13 +202,13 @@ Specification is concrete: proceed to implementation planning using `memory-bank
 
 - [x] `packages/cis277-assignment1-preflight/validate.py` - instructor ASSIGNMENT settings, reusable runner, usage, structure/source screening, compiler commands, temporary builds, bounded execution, summary and exit codes.
 - [x] `packages/cis277-assignment1-preflight/tests/public_tests.cpp` - independent contract assertions and public behavioral checks.
-- [ ] `packages/cis277-assignment1-preflight/.github/workflows/validate.yml` - Linux push/pull-request job invoking `python3 validate.py`.
+- [x] `packages/cis277-assignment1-preflight/.github/workflows/validate.yml` - Linux push/pull-request job invoking `python3 validate.py`.
 - [x] `tests/preflight/test_validator.py` - maintainer regression cases and embedded synthetic fixture sources; not distributed to students.
 
 ### Phases
 
 - [x] Phase 1: Implement and verify the reusable Python runner with the single ASSIGNMENT dictionary, plus Assignment 1's C++ public tests. Keep the script procedural and dependency-free. Read source lists, compiler flags, requirements, restrictions, and review notes from settings; keep class-specific assertions in C++. Compile the demo using the published `-std=c++17 -Wall -Wextra -pedantic` flags without `-Werror`; build the independent harness separately. Run both normally and with ASan when supported. Probe sanitizer support with a harmless program so a student's sanitizer build failure is not mislabeled as unsupported tooling. Show concise labels, expected/actual results where useful, original compiler/sanitizer diagnostics on failure, and a rerun instruction. Verify reuse and malformed-settings behavior in the maintainer suite.
-- [ ] Phase 2: Add the generic Assignment Preflight workflow and finish student handoff verification. Use a fixed supported Ubuntu runner, a pinned checkout action verified at build time, `contents: read`, no secrets or retained checkout credentials, no self-hosted runner, no artifact upload, and a 5-minute job timeout. Students receive exactly three prepared files with the original five required submission files untouched. Provide brief copy/run instructions in the handoff response and embedded help; students do not edit settings or need Codex. Verify documented CLI/CI behavior and record limitations. Keep the workflow unchanged for the synthetic second assignment.
+- [x] Phase 2: Add the generic Assignment Preflight workflow and finish student handoff verification. Use a fixed supported Ubuntu runner, a pinned checkout action verified at build time, `contents: read`, no secrets or retained checkout credentials, no self-hosted runner, no artifact upload, and a 5-minute job timeout. Students receive exactly three prepared files with the original five required submission files untouched. Provide brief copy/run instructions in the handoff response and embedded help; students do not edit settings or need Codex. Verify documented CLI/CI behavior and record limitations. Keep the workflow unchanged for the synthetic second assignment.
 
 ## Creative Phases
 
@@ -221,11 +221,11 @@ See `memory-bank/creative/cis277-assignment1-preflight-design.md` for decisions 
 
 ## Execution State
 
-**Build Status**: IDLE
-**Current Phase**: Phase 1 of 2 complete - runner and public tests
-**Last Completed**: Phase 1 implementation, regression verification, independent code/security review, and embedded documentation review (2026-09-05)
+**Build Status**: COMPLETE
+**Current Phase**: Phase 2 of 2 complete - workflow and student handoff
+**Last Completed**: Phase 2 workflow, independent Linux verification, independent code/security/documentation review, and offline student handoff verification (2026-09-05)
 **Can Resume**: NO
-**Current Step**: Phase boundary; ready for Phase 2 workflow and student handoff
+**Current Step**: Final build phase complete; ready for reflection
 **Plan Backend**: Codex native agent - usable; source default adapted by codex-adapter.md
 **Brainstorm Critique**: Codex native agent - usable; reuse clarification approved, no substantive findings
 **Taxonomy**: CLEAN - T-001 through T-008; 12 canonical acceptance criteria
@@ -250,6 +250,10 @@ See `memory-bank/creative/cis277-assignment1-preflight-design.md` for decisions 
 - Reused the clean `codex/cis277-assignment1-preflight` worktree; fetched origin and confirmed `origin/main` was already an ancestor. Original checkout and unrelated user files were preserved.
 - TDD: 12 regression tests failed before implementation; all 12 then passed on Linux. A C++ digit-separator screening regression was separately observed failing and fixed before final review.
 - Independent verification passed the complete companion suite plus final scanner regression, Python compilation/syntax checks, and whitespace checks. Independent code/security review approved the final files; documentation review required no changes.
+- User invoked `/ala:build cis277-assignment1-preflight` again on 2026-09-05, authorizing Phase 2 and its phase commit/push. The clean task worktree matched its remote; after fetching, `origin/main` remained an ancestor, so no rebase was needed.
+- Added the thin generic workflow; verified the official checkout release pin and supported runner, parsed the YAML, and confirmed the exact three-file inventory.
+- Independent Linux verification passed all 12 companion tests without skips. Independent code/security/documentation review approved the workflow and embedded student instructions without findings.
+- Offline Linux copy/run/fix/rerun verification passed with byte-for-byte preservation of student files. Both implementation phases are complete; reflection and archive remain separate commands.
 
 ### Phase 1 Verification Evidence
 
@@ -268,9 +272,27 @@ See `memory-bank/creative/cis277-assignment1-preflight-design.md` for decisions 
 - **Documentation**: Embedded help and configured review notes cover prerequisites, run/fix/rerun, local checks, cleanup, exit codes, and limits. Core `techContext.md`, `systemPatterns.md`, and faculty-kit artifacts remain unchanged as required by the approved scope.
 - **Technical reference**: Reviewed [AddressSanitizer documentation](https://clang.llvm.org/docs/AddressSanitizer.html) on 2026-09-05 for compile/link instrumentation, fatal diagnostics, and platform-dependent leak support. Linux sanitizer execution and deliberate defects were verified locally, not inferred from documentation.
 
-**Remaining Phase 2 work**: Supply `.github/workflows/validate.yml`, verify current checkout pin/runner and least-privilege settings, finish the complete three-file copy/run/fix/rerun handoff, and record hosted-CI limitations. The embedded Actions route describes the final package; no hosted Actions execution or complete three-file distribution is claimed in Phase 1.
+**Phase 1 handoff (historical)**: The workflow and complete three-file verification remained for Phase 2. These are now complete as recorded below; Phase 1 itself did not claim hosted execution or a complete package.
 
-**Next likely**: `/ala:build cis277-assignment1-preflight`
+### Phase 2 Verification Evidence
+
+**Date**: 2026-09-05
+**Result**: BUILD_COMPLETE (2 of 2).
+**Changed files**: `packages/cis277-assignment1-preflight/.github/workflows/validate.yml` and this task record. The Python runner, public C++ harness, maintainer suite, and faculty-kit artifacts are unchanged.
+**Test-first exception**: This phase is configuration/documentation only and adds no production executable logic. No new tests mirroring the 20-line workflow were added. Parsed configuration checks, independent review, the complete existing integration suite, and actual CLI handoff checks supply proportionate evidence.
+
+- **Workflow**: Generic `Assignment Preflight`, `push` and `pull_request`, one `ubuntu-24.04` job with `timeout-minutes: 5`, top-level `contents: read`, checkout with `persist-credentials: false`, and one `Validate` step invoking exactly `python3 validate.py`. No secrets, uploads, privileged triggers, extra validation logic, or self-hosted runner.
+- **Pin verification**: `git ls-remote --tags https://github.com/actions/checkout.git 'refs/tags/v6*'` resolved v6.1.0 to `d23441a48e516b6c34aea4fa41551a30e30af803`. Confirmed the [official release](https://github.com/actions/checkout/releases/tag/v6.1.0) and [action metadata at that SHA](https://raw.githubusercontent.com/actions/checkout/d23441a48e516b6c34aea4fa41551a30e30af803/action.yml), including the credential input and Node 24 runtime. Confirmed Ubuntu 24.04 in the [GitHub-hosted runner reference](https://docs.github.com/en/actions/reference/runners/github-hosted-runners). References checked on 2026-09-05.
+- **Configuration/inventory**: Parsed workflow using maintainer-installed PyYAML BaseLoader (not a package dependency); verified event names, permissions, runner, timeout, checkout pin/input, two steps, exact command, and no trailing whitespace. Recursive inventory contains exactly `validate.py`, `tests/public_tests.cpp`, and `.github/workflows/validate.yml`.
+- **Independent full Linux suite**: `python3 -B -m unittest discover -s tests/preflight -p 'test_*.py'`: 12/12 tests passed, zero skips, 32.169 seconds. Ephemeral Ubuntu 24.04 container, Python 3.12.3, GNU g++ 13.3.0, read-only worktree mount, bytecode disabled. Real C++17 normal and ASan builds/runs passed; synthetic interface/behavior defects, overflow/leaks, unavailable prerequisites, malformed settings, and timeouts were checked. The replacement-assignment scenario uses the same copied workflow with only its settings/harness replaced; pass/fail behavior remains correct.
+- **Build/lint**: Independent `compile()` and `ast.parse(..., feature_version=(3, 9))` passed for both Python files; `python3 -B -m tabnanny` passed. Workflow whitespace check and `git diff --check` passed. No separate Python linter/type checker is configured; unrelated faculty-kit tests are outside this companion scope.
+- **Student handoff**: Created a temporary synthetic assignment with its original five files, then copied the package and checked that exactly three files were added and all original bytes were preserved. In Ubuntu 24.04 with the container network disconnected, `python3 validate.py --help` passed; `python3 validate.py` passed all normal/ASan checks (exit 0); removing the Analysis Questions heading produced the named README failure and rerun instruction (exit 1); restoring it returned PASS (exit 0). A nonexistent `CXX` executable returned INCOMPLETE (exit 2). Every invocation preserved all source/package bytes; temporary submission and the task-owned containers were cleaned up.
+- **Review**: Independent native Codex code/security/documentation review APPROVED, no actionable findings. Embedded help covers the complete copy/run/fix/rerun and Actions routes; no extra student guide or settings edit is needed. No third-party runtime dependencies or upgrades were added; checkout is pinned to the verified official release.
+- **Limitations**: Hosted GitHub Actions was not executed. YAML inspection and equivalent local Linux execution do not establish a hosted CI pass. The workflow activates when copied into an Actions-enabled student repository; it stays nested in this development repository. Python 3.9 grammar passed, but Python 3.9 runtime itself was not exercised. Windows C++/ASan support is not claimed. Public checks retain the configured instructor-review and no-full-credit limits.
+
+**Student handoff**: Copy the three files from `packages/cis277-assignment1-preflight/` into the assignment repository, preserving `tests/` and `.github/workflows/`. Keep the existing submission files. Run `python validate.py` (or `python3 validate.py`), fix reported issues, and rerun; alternatively push and open Actions > Assignment Preflight > run > Validate. Students do not edit settings or need Codex.
+
+**Next likely**: `/ala:reflect cis277-assignment1-preflight`
 
 ## Plan Critique
 
@@ -282,7 +304,7 @@ See `memory-bank/creative/cis277-assignment1-preflight-design.md` for decisions 
 
 **Findings**: None substantive or blocking. Applied: 0. Noted: 0.
 
-**Next step**: Build Phase 1 from this worktree when requested. No further design approval is required for the approved scope.
+**Planning next step (historical)**: Build Phase 1 from this worktree when requested. Both build phases have since completed; see Execution State for the current next action.
 
 ## Planning Notes
 
