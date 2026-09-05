@@ -1,19 +1,24 @@
 ---
 slug: cis277-assignment1-preflight
 feature: cis277-assignment1-preflight
-status: REFLECTION_COMPLETE
+status: COMPLETE
 ---
 
 # cis277-assignment1-preflight: Simple student preflight for Assignment 1
 
 **Complexity**: Level 3
-**Status**: REFLECTION_COMPLETE
+**Status**: COMPLETE
+**Archived**: memory-bank/archive/cis277-assignment1-preflight-archive.md
+**Completed**: 2026-09-05
+**Latest Commit**: 1ff4a182673c221a6da4e5bba42adfe3809e7fda (verified reflection tip before archive; archive commits follow in Git history)
 **Reflection**: memory-bank/reflection/cis277-assignment1-preflight-reflection.md
 **Roadmap**: cis277-assignment1-preflight
 **Branch**: codex/cis277-assignment1-preflight
 **Worktree**: ../ala-worktrees/bergen-memorybank/cis277-assignment1-preflight
 
 ## Task Description
+
+**Historical planning context**: The planning-only authorization below describes the original brainstorm. Later build, reflection, and archive invocations authorized the completed work recorded in Execution State.
 
 Deliver a standalone three-file public preflight for the posted CIS-277 Assignment 1: Network Packet Buffer Pool. Students copy `validate.py`, `tests/public_tests.cpp`, and `.github/workflows/validate.yml` into their assignment repository, then run `python validate.py` (or `python3 validate.py` where appropriate), or inspect the GitHub Actions run. The instructor approved this design and explicitly requested simplicity; this planning record was finalized on 2026-09-05. This brainstorm ends at build-ready planning; implementation has not been authorized in this stage.
 
@@ -165,7 +170,7 @@ Specification is concrete: proceed to implementation planning using `memory-bank
 
 ### Success Criteria (End-User Features)
 
-- **User sees**: `PASS: All public preflight checks passed.` followed by `Passing all public checks does not guarantee full credit.`
+- **User sees**: The disclaimer `Passing all public checks does not guarantee full credit.` and configured review notes, with `PASS: All public preflight checks passed.` as the final line on success.
 - **User can verify at**: Terminal output or the GitHub Actions Validate step for the relevant commit.
 - **Data persisted**: No student source edits or local report database; temporary build files cleaned up. GitHub retains its ordinary workflow logs.
 - **Observable within**: One bounded run; proposed compile timeout 60 seconds per command, run/probe timeout 10 seconds, workflow timeout 5 minutes.
@@ -223,10 +228,10 @@ See `memory-bank/creative/cis277-assignment1-preflight-design.md` for decisions 
 ## Execution State
 
 **Build Status**: IDLE
-**Current Phase**: REFLECT -> ARCHIVE
-**Last Completed**: Reflection of both implementation phases, acceptance evidence, design decisions, and ALA/Codex workflow (2026-09-05)
+**Current Phase**: COMPLETE
+**Last Completed**: Task archive and consolidation of four evidence-backed lessons (2026-09-05)
 **Can Resume**: NO
-**Current Step**: Reflection complete; ready for archive
+**Current Step**: Archive complete; submit the existing branch for review to main
 **Plan Backend**: Codex native agent - usable; source default adapted by codex-adapter.md
 **Brainstorm Critique**: Codex native agent - usable; reuse clarification approved, no substantive findings
 **Taxonomy**: CLEAN - T-001 through T-008; 12 canonical acceptance criteria
@@ -303,7 +308,17 @@ See `memory-bank/creative/cis277-assignment1-preflight-design.md` for decisions 
 **Validation**: Reflection/task status and link consistency, all completed phase markers, 12 acceptance-criterion entries, exactly four extractable lessons, exact three-file package inventory, and `git diff --check` passed. Changes are limited to this task and its reflection; implementation and faculty-kit artifacts are unchanged.
 **Git record**: The reflection commit carries both documents on `codex/cis277-assignment1-preflight`; resolve its SHA with `git log -1 -- memory-bank/reflection/cis277-assignment1-preflight-reflection.md` rather than embedding a self-referential commit hash.
 
-**Next likely**: `/ala:archive cis277-assignment1-preflight`
+**Reflection handoff (historical)**: `/ala:archive cis277-assignment1-preflight`, subsequently invoked on 2026-09-05.
+
+### Archive Completion
+
+**Date**: 2026-09-05
+**Result**: COMPLETE; both phases and reflection preserved, linked feature completed, four new low-priority learned rules indexed. No existing rules were merged, retired, expired, pruned, or promoted.
+**Authorization**: User invoked `/ala:archive cis277-assignment1-preflight`; configured strategy is push-and-pr to protected `main`. All archive records ride the existing task branch because metadata and PR targets both equal `main`. The worktree and branch remain available for review.
+**Evidence**: Clean task worktree and no stashes at entry; fetched remote matched `1ff4a18`, with `origin/main` already an ancestor. Build results remain historical: 12/12 Linux tests with zero skips and offline handoff passed; hosted Actions, Python 3.9 runtime, and Windows C++/ASan remain unverified.
+**Documentation cleanup**: Labeled planning snapshots as historical and aligned journey message order with the approved design and runner. Student files and maintainer tests are unchanged by archive.
+**Archive validation**: Inline Python consistency check passed: two completed phases, four learned rules with required metadata and accurate index line counts, 24 resolvable Markdown links, exactly three unchanged student files, and unchanged maintainer tests. `git diff --check` passed; no runtime tests were rerun for these documentation-only edits.
+**Next likely**: Review the archive PR to `main`.
 
 ## Plan Critique
 
@@ -317,7 +332,7 @@ See `memory-bank/creative/cis277-assignment1-preflight-design.md` for decisions 
 
 **Planning next step (historical)**: Build Phase 1 from this worktree when requested. Both build phases have since completed; see Execution State for the current next action.
 
-## Planning Notes
+## Planning Notes (historical)
 
 **Complexity rationale**: inferred by /ala:brainstorm. Level 3 reflects bounded decisions about fair C++ checks, toolchain failures, and local/CI parity across three student files; there is no system-wide product change.
 

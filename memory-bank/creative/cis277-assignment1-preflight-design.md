@@ -1,7 +1,7 @@
 # CIS-277 Assignment 1 Preflight Design
 
 **Date**: 2026-09-05
-**Status**: Approved; build-ready
+**Status**: Approved design; implemented and archived on 2026-09-05
 **Task**: cis277-assignment1-preflight
 
 ## Approved Intent
@@ -86,6 +86,8 @@ Use read-only Actions permissions, a pinned checkout action, no stored checkout 
 
 Technical references reviewed during the brainstorm: [Clang AddressSanitizer](https://clang.llvm.org/docs/AddressSanitizer.html) for instrumentation and platform-dependent leak checks; [GitHub secure use](https://docs.github.com/en/actions/reference/security/secure-use) for least-privilege workflows. Reverify runner/action pins when implementing rather than freezing unverified versions in the plan.
 
-## Review Record
+## Review Record (historical planning snapshot)
+
+The following records the planning handoff. Both implementation phases, reflection, and archive subsequently completed; see the task's Execution State for current status.
 
 The initial specification and taxonomy/concrete-spec checks passed on 2026-09-05. The independent native Codex plan critique approved the initial four artifacts with no substantive findings. The instructor subsequently approved the settings-based reuse and pasted-assignment preparation clarification. The Spec Writer updated the contract to 12 canonical acceptance criteria; taxonomy/concrete-spec and diff checks passed, and a focused independent review approved the clarification with no substantive findings. No implementation started. The next step remains the first of the two build phases.
